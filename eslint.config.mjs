@@ -14,10 +14,10 @@ const eslintConfig = [
   {
     files: ["**/*.ts", "**/*.tsx"],
     rules: {
-      '@typescript-eslint/no-explicit-any': 'off',
+      "@typescript-eslint/no-explicit-any": "off",
       eslint: {
-    ignoreDuringBuilds: true,
-  },
+        ignoreDuringBuilds: true,
+      },
       "@typescript-eslint/ban-ts-comment": [
         "error",
         {
