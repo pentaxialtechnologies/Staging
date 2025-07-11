@@ -1,10 +1,10 @@
-import mongoose, { Schema, Model, Document } from 'mongoose';
+import mongoose, { Schema, Model, Document } from "mongoose";
 
 export interface AdminDocument extends Document {
   username: string;
   email: string;
   password: string;
-  role: 'jobseeker' | 'provider' | 'admin' | 'company';
+  role: "jobseeker" | "provider" | "admin" | "company";
 
   createdAt: Date;
   updatedAt: Date;
@@ -30,15 +30,14 @@ const AdminSchema = new Schema<AdminDocument>(
     },
     role: {
       type: String,
-      enum: ['jobseeker', 'provider', 'admin', 'company'],
-      default: 'admin',
+      enum: ["jobseeker", "provider", "admin", "company"],
+      default: "admin",
     },
-     
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // AdminSchema.index({ email: 1 }, { unique: true });
 
 export const Admin: Model<AdminDocument> =
-  mongoose.models.Admin || mongoose.model<AdminDocument>('Admin', AdminSchema);
+  mongoose.models.Admin || mongoose.model<AdminDocument>("Admin", AdminSchema);

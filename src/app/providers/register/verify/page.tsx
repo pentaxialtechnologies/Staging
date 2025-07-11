@@ -1,9 +1,9 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
-import logo from '../../../../../public/email-logo.jpg';
-import toast, { Toaster } from 'react-hot-toast';
+import React, { useEffect, useState } from "react";
+import Image from "next/image";
+import logo from "../../../../../public/email-logo.jpg";
+import toast, { Toaster } from "react-hot-toast";
 
 const Page = () => {
   const [userEmail, setUserEmail] = useState<string | null>(null);
@@ -11,12 +11,12 @@ const Page = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const email = localStorage.getItem('usermail');
-    console.log('email',email);
-    
-    const role = localStorage.getItem('userrole');
+    const email = localStorage.getItem("usermail");
+    console.log("email", email);
+
+    const role = localStorage.getItem("userrole");
     setUserEmail(email);
-    console.log('role',role);
+    console.log("role", role);
 
     setRole(role);
   }, []);
@@ -30,8 +30,8 @@ const Page = () => {
     try {
       setLoading(true);
       const res = await fetch(`/api/auth/resend-verification`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: userEmail, role: Role }),
       });
 
@@ -64,7 +64,7 @@ const Page = () => {
           </p>
 
           <p className="text-blue-600 font-semibold mt-1">
-            {userEmail || 'Loading...'}
+            {userEmail || "Loading..."}
           </p>
 
           <p className="text-gray-500 mt-3 text-sm">
@@ -77,10 +77,10 @@ const Page = () => {
             onClick={ResendMail}
             disabled={loading}
             className={`px-4 py-2 mt-2 rounded-lg text-white ${
-              loading ? 'bg-gray-400' : 'bg-orange-500 hover:bg-orange-600'
+              loading ? "bg-gray-400" : "bg-orange-500 hover:bg-orange-600"
             }`}
           >
-            {loading ? 'Resending...' : 'Resend Email'}
+            {loading ? "Resending..." : "Resend Email"}
           </button>
         </div>
       </div>

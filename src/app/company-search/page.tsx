@@ -1,10 +1,10 @@
-'use client';
-import CompanyHeader from '@/Components/CompanyHeader';
-import { Search } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+"use client";
+import CompanyHeader from "@/Components/CompanyHeader";
+import { Search } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 type CompanyType = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -23,21 +23,21 @@ type CompanyType = {
 
 const CompanyListingPage = () => {
   const [companies, setCompanies] = useState<CompanyType[]>([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
-        const res = await fetch('/api/auth/organization/list');
+        const res = await fetch("/api/auth/organization/list");
         const data = await res.json();
         setCompanies(data.company);
       } catch (error) {
-        console.error('Failed to fetch companies', error);
+        console.error("Failed to fetch companies", error);
       } finally {
         setLoading(false);
       }
@@ -46,47 +46,51 @@ const CompanyListingPage = () => {
   }, []);
 
   const filteredCompanies = companies.filter((c) =>
-    c.company_name?.toLowerCase().includes(searchTerm.toLowerCase())
+    c.company_name?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const paginatedCompanies = filteredCompanies.slice(
     (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+    currentPage * itemsPerPage,
   );
-const fetchAllApprovedStaffGrouped = async()=>{
-  try{
-const res = await fetch(`/api/auth/organization/staff/list`)
-if(res.ok){
-  const data = await res.json();
- return data.organizations;
-  // router.push(`/staffing-services/${name}/${id}`)
-}
-if(!res.ok){
-  throw new Error('fetching failed')
-}
-  }
-  catch(error){
-console.error(error);
-    return [];
-  }
-}
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const [orgWiseStaff,setorgWiseStaff] = useState<any[]>([])
-useEffect(()=>{
-  fetchAllApprovedStaffGrouped().then(setorgWiseStaff)
-},[])
+  const fetchAllApprovedStaffGrouped = async () => {
+    try {
+      const res = await fetch(`/api/auth/organization/staff/list`);
+      if (res.ok) {
+        const data = await res.json();
+        return data.organizations;
+        // router.push(`/staffing-services/${name}/${id}`)
+      }
+      if (!res.ok) {
+        throw new Error("fetching failed");
+      }
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [orgWiseStaff, setorgWiseStaff] = useState<any[]>([]);
+  useEffect(() => {
+    fetchAllApprovedStaffGrouped().then(setorgWiseStaff);
+  }, []);
 
-const totalPages = Math.ceil(filteredCompanies.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredCompanies.length / itemsPerPage);
 
   if (loading) {
     return (
       <>
         <CompanyHeader />
         <main className="max-w-7xl mx-auto px-4 py-8">
-          <h1 className="text-center text-xl font-semibold">Loading companies...</h1>
+          <h1 className="text-center text-xl font-semibold">
+            Loading companies...
+          </h1>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-6">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="animate-pulse bg-gray-100 h-48 rounded-md" />
+              <div
+                key={i}
+                className="animate-pulse bg-gray-100 h-48 rounded-md"
+              />
             ))}
           </div>
         </main>
@@ -102,7 +106,8 @@ const totalPages = Math.ceil(filteredCompanies.length / itemsPerPage);
           Top Companies 2025
         </h1>
         <p className="text-gray-600 dark:text-gray-300 text-center">
-          Explore the leading firms and partners across various service categories.
+          Explore the leading firms and partners across various service
+          categories.
         </p>
 
         {/* Search Box */}
@@ -125,7 +130,10 @@ const totalPages = Math.ceil(filteredCompanies.length / itemsPerPage);
         {/* Company Cards */}
         <div className="mt-10 flex flex-row gap-8 bg-white border border-gray-200 shadow-xl">
           {paginatedCompanies.map((company) => (
-            <div key={company._id} className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-4">
+            <div
+              key={company._id}
+              className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-4"
+            >
               <div className="flex items-center space-x-4">
                 <Image
                   src={company.companylogo}
@@ -136,28 +144,48 @@ const totalPages = Math.ceil(filteredCompanies.length / itemsPerPage);
                   <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
                     {company.company_name}
                   </h2>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">{company.tagline}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    {company.tagline}
+                  </p>
                 </div>
               </div>
-              <p className="mt-6 text-sm text-gray-700 dark:text-gray-200">{company.summary}<Link href={`/companies/${company.company_name.replace(/\s+/g, '-').replace(/[^\w\-]/g, '')}/${company._id}`} className='text-blue-600 hover:text-blue-900'>Read more</Link></p>
+              <p className="mt-6 text-sm text-gray-700 dark:text-gray-200">
+                {company.summary}
+                <Link
+                  href={`/companies/${company.company_name.replace(/\s+/g, "-").replace(/[^\w\-]/g, "")}/${company._id}`}
+                  className="text-blue-600 hover:text-blue-900"
+                >
+                  Read more
+                </Link>
+              </p>
               <div className="mt-6  grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 text-sm text-gray-700 ">
-                <p><strong>Hourly Rate: </strong> {company.hourly_rate}</p>
-                <p><strong>Employees: </strong> {company.employee_count}</p>
-                <p className="col-span-2"><strong>Location: </strong> {company.location.city}, {company.location.state}</p>
-    {orgWiseStaff.length === 0 ? (
-  <p></p>
-) : (
-  orgWiseStaff.map((staff, index) => (
-    <button
-      key={index}
-      onClick={() => router.push(`/staffing-services/${staff.company_name.replace(/\s+/g, '-')}/${staff.orgId}`)}
-      className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-    >
-      Hire Resources
-    </button>
-  ))
-)}
-
+                <p>
+                  <strong>Hourly Rate: </strong> {company.hourly_rate}
+                </p>
+                <p>
+                  <strong>Employees: </strong> {company.employee_count}
+                </p>
+                <p className="col-span-2">
+                  <strong>Location: </strong> {company.location.city},{" "}
+                  {company.location.state}
+                </p>
+                {orgWiseStaff.length === 0 ? (
+                  <p></p>
+                ) : (
+                  orgWiseStaff.map((staff, index) => (
+                    <button
+                      key={index}
+                      onClick={() =>
+                        router.push(
+                          `/staffing-services/${staff.company_name.replace(/\s+/g, "-")}/${staff.orgId}`,
+                        )
+                      }
+                      className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+                    >
+                      Hire Resources
+                    </button>
+                  ))
+                )}
               </div>
             </div>
           ))}
@@ -179,7 +207,9 @@ const totalPages = Math.ceil(filteredCompanies.length / itemsPerPage);
             <button
               onClick={() =>
                 setCurrentPage((prev) =>
-                  prev * itemsPerPage < filteredCompanies.length ? prev + 1 : prev
+                  prev * itemsPerPage < filteredCompanies.length
+                    ? prev + 1
+                    : prev,
                 )
               }
               disabled={currentPage * itemsPerPage >= filteredCompanies.length}
@@ -196,9 +226,11 @@ const totalPages = Math.ceil(filteredCompanies.length / itemsPerPage);
 
 export default CompanyListingPage;
 
-
-        {/* Approved Staff Section */}
-{/* <div className="mt-20">
+{
+  /* Approved Staff Section */
+}
+{
+  /* <div className="mt-20">
   <h1 className="text-3xl font-bold text-center mb-10">Available Bench Staff</h1>
 
   {orgWiseStaff.length === 0 ? (
@@ -223,7 +255,8 @@ export default CompanyListingPage;
               <p className="text-sm text-gray-600">
                 {member.designation || 'Bench Resource'}
               </p>
-              {/* Optional: Add skills, availability, etc. */}
+              {/* Optional: Add skills, availability, etc. */
+}
 //               <button
 //                 className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
 //                 onClick={() => router.push(`/request/${member._id}`)}

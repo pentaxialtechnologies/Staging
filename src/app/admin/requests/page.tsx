@@ -18,7 +18,6 @@ const AdminPendingJobsList = () => {
       } catch (err) {
         toast.error("Failed to fetch job requests");
         console.log(err);
-        
       } finally {
         setLoading(false);
       }
@@ -29,19 +28,25 @@ const AdminPendingJobsList = () => {
 
   if (loading) return <div className="p-4">Loading...</div>;
 
-  if (jobs.length === 0) return <div className="p-4">No pending jobs found.</div>;
+  if (jobs.length === 0)
+    return <div className="p-4">No pending jobs found.</div>;
 
   return (
     <div className="max-w-5xl mx-auto mt-6 p-4 bg-white rounded shadow">
       <h2 className="text-2xl font-bold mb-4">Pending Job Requests</h2>
       <div className="space-y-4">
         {jobs.map((job) => (
-          <div key={job._id} className="border p-4 rounded hover:bg-gray-50 transition">
+          <div
+            key={job._id}
+            className="border p-4 rounded hover:bg-gray-50 transition"
+          >
             <div className="flex justify-between items-center">
               <div>
                 <h3 className="text-lg font-semibold">Title : {job.title}</h3>
                 <p>UserName : {job.postedBy?.firstname}</p>
-                <p className="text-sm text-gray-600">Posted by: {job.postedBy?.email || "Unknown"}</p>
+                <p className="text-sm text-gray-600">
+                  Posted by: {job.postedBy?.email || "Unknown"}
+                </p>
               </div>
               <Link
                 href={`/admin/requests/${job._id}`}

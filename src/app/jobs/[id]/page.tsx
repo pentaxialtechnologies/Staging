@@ -1,6 +1,6 @@
-'use client'
-import { useParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+"use client";
+import { useParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import {
   LucideShare,
   IdCard,
@@ -8,7 +8,7 @@ import {
   Phone,
   User,
   CheckCircle,
-} from 'lucide-react';
+} from "lucide-react";
 
 const Page = () => {
   const params = useParams();
@@ -18,11 +18,11 @@ const Page = () => {
   useEffect(() => {
     const fetchDatas = async () => {
       const res = await fetch(`/api/auth/jobs/${params.id}`, {
-        method: 'GET',
-        headers: { 'content-Type': 'application/json' },
+        method: "GET",
+        headers: { "content-Type": "application/json" },
       });
 
-      if (!res.ok) throw new Error('Failed to fetch Job');
+      if (!res.ok) throw new Error("Failed to fetch Job");
       const job = await res.json();
       setDatas([job]);
     };
@@ -31,15 +31,20 @@ const Page = () => {
 
   const formatDate = (datestring: string) => {
     const date = new Date(datestring);
-    return `${date.getDate().toString().padStart(2, '0')}-${(date.getMonth() + 1)
+    return `${date.getDate().toString().padStart(2, "0")}-${(
+      date.getMonth() + 1
+    )
       .toString()
-      .padStart(2, '0')}-${date.getFullYear()}`;
+      .padStart(2, "0")}-${date.getFullYear()}`;
   };
 
   return (
     <div className="p-4 sm:p-8 bg-gray-50 min-h-screen">
       {datas.map((job, index) => (
-        <div key={index} className="bg-white shadow-lg rounded-xl p-6 space-y-6">
+        <div
+          key={index}
+          className="bg-white shadow-lg rounded-xl p-6 space-y-6"
+        >
           {/* Header */}
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 items-center">
             <div className="sm:col-span-2">
@@ -79,15 +84,36 @@ const Page = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-5">
             {/* Job Info */}
             <div className="flex flex-col gap-2 text-gray-800">
-              <p><strong>Budget:</strong> {job.budget}</p>
-              <p><strong>Contract Duration:</strong> {job.duration}</p>
-              <p><strong>Employment Type:</strong> {job.engagement_type}</p>
-              <p><strong>Experience:</strong> {job.experience.minyears} - {job.experience.maxyears} years</p>
-              <p><strong>Availability:</strong> {job.availability}</p>
-              <p><strong>Timezone:</strong> {job.timezone}</p>
-              <p><strong>Start Date:</strong> {formatDate(job.job_dates.start_date)}</p>
-              <p><strong>Work Mode:</strong> {job.workmode}</p>
-              <p><strong>Work Location:</strong> {job.location.city}, {job.location.state}</p>
+              <p>
+                <strong>Budget:</strong> {job.budget}
+              </p>
+              <p>
+                <strong>Contract Duration:</strong> {job.duration}
+              </p>
+              <p>
+                <strong>Employment Type:</strong> {job.engagement_type}
+              </p>
+              <p>
+                <strong>Experience:</strong> {job.experience.minyears} -{" "}
+                {job.experience.maxyears} years
+              </p>
+              <p>
+                <strong>Availability:</strong> {job.availability}
+              </p>
+              <p>
+                <strong>Timezone:</strong> {job.timezone}
+              </p>
+              <p>
+                <strong>Start Date:</strong>{" "}
+                {formatDate(job.job_dates.start_date)}
+              </p>
+              <p>
+                <strong>Work Mode:</strong> {job.workmode}
+              </p>
+              <p>
+                <strong>Work Location:</strong> {job.location.city},{" "}
+                {job.location.state}
+              </p>
             </div>
 
             {/* Client Info */}
@@ -95,16 +121,20 @@ const Page = () => {
               <h2 className="font-bold text-lg mb-3">About the Client</h2>
               <ul className="space-y-2">
                 <li className="flex items-center gap-2">
-                  <IdCard className="text-[#F27264]" /> Identity verified <CheckCircle size={14} className="text-green-600" />
+                  <IdCard className="text-[#F27264]" /> Identity verified{" "}
+                  <CheckCircle size={14} className="text-green-600" />
                 </li>
                 <li className="flex items-center gap-2">
-                  <Mail className="text-[#F27264]" /> Email verified <CheckCircle size={14} className="text-green-600" />
+                  <Mail className="text-[#F27264]" /> Email verified{" "}
+                  <CheckCircle size={14} className="text-green-600" />
                 </li>
                 <li className="flex items-center gap-2">
-                  <Phone className="text-[#F27264]" /> Phone verified <CheckCircle size={14} className="text-green-600" />
+                  <Phone className="text-[#F27264]" /> Phone verified{" "}
+                  <CheckCircle size={14} className="text-green-600" />
                 </li>
                 <li className="flex items-center gap-2">
-                  <User className="text-[#F27264]" /> Profile completed <CheckCircle size={14} className="text-green-600" />
+                  <User className="text-[#F27264]" /> Profile completed{" "}
+                  <CheckCircle size={14} className="text-green-600" />
                 </li>
               </ul>
               <p className="mt-2">Interviewing: 0</p>
@@ -120,23 +150,25 @@ const Page = () => {
             <ul className="list-disc pl-6 space-y-2">
               {(Array.isArray(job.job_description)
                 ? job.job_description
-                : typeof job.job_description === 'string'
-                ? job.job_description.split(/[\n•\-]+/)
-                : []
+                : typeof job.job_description === "string"
+                  ? job.job_description.split(/[\n•\-]+/)
+                  : []
               ).map((desc: string, i: number) =>
-                desc.trim() ? <li key={i}>{desc.trim()}</li> : null
+                desc.trim() ? <li key={i}>{desc.trim()}</li> : null,
               )}
             </ul>
 
-            <h1 className="font-bold text-xl mt-8 mb-2">Key Responsibilities:</h1>
+            <h1 className="font-bold text-xl mt-8 mb-2">
+              Key Responsibilities:
+            </h1>
             <ul className="list-disc pl-6 space-y-2">
               {(Array.isArray(job.key_responsibilities)
                 ? job.key_responsibilities
-                : typeof job.key_responsibilities === 'string'
-                ? job.key_responsibilities.split(/[\n•\-]+/)
-                : []
+                : typeof job.key_responsibilities === "string"
+                  ? job.key_responsibilities.split(/[\n•\-]+/)
+                  : []
               ).map((item: string, i: number) =>
-                item.trim() ? <li key={i}>{item.trim()}</li> : null
+                item.trim() ? <li key={i}>{item.trim()}</li> : null,
               )}
             </ul>
 
@@ -144,11 +176,11 @@ const Page = () => {
             <ul className="list-disc pl-6 space-y-2">
               {(Array.isArray(job.technical_skills)
                 ? job.technical_skills
-                : typeof job.technical_skills === 'string'
-                ? job.technical_skills.split(/[\n•\-]+/)
-                : []
+                : typeof job.technical_skills === "string"
+                  ? job.technical_skills.split(/[\n•\-]+/)
+                  : []
               ).map((item: string, i: number) =>
-                item.trim() ? <li key={i}>{item.trim()}</li> : null
+                item.trim() ? <li key={i}>{item.trim()}</li> : null,
               )}
             </ul>
           </div>

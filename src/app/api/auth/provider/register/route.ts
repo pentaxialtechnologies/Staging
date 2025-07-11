@@ -15,28 +15,25 @@ export async function POST(req: Request) {
     if (!firstname || !lastname || !email || !password || !role) {
       return NextResponse.json(
         { message: "All fields are required." },
-        { status: 400 }
+        { status: 400 },
       );
     }
-
 
     // Check for existing user
     const existingUser = await Provider.findOne({ email });
     if (existingUser) {
       return NextResponse.json(
         { message: "User already registered." },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
-    
     // Generate email verification token and expiry
     const emailToken = crypto.randomBytes(32).toString("hex");
     const emailTokenExpiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
     // const verifyURL = `http://localhost:3000/verify-email?token=${emailToken}&role=${role}`;
     const verifyURL = `https://s3-staffing-website-smoky.vercel.app/verify-email?token=${emailToken}&role=${role}`;
-
 
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -60,11 +57,11 @@ export async function POST(req: Request) {
       service: "Gmail",
       auth: {
         user: "balamuruganwebdeveloper@gmail.com",
-        pass: "prfp ntni uxla sgly", 
-      
-      },  tls: {
-    rejectUnauthorized: false, // 🚨 ONLY for testing
-  },
+        pass: "prfp ntni uxla sgly",
+      },
+      tls: {
+        rejectUnauthorized: false, // 🚨 ONLY for testing
+      },
     });
 
     const mailOptions = {
@@ -77,7 +74,7 @@ export async function POST(req: Request) {
       //   <a href="${verifyURL}" target="_blank">${verifyURL}</a>
       //   <p><strong>This link will expire in 10 minutes.</strong></p>
       // `,
-      html : `<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f4f4f4; padding: 40px 0;">
+      html: `<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f4f4f4; padding: 40px 0;">
       <tr>
     <td align="center">
       <table width="600" cellpadding="0" cellspacing="0" border="0" style="background-color:#ffffff; border-radius:8px; overflow:hidden; font-family:Arial, sans-serif; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
@@ -122,14 +119,14 @@ export async function POST(req: Request) {
     </td>
   </tr>
 </table>
-`
+`,
     };
 
     await transporter.sendMail(mailOptions);
 
     return NextResponse.json(
       { message: "Provider registered! Please verify your email." },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
     console.error("Registration error:", error);
@@ -138,7 +135,7 @@ export async function POST(req: Request) {
         message: "Internal Server Error",
         error: error instanceof Error ? error.message : String(error),
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

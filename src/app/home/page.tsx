@@ -1,24 +1,24 @@
-'use client'
+"use client";
 
-import React from 'react'
-import { Search } from 'lucide-react'
-import Image, { StaticImageData } from 'next/image'
+import React from "react";
+import { Search } from "lucide-react";
+import Image, { StaticImageData } from "next/image";
 
-import Google from "../../../public/google.png"
-import Airbnb from "../../../public/Airbnb.png"
-import Deloitte from "../../../public/Deloitte.png"
-import Freelancer from "../../../public/Freelancer.png"
-import Samsung from "../../../public/Samsung.png"
-import PayPal from "../../../public/PayPal.png"
-import Microsoft from "../../../public/microsoft.png"
-import IBM from "../../../public/ibm.png"
-import airbus from "../../../public/airbus.png"
-import Bridgestone from "../../../public/Bridgestone.png"
-import Pepsi from "../../../public/pepsi.png"
-import PG from "../../../public/p&g.png"
-import coco from "../../../public/coca-cola.png"
-import Unilever from "../../../public/Unilever.png"
-import NASA from "../../../public/NASA.png"
+import Google from "../../../public/google.png";
+import Airbnb from "../../../public/Airbnb.png";
+import Deloitte from "../../../public/Deloitte.png";
+import Freelancer from "../../../public/Freelancer.png";
+import Samsung from "../../../public/Samsung.png";
+import PayPal from "../../../public/PayPal.png";
+import Microsoft from "../../../public/microsoft.png";
+import IBM from "../../../public/ibm.png";
+import airbus from "../../../public/airbus.png";
+import Bridgestone from "../../../public/Bridgestone.png";
+import Pepsi from "../../../public/pepsi.png";
+import PG from "../../../public/p&g.png";
+import coco from "../../../public/coca-cola.png";
+import Unilever from "../../../public/Unilever.png";
+import NASA from "../../../public/NASA.png";
 import {
   SiReact,
   SiNodedotjs,
@@ -42,25 +42,33 @@ import {
 } from "react-icons/fa";
 
 export const Homepage = () => {
-  type Providers = { img: StaticImageData }
-  type Company = { title: string; desc: string }
+  type Providers = { img: StaticImageData };
+  type Company = { title: string; desc: string };
 
   const ProviderItems: Providers[] = [
-    { img: Google }, { img: Airbnb }, { img: Deloitte },
-    { img: Freelancer }, { img: Samsung }, { img: PayPal },
-    { img: Microsoft }, { img: IBM },
-    { img: airbus }, { img: Bridgestone },
-    { img: Pepsi }, { img: PG },
-    { img: coco }, { img: Unilever },
+    { img: Google },
+    { img: Airbnb },
+    { img: Deloitte },
+    { img: Freelancer },
+    { img: Samsung },
+    { img: PayPal },
+    { img: Microsoft },
+    { img: IBM },
+    { img: airbus },
+    { img: Bridgestone },
+    { img: Pepsi },
+    { img: PG },
+    { img: coco },
+    { img: Unilever },
     { img: NASA },
-  ]
+  ];
 
   const CompanyItems: Company[] = [
-    { title: '50000+', desc: 'Verified Agencies' },
-    { title: '88+', desc: 'Countries Covered' },
-    { title: '3000+', desc: 'In-demand Skills' },
-    { title: '90+', desc: 'Service Categories' },
-  ]
+    { title: "50000+", desc: "Verified Agencies" },
+    { title: "88+", desc: "Countries Covered" },
+    { title: "3000+", desc: "In-demand Skills" },
+    { title: "90+", desc: "Service Categories" },
+  ];
 
   const technologies = [
     { name: "Full Stack Development", icon: <SiJavascript size={30} /> },
@@ -80,33 +88,39 @@ export const Homepage = () => {
   const services = [
     {
       title: "Enterprise Solutions",
-      description: "Robust digital transformation services tailored for large-scale enterprises.",
-      icon: <FaBuilding size={30} className="text-blue-600" />
+      description:
+        "Robust digital transformation services tailored for large-scale enterprises.",
+      icon: <FaBuilding size={30} className="text-blue-600" />,
     },
     {
       title: "Global Capability Centers (GCC)",
-      description: "Set up and scale world-class GCCs for innovation, operations, and efficiency.",
-      icon: <FaGlobe size={30} className="text-green-600" />
+      description:
+        "Set up and scale world-class GCCs for innovation, operations, and efficiency.",
+      icon: <FaGlobe size={30} className="text-green-600" />,
     },
     {
       title: "Employer of Record (EOR)",
-      description: "Hire globally without legal barriers — we handle compliance and payroll.",
-      icon: <FaUserTie size={30} className="text-purple-600" />
+      description:
+        "Hire globally without legal barriers — we handle compliance and payroll.",
+      icon: <FaUserTie size={30} className="text-purple-600" />,
     },
     {
       title: "Remote Talent Hiring",
-      description: "Access a global pool of top-tier remote professionals across domains.",
-      icon: <FaUsersCog size={30} className="text-indigo-600" />
+      description:
+        "Access a global pool of top-tier remote professionals across domains.",
+      icon: <FaUsersCog size={30} className="text-indigo-600" />,
     },
     {
       title: "Contract Staffing Solutions",
-      description: "Flexible staffing for project-specific or short-term resource needs.",
-      icon: <FaHandshake size={30} className="text-yellow-600" />
+      description:
+        "Flexible staffing for project-specific or short-term resource needs.",
+      icon: <FaHandshake size={30} className="text-yellow-600" />,
     },
     {
       title: "Onsite Staffing",
-      description: "Deploy skilled talent onsite for seamless integration with your teams.",
-      icon: <FaMapMarkerAlt size={30} className="text-red-600" />
+      description:
+        "Deploy skilled talent onsite for seamless integration with your teams.",
+      icon: <FaMapMarkerAlt size={30} className="text-red-600" />,
     },
   ];
 
@@ -118,7 +132,8 @@ export const Homepage = () => {
           Hire Talent on Contract
         </h1>
         <p className="text-sm sm:text-lg md:text-xl leading-relaxed text-gray-700 max-w-2xl">
-          Your single point of access to 500,000+ Talents from 50,000+ top vetted agencies around the globe
+          Your single point of access to 500,000+ Talents from 50,000+ top
+          vetted agencies around the globe
         </p>
 
         {/* Search Bar */}
@@ -135,7 +150,9 @@ export const Homepage = () => {
 
         {/* OR & Post Job */}
         <div className="mt-4">
-          <div className="w-10 h-10 mx-auto flex items-center justify-center border border-orange-600 rounded-full text-orange-600 font-semibold">OR</div>
+          <div className="w-10 h-10 mx-auto flex items-center justify-center border border-orange-600 rounded-full text-orange-600 font-semibold">
+            OR
+          </div>
           <button className="bg-orange-600 text-white text-lg sm:text-2xl px-6 py-2 mt-3 rounded-lg hover:bg-orange-700 transition duration-200">
             Post Contract Job (FREE)
           </button>
@@ -145,7 +162,9 @@ export const Homepage = () => {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mt-8 w-full max-w-xl">
           {CompanyItems.map((item, index) => (
             <div key={index} className="text-center">
-              <h3 className="text-orange-500 font-bold text-lg sm:text-2xl">{item.title}</h3>
+              <h3 className="text-orange-500 font-bold text-lg sm:text-2xl">
+                {item.title}
+              </h3>
               <p className="text-sm sm:text-base text-gray-600">{item.desc}</p>
             </div>
           ))}
@@ -179,7 +198,8 @@ export const Homepage = () => {
               Tap Into the Best Tech Talent
             </h2>
             <p className="text-gray-500 mb-6">
-              Our team handles custom solutions of all sizes — from large-scale technology projects to simple website designs.
+              Our team handles custom solutions of all sizes — from large-scale
+              technology projects to simple website designs.
             </p>
             <p className="text-sm text-gray-400 uppercase tracking-wider mb-10">
               - Select a Technology to Learn More -
@@ -225,7 +245,7 @@ export const Homepage = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Homepage
+export default Homepage;

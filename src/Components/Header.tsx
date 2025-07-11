@@ -19,96 +19,90 @@ type MenuItem = {
   subItems: SubMenu[];
 };
 
-type ApiSubcategory ={
-  _id:string
-  title:string
-  href: string
-  onClick: ()=> void
-}
+type ApiSubcategory = {
+  _id: string;
+  title: string;
+  href: string;
+  onClick: () => void;
+};
 
-type ApiCategory={
-  _id:string
-  title:string
-  subcategory:ApiSubcategory[]
-}
-
+type ApiCategory = {
+  _id: string;
+  title: string;
+  subcategory: ApiSubcategory[];
+};
 
 // type ServiceCategory ={
 // category:string
 // subcategory:string
 // }
 
-
-
 const publicMenuItems: MenuItem[] = [
   {
     title: "For Provider",
     href: "/",
-     subItems: [
- {
-    title: "View All Contract Jobs",
-    href: "/jobs",
-  },
-  {
-    title: "Pricing & Plans",
-    href: "/all-plans",
-  },
-  {
-    title: "Help & Support",
-    href: "/contact_us",
-  },
-   {
-    title: "Sign Up",
-    href: "/providers/register",
-  },
-   {
-    title: "Log In",
-    href: "/users/login",
-  },
-
+    subItems: [
+      {
+        title: "View All Contract Jobs",
+        href: "/jobs",
+      },
+      {
+        title: "Pricing & Plans",
+        href: "/all-plans",
+      },
+      {
+        title: "Help & Support",
+        href: "/contact_us",
+      },
+      {
+        title: "Sign Up",
+        href: "/providers/register",
+      },
+      {
+        title: "Log In",
+        href: "/users/login",
+      },
     ],
   },
-    {
+  {
     title: "For Employer",
     href: "/provider/dashboard",
-     subItems: [
- {
-    title: "View All Contract Jobs",
-    href: "/applications",
-  },
-  {
-    title: "Pricing & Plans",
-    href: "/applications",
-  },
-  {
-    title: "Help & Support",
-    href: "/applications",
-  },
-   {
-    title: "SignUp",
-    href: "/employers/register",
-  },
-  {
-    title: "Login",
-    href: "/users/login",
-  },
-  //  {
-  //   title: "Dashboard",
-  //   href: "/applications",
-  // },
-  //  {
-  //   title: "Logout",
-  //   onClick: () => signOut({ callbackUrl: "/" })
-  // },
-
+    subItems: [
+      {
+        title: "View All Contract Jobs",
+        href: "/applications",
+      },
+      {
+        title: "Pricing & Plans",
+        href: "/applications",
+      },
+      {
+        title: "Help & Support",
+        href: "/applications",
+      },
+      {
+        title: "SignUp",
+        href: "/employers/register",
+      },
+      {
+        title: "Login",
+        href: "/users/login",
+      },
+      //  {
+      //   title: "Dashboard",
+      //   href: "/applications",
+      // },
+      //  {
+      //   title: "Logout",
+      //   onClick: () => signOut({ callbackUrl: "/" })
+      // },
     ],
   },
-   {
+  {
     title: "Browse 946+Jobs",
     href: "/jobs",
-    subItems: []
-    }
-  
+    subItems: [],
+  },
 ];
 
 const providerMenuItems: MenuItem[] = [
@@ -134,7 +128,7 @@ const providerMenuItems: MenuItem[] = [
       { title: "Logout", onClick: () => signOut({ callbackUrl: "/" }) },
     ],
   },
-   {
+  {
     title: "Dashboard",
     href: "/dashboard",
     subItems: [
@@ -176,42 +170,39 @@ const jobseekerMenuItems: MenuItem[] = [
   },
 ];
 
-
-const CompanyMenuItems :MenuItem[]= [
+const CompanyMenuItems: MenuItem[] = [
   {
     title: "For Provider",
     href: "/jobs",
     subItems: [
- {
-    title: "View All Contract Jobs",
-    href: "/jobs",
-  },
-  {
-    title: "Pricing & Plans",
-    href: "/all-plans",
-  },
-  {
-    title: "Help & Support",
-    href: "/contact_us",
-  },
-   {
-    title: "Dashboard",
-    href: "/provider/dashboard",
-  },
-   {
-    title: "Logout",
-    onClick: () => signOut({ callbackUrl: "/" })
-  },
-
+      {
+        title: "View All Contract Jobs",
+        href: "/jobs",
+      },
+      {
+        title: "Pricing & Plans",
+        href: "/all-plans",
+      },
+      {
+        title: "Help & Support",
+        href: "/contact_us",
+      },
+      {
+        title: "Dashboard",
+        href: "/provider/dashboard",
+      },
+      {
+        title: "Logout",
+        onClick: () => signOut({ callbackUrl: "/" }),
+      },
     ],
   },
-  { 
+  {
     title: "Dashboard",
     href: "/provider/dashboard",
-    subItems: []
-  }
-
-]
+    subItems: [],
+  },
+];
 
 // const CompanyMenuItem :MenuItem[]= [
 //   {
@@ -267,7 +258,7 @@ const Header = () => {
     case "admin":
       menuToRender = adminMenuItems;
       break;
-      case "provider":
+    case "provider":
       menuToRender = CompanyMenuItems;
       break;
     default:
@@ -275,53 +266,50 @@ const Header = () => {
       break;
   }
 
-
-
   const [, setMenuItems] = useState<MenuItem[]>([]);
 
-useEffect(()=>{
-const fetchDatas = async()=>{
-  try{
-  const res = await fetch('/api/auth/categories/get')
-  const data = await res.json()
-  const dynamicMenuItems :MenuItem[] = data.category.map((cat:ApiCategory)=> ({
-  title: cat.title,
-  href:'',
-  subCategories: cat.subcategory.map((sub:ApiSubcategory)=> ({
-    title:sub.title,
-    href:`/category/${cat._id}/subcategory/${sub._id}`,
-
-  }))
- }))
-    const staticMenu: MenuItem[] = [
+  useEffect(() => {
+    const fetchDatas = async () => {
+      try {
+        const res = await fetch("/api/auth/categories/get");
+        const data = await res.json();
+        const dynamicMenuItems: MenuItem[] = data.category.map(
+          (cat: ApiCategory) => ({
+            title: cat.title,
+            href: "",
+            subCategories: cat.subcategory.map((sub: ApiSubcategory) => ({
+              title: sub.title,
+              href: `/category/${cat._id}/subcategory/${sub._id}`,
+            })),
+          }),
+        );
+        const staticMenu: MenuItem[] = [
           {
-            title: 'Provider Dashboard',
-            href: '/provider/dashboard',
+            title: "Provider Dashboard",
+            href: "/provider/dashboard",
             subItems: [],
           },
           {
-            title: 'Provider Jobs',
-            href: '/provider/jobs',
+            title: "Provider Jobs",
+            href: "/provider/jobs",
             subItems: [
-              { title: 'Post Job', href: '/provider/jobs' },
-              { title: 'Manage Jobs', href: '/provider/job-list' },
+              { title: "Post Job", href: "/provider/jobs" },
+              { title: "Manage Jobs", href: "/provider/job-list" },
             ],
           },
           {
-            title: 'Account',
-            href: '/provider/account',
+            title: "Account",
+            href: "/provider/account",
             subItems: [
-              { title: 'Profile', href: '/provider/account/profile' },
-              { title: 'Settings', href: '/provider/account/settings' },
+              { title: "Profile", href: "/provider/account/profile" },
+              { title: "Settings", href: "/provider/account/settings" },
             ],
           },
         ];
 
         setMenuItems([...staticMenu, ...dynamicMenuItems]);
-
-      }
-      catch (err) {
-        console.error('Failed to fetch menu:', err);
+      } catch (err) {
+        console.error("Failed to fetch menu:", err);
       }
     };
     fetchDatas();
@@ -354,7 +342,7 @@ const fetchDatas = async()=>{
 
                 {menu.subItems.length > 0 && (
                   <ul className="absolute left-0 top-full mt-2 w-56 bg-white border rounded-lg shadow-lg opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200 z-50">
-                    {menu.subItems.map((item, subIndex) => (
+                    {menu.subItems.map((item, subIndex) =>
                       item.onClick ? (
                         <li key={subIndex}>
                           <button
@@ -371,8 +359,8 @@ const fetchDatas = async()=>{
                         >
                           <Link href={item.href!}>{item.title}</Link>
                         </li>
-                      )
-                    ))}
+                      ),
+                    )}
                   </ul>
                 )}
               </li>
@@ -405,7 +393,7 @@ const fetchDatas = async()=>{
                 </button>
                 {openSubmenuIndex === index && (
                   <ul className="pl-4 mt-2 space-y-2">
-                    {menu.subItems.map((item, subIndex) => (
+                    {menu.subItems.map((item, subIndex) =>
                       item.onClick ? (
                         <li key={subIndex}>
                           <button
@@ -419,8 +407,8 @@ const fetchDatas = async()=>{
                         <li key={subIndex}>
                           <Link href={item.href!}>{item.title}</Link>
                         </li>
-                      )
-                    ))}
+                      ),
+                    )}
                   </ul>
                 )}
               </div>

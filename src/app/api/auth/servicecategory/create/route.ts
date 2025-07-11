@@ -8,13 +8,19 @@ export async function POST(req: Request) {
 
     const body = await req.json();
 
-    const category = new ServiceCategory(body); 
+    const category = new ServiceCategory(body);
 
-    await category.save(); 
+    await category.save();
 
-    return NextResponse.json({ message: "Category Created", category }, { status: 200 });
-  } // eslint-disable-next-line @typescript-eslint/no-explicit-any 
-  catch (error: any) {
-    return NextResponse.json({ message: "Internal Server Error", error: error.message }, { status: 500 });
+    return NextResponse.json(
+      { message: "Category Created", category },
+      { status: 200 },
+    );
+  } catch (error: any) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return NextResponse.json(
+      { message: "Internal Server Error", error: error.message },
+      { status: 500 },
+    );
   }
 }

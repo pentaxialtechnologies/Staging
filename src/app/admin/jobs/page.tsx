@@ -25,7 +25,7 @@ interface Job {
 const AdminJobsPage = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
-const route = useRouter()
+  const route = useRouter();
   useEffect(() => {
     async function fetchJobs() {
       try {
@@ -43,7 +43,10 @@ const route = useRouter()
     fetchJobs();
   }, []);
 
-  const handleStatusChange = async (jobId: string, newStatus: Job["status"]) => {
+  const handleStatusChange = async (
+    jobId: string,
+    newStatus: Job["status"],
+  ) => {
     try {
       const res = await fetch(`/api/auth/jobs/${jobId}/status`, {
         method: "PUT",
@@ -56,8 +59,8 @@ const route = useRouter()
       if (res.ok) {
         setJobs((prevJobs) =>
           prevJobs.map((job) =>
-            job._id === jobId ? { ...job, status: newStatus } : job
-          )
+            job._id === jobId ? { ...job, status: newStatus } : job,
+          ),
         );
       } else {
         console.error("Failed to update status");
@@ -71,7 +74,9 @@ const route = useRouter()
 
   return (
     <div className="p-4">
-      <h1 className="text-3xl font-bold mb-6 text-center text-blue-800">Job Listings</h1>
+      <h1 className="text-3xl font-bold mb-6 text-center text-blue-800">
+        Job Listings
+      </h1>
 
       {jobs.length === 0 ? (
         <div className="text-center text-gray-500">No jobs found.</div>
@@ -82,13 +87,17 @@ const route = useRouter()
               key={job._id}
               className="bg-white shadow-md rounded-xl border border-gray-200 p-5 hover:shadow-lg transition-all duration-300"
             >
-              <h2 className="text-xl font-semibold text-blue-700 mb-2">{job.title}</h2>
+              <h2 className="text-xl font-semibold text-blue-700 mb-2">
+                {job.title}
+              </h2>
 
               <div className="mb-2 text-sm">
-                <span className="font-medium text-gray-700">Duration:</span> {job.duration}
+                <span className="font-medium text-gray-700">Duration:</span>{" "}
+                {job.duration}
               </div>
               <div className="mb-2 text-sm">
-                <span className="font-medium text-gray-700">Availability:</span> {job.availability}
+                <span className="font-medium text-gray-700">Availability:</span>{" "}
+                {job.availability}
               </div>
               <div className="mb-2 text-sm">
                 <span className="font-medium text-gray-700">Experience:</span>{" "}
@@ -96,7 +105,8 @@ const route = useRouter()
               </div>
               <div className="mb-2 text-sm">
                 <span className="font-medium text-gray-700">Location:</span>{" "}
-                {job.location.city}, {job.location.state}, {job.location.country}
+                {job.location.city}, {job.location.state},{" "}
+                {job.location.country}
               </div>
 
               <div className="mb-2 text-sm">
@@ -104,7 +114,9 @@ const route = useRouter()
                 <select
                   className="ml-2 border p-1 rounded"
                   value={job.status}
-                  onChange={(e) => handleStatusChange(job._id, e.target.value as Job["status"])}
+                  onChange={(e) =>
+                    handleStatusChange(job._id, e.target.value as Job["status"])
+                  }
                 >
                   <option value="pending">Pending</option>
                   <option value="approved">Approved</option>
@@ -129,12 +141,14 @@ const route = useRouter()
               <div className="text-xs text-gray-400 mt-2">
                 Posted on: {new Date(job.createdAt).toLocaleDateString()}
               </div>
-              <button onClick={()=>route.push(`/admin/requests/${job._id}`)}    className="bg-green-400 mt-5 p-2 rounded-full">View More Details</button>
-
+              <button
+                onClick={() => route.push(`/admin/requests/${job._id}`)}
+                className="bg-green-400 mt-5 p-2 rounded-full"
+              >
+                View More Details
+              </button>
             </div>
-            
           ))}
-          
         </div>
       )}
     </div>

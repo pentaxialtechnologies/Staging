@@ -7,7 +7,10 @@ export async function POST(req: Request) {
   const { token, role } = await req.json();
 
   if (!token || !role) {
-    return NextResponse.json({ message: "Token and role are required" }, { status: 400 });
+    return NextResponse.json(
+      { message: "Token and role are required" },
+      { status: 400 },
+    );
   }
 
   try {
@@ -23,18 +26,24 @@ export async function POST(req: Request) {
     }
 
     if (!user) {
-      return NextResponse.json({ message: "Invalid or expired token" }, { status: 400 });
+      return NextResponse.json(
+        { message: "Invalid or expired token" },
+        { status: 400 },
+      );
     }
 
     if (user.emailVerified) {
       return NextResponse.json(
         { message: "Email already verified", id: user._id, email: user.email },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
     if (user.emailTokenExpiresAt && user.emailTokenExpiresAt < new Date()) {
-      return NextResponse.json({ message: "Verification link expired" }, { status: 400 });
+      return NextResponse.json(
+        { message: "Verification link expired" },
+        { status: 400 },
+      );
     }
 
     // ✅ Mark as verified
@@ -53,6 +62,3 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: "Server error" }, { status: 500 });
   }
 }
-
-
-

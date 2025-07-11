@@ -14,13 +14,13 @@ export async function POST(req: Request) {
 
     return NextResponse.json(
       { message: "Registered Staff", staff },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
     console.error("Staff registration error:", error);
     return NextResponse.json(
       { message: "Server Error", error: (error as Error).message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

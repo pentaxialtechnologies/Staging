@@ -1,75 +1,71 @@
-'use client'
-import { useParams } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
+"use client";
+import { useParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
 
 interface Staff {
-    OrgId:string
-    primarySkills:string[]
-    skills:string[]
-    designation:string
-    numberBenchStaff:string
-    averageExperience:string    
-    rate:string
-    rateType:string
-    availability:string
-    inDirectMessage:boolean
-    engagementType:string
-    workFrom:string
-    availableAtClientLocation:string
+  OrgId: string;
+  primarySkills: string[];
+  skills: string[];
+  designation: string;
+  numberBenchStaff: string;
+  averageExperience: string;
+  rate: string;
+  rateType: string;
+  availability: string;
+  inDirectMessage: boolean;
+  engagementType: string;
+  workFrom: string;
+  availableAtClientLocation: string;
 }
 
-
-
 const Page = () => {
+  const [, setStaffData] = useState<Staff[]>([]);
+  const params = useParams();
+  const id = params.id;
 
-const [,setStaffData] = useState<Staff[]>([])
-const params = useParams()
-const id = params.id
+  // const handleUpdateStaff = async () => {
+  //   try {
+  //     const res = await fetch(`/api/auth/organization/staff/update/${id}`, {
+  //       method: 'PUT',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({
+  //         ...companyData,
+  //         new: true,
+  //       }),
+  //     });
 
+  //     if (res.ok) {
+  //       const data = await res.json();
+  //       alert('Staff updated successfully!');
+  //       console.log('Updated Staff:', data);
+  //     } else {
+  //       alert('Failed to update staff');
+  //       console.error('Server error:', await res.text());
+  //     }
+  //   } catch (error) {
+  //     console.error('Error updating staff:', error);
+  //     alert('Something went wrong');
+  //   }
+  // };
 
-// const handleUpdateStaff = async () => {
-//   try {
-//     const res = await fetch(`/api/auth/organization/staff/update/${id}`, {
-//       method: 'PUT',
-//       headers: {
-//         'Content-Type': 'application/json',
-//       },
-//       body: JSON.stringify({
-//         ...companyData,
-//         new: true, 
-//       }),
-//     });
-
-//     if (res.ok) {
-//       const data = await res.json();
-//       alert('Staff updated successfully!');
-//       console.log('Updated Staff:', data);
-//     } else {
-//       alert('Failed to update staff');
-//       console.error('Server error:', await res.text());
-//     }
-//   } catch (error) {
-//     console.error('Error updating staff:', error);
-//     alert('Something went wrong');
-//   }
-// };
-
-        useEffect(()=>{
-        const fetchData = async()=>{
-            const res = await fetch(`/api/auth/organization/staff/update/${id}`)
-            if(res.ok){
-                const data = await res.json();
-                console.log(data,'data');
-                setStaffData(data)
-            }
-        }
-        fetchData();
-        },[id])
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await fetch(`/api/auth/organization/staff/update/${id}`);
+      if (res.ok) {
+        const data = await res.json();
+        console.log(data, "data");
+        setStaffData(data);
+      }
+    };
+    fetchData();
+  }, [id]);
 
   return (
-    <div className='p-4 sm:p-6 max-w-4xl mx-auto'>
+    <div className="p-4 sm:p-6 max-w-4xl mx-auto">
       <h1>Hello</h1>
-        {/* <div className='bg-white shadow-md rounded-lg p-4'>
+      {/* <div className='bg-white shadow-md rounded-lg p-4'>
         <div className='flex flex-row justify-between'> 
         <h1 className='text-xl sm:text-2xl font-bold '>Listing - Add Staff details</h1>
         <button className='border border-orange-500 px-4 py-2 rounded-full p-2'>Back</button>
@@ -178,7 +174,7 @@ const id = params.id
 </div>
         </div> */}
     </div>
-  )
-}
+  );
+};
 
-export default Page
+export default Page;

@@ -1,4 +1,4 @@
-import  { Document, Schema, model, models } from 'mongoose';
+import { Document, Schema, model, models } from "mongoose";
 
 interface ISubCategory {
   id: string;
@@ -16,7 +16,7 @@ const SubCategorySchema = new Schema<ISubCategory>(
     id: { type: String, required: true },
     name: { type: String, required: true },
   },
-  { _id: false } // Do not auto-generate _id for subcategory items
+  { _id: false }, // Do not auto-generate _id for subcategory items
 );
 
 const CategorySchema = new Schema<ICategory>({
@@ -26,6 +26,6 @@ const CategorySchema = new Schema<ICategory>({
 });
 
 const ServiceCategory =
-  models.ServiceCategory || model<ICategory>('ServiceCategory', CategorySchema);
+  models.ServiceCategory || model<ICategory>("ServiceCategory", CategorySchema);
 
 export default ServiceCategory;

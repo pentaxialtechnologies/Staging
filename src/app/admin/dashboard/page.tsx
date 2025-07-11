@@ -1,9 +1,9 @@
-'use client';
-import { useEffect, useState } from 'react';
-import { Briefcase, Users, Building2, FileText } from 'lucide-react';
+"use client";
+import { useEffect, useState } from "react";
+import { Briefcase, Users, Building2, FileText } from "lucide-react";
 
 export default function AdminDashboardPage() {
-    const [summary, setSummary] = useState({
+  const [summary, setSummary] = useState({
     jobSeekers: 0,
     jobPosts: 0,
     Providers: 0,
@@ -11,7 +11,7 @@ export default function AdminDashboardPage() {
   });
 
   useEffect(() => {
-    fetch('/api/auth/admin/summary')
+    fetch("/api/auth/admin/summary")
       .then((res) => res.json())
       .then((data) => setSummary(data));
   }, []);
@@ -21,10 +21,30 @@ export default function AdminDashboardPage() {
       <h1 className="text-2xl font-bold">Welcome, Admin</h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <Card title="Total Jobs" icon={Briefcase} count={summary.jobPosts} color="bg-blue-100" />
-        <Card title="Job Seekers" icon={Users} count={summary.jobSeekers} color="bg-green-100" />
-        <Card title="Providers" icon={Building2} count={summary.Providers} color="bg-yellow-100" />
-        <Card title="Applications" icon={FileText} count={summary.applications} color="bg-purple-100" />
+        <Card
+          title="Total Jobs"
+          icon={Briefcase}
+          count={summary.jobPosts}
+          color="bg-blue-100"
+        />
+        <Card
+          title="Job Seekers"
+          icon={Users}
+          count={summary.jobSeekers}
+          color="bg-green-100"
+        />
+        <Card
+          title="Providers"
+          icon={Building2}
+          count={summary.Providers}
+          color="bg-yellow-100"
+        />
+        <Card
+          title="Applications"
+          icon={FileText}
+          count={summary.applications}
+          color="bg-purple-100"
+        />
       </div>
     </div>
   );
@@ -40,7 +60,9 @@ type CardProps = {
 
 function Card({ title, icon: Icon, count, color }: CardProps) {
   return (
-    <div className={`p-4 ${color} rounded-xl shadow flex items-center space-x-4`}>
+    <div
+      className={`p-4 ${color} rounded-xl shadow flex items-center space-x-4`}
+    >
       <div className="bg-white p-2 rounded-full shadow">
         <Icon className="h-6 w-6 text-gray-700" />
       </div>

@@ -1,5 +1,5 @@
-'use client';
-import { useEffect, useState } from 'react';
+"use client";
+import { useEffect, useState } from "react";
 
 interface StaffsType {
   isApproved: boolean;
@@ -29,16 +29,16 @@ const Page = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch('/api/auth/admin/staff');
+        const res = await fetch("/api/auth/admin/staff");
         const data = await res.json();
-        console.log(data, 'Fetched staff data');
+        console.log(data, "Fetched staff data");
         if (Array.isArray(data.staff)) {
           setStaffData(data.staff);
         } else {
           console.error('Expected "staff" to be an array in API response');
         }
       } catch (error) {
-        console.error('Error fetching staff data:', error);
+        console.error("Error fetching staff data:", error);
       } finally {
         setLoading(false);
       }
@@ -49,24 +49,24 @@ const Page = () => {
   const handleStatusChange = async (id: string, isApproved: boolean) => {
     try {
       const res = await fetch(`/api/auth/admin/staff/${id}`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ isApproved }),
       });
       if (res.ok) {
         setStaffData((prevData) =>
           prevData.map((staff) =>
-            staff._id === id ? { ...staff, isApproved } : staff
-          )
+            staff._id === id ? { ...staff, isApproved } : staff,
+          ),
         );
-        alert(`Status updated to ${isApproved ? 'Approved' : 'Rejected'}`);
+        alert(`Status updated to ${isApproved ? "Approved" : "Rejected"}`);
       } else {
-        alert('Failed to update status');
+        alert("Failed to update status");
       }
     } catch (error) {
-      console.error('Error updating status:', error);
+      console.error("Error updating status:", error);
     }
   };
 
@@ -87,11 +87,11 @@ const Page = () => {
                 <h1 className="text-xl font-bold">
                   Company Name:
                   <span className="text-gray-800 ml-2">
-                   {staff.OrgId?.company_name || 'N/A'}
+                    {staff.OrgId?.company_name || "N/A"}
                   </span>
                 </h1>
                 <p className="font-semibold">
-                  Primary Skill:{' '}
+                  Primary Skill:{" "}
                   <span className="font-medium text-sm">
                     {staff.primarySkills}
                   </span>
@@ -112,45 +112,45 @@ const Page = () => {
                   {staff.rateType})
                 </p>
                 <p>
-                  <span className="font-semibold">Experience:</span>{' '}
+                  <span className="font-semibold">Experience:</span>{" "}
                   {staff.averageExperience} yrs
                 </p>
                 <p>
-                  <span className="font-semibold">Primary Skills:</span>{' '}
-                  {staff.primaryskills?.join(', ') || '-'}
+                  <span className="font-semibold">Primary Skills:</span>{" "}
+                  {staff.primaryskills?.join(", ") || "-"}
                 </p>
                 <p>
-                  <span className="font-semibold">Work From:</span>{' '}
+                  <span className="font-semibold">Work From:</span>{" "}
                   {staff.workFrom}
                 </p>
               </div>
               <div>
                 <p>
-                  <span className="font-semibold">Engagement Type:</span>{' '}
+                  <span className="font-semibold">Engagement Type:</span>{" "}
                   {staff.engagementType}
                 </p>
                 <p>
-                  <span className="font-semibold">Client Location:</span>{' '}
+                  <span className="font-semibold">Client Location:</span>{" "}
                   {staff.availableAtClientLocation}
                 </p>
                 <p>
-                  <span className="font-semibold">Availability:</span>{' '}
+                  <span className="font-semibold">Availability:</span>{" "}
                   {staff.availability}
                 </p>
                 <p>
-                  <span className="font-semibold">Updated At:</span>{' '}
+                  <span className="font-semibold">Updated At:</span>{" "}
                   {new Date(staff.updatedAt).toLocaleDateString()}
                 </p>
                 <p className="font-semibold">
-                  Status:{' '}
+                  Status:{" "}
                   <span
                     className={`ml-1 px-2 py-1 rounded-full text-xs ${
                       staff.isApproved
-                        ? 'bg-green-100 text-green-700'
-                        : 'bg-yellow-100 text-yellow-700'
+                        ? "bg-green-100 text-green-700"
+                        : "bg-yellow-100 text-yellow-700"
                     }`}
                   >
-                    {staff.isApproved ? 'Approved' : 'Pending'}
+                    {staff.isApproved ? "Approved" : "Pending"}
                   </span>
                 </p>
               </div>

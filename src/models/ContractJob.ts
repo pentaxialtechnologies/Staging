@@ -61,7 +61,7 @@ const JobSchema = new Schema<ContractJob>(
     workmode: { type: String, required: true },
     engagement_type: { type: String, required: true },
     payment_schedule: { type: String, required: true },
-    payment_mode: { type: String},
+    payment_mode: { type: String },
     currency_type: { type: String, required: true },
     job_description: { type: String, required: true },
     key_responsibilities: { type: [String], required: true },
@@ -96,7 +96,7 @@ const JobSchema = new Schema<ContractJob>(
       default: "pending",
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // ✅ Text Index
@@ -138,8 +138,8 @@ JobSchema.pre("save", function (next) {
       keywordSources
         .filter(Boolean)
         .flatMap((kw) => kw.split(/[ ,;]+/))
-        .map((kw) => kw.toLowerCase().trim())
-    )
+        .map((kw) => kw.toLowerCase().trim()),
+    ),
   );
 
   next();

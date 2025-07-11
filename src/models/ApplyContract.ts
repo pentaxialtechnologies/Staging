@@ -1,11 +1,10 @@
-import mongoose,{Model,Document} from "mongoose";
+import mongoose, { Model, Document } from "mongoose";
 
-
-interface ApplyContractJobs extends Document{
-    jobId:mongoose.Types.ObjectId,
-    seekerId:mongoose.Types.ObjectId,
-    coverletter:string,
-    appliedAt:Date
+interface ApplyContractJobs extends Document {
+  jobId: mongoose.Types.ObjectId;
+  seekerId: mongoose.Types.ObjectId;
+  coverletter: string;
+  appliedAt: Date;
 }
 const ApplyContractJobSchema = new mongoose.Schema({
   jobId: {
@@ -22,5 +21,6 @@ const ApplyContractJobSchema = new mongoose.Schema({
   appliedAt: { type: Date, default: Date.now },
 });
 
-
-export const ApplyContractJob :Model<ApplyContractJobs> = mongoose.models.ApplyContractJob || mongoose.model<ApplyContractJobs>('ApplyContractjob',ApplyContractJobSchema)
+export const ApplyContractJob: Model<ApplyContractJobs> =
+  mongoose.models.ApplyContractJob ||
+  mongoose.model<ApplyContractJobs>("ApplyContractjob", ApplyContractJobSchema);

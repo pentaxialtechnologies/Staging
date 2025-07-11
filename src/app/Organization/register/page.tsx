@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 
 interface FormData {
   firstname: string;
@@ -14,11 +14,11 @@ interface FormData {
 
 const Organizationpage = () => {
   const [form, setForm] = useState<FormData>({
-    firstname: '',
-    lastname: '',
-    email: '',
-    password: '',
-    phone_number: '',
+    firstname: "",
+    lastname: "",
+    email: "",
+    password: "",
+    phone_number: "",
     isProfileComplete: false,
   });
 
@@ -32,19 +32,19 @@ const Organizationpage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await fetch('/api/auth/organization/post', {
-        method: 'POST',
+      const res = await fetch("/api/auth/organization/post", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(form),
       });
 
       if (!res.ok) {
-        throw new Error('Registration Failed');
+        throw new Error("Registration Failed");
       }
 
-      router.push('/users/login');
+      router.push("/users/login");
     } catch (error) {
       console.error(error);
     }

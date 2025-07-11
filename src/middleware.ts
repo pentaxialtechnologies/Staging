@@ -2,12 +2,18 @@ import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
 export async function middleware(req: NextRequest) {
-  const token = await getToken({ req, secret:"fallback-secret-key"});
-  console.log(token,"token");
-  
+  const token = await getToken({ req, secret: "fallback-secret-key" });
+  console.log(token, "token");
+
   const { pathname } = req.nextUrl;
 
-  const publicPaths = ["/", "/worker/login", "/worker/register","providers/login","providers/register"];
+  const publicPaths = [
+    "/",
+    "/worker/login",
+    "/worker/register",
+    "providers/login",
+    "providers/register",
+  ];
 
   // Allow public paths without auth
   if (publicPaths.includes(pathname)) {
@@ -40,8 +46,6 @@ export async function middleware(req: NextRequest) {
     //   return NextResponse.redirect(new URL("/unauthorized", req.url));
     // }
 
-
-
     // All checks passed
     return NextResponse.next();
   } catch (error) {
@@ -53,7 +57,7 @@ export async function middleware(req: NextRequest) {
 export const config = {
   matcher: [
     "/admin/:path*",
-    "/employer/:path*",  // make sure this matches your actual URL structure
+    "/employer/:path*", // make sure this matches your actual URL structure
     "/provider/:path*",
     "/company/:path*",
   ],

@@ -11,11 +11,8 @@ export default function DashboardLayout({
       <ProviderSideBar />
       <div className="flex flex-col flex-1 overflow-hidden">
         <ProviderHeader />
-        <main className="p-4 overflow-y-auto min-h-0">
-          {children}
-        </main>
+        <main className="p-4 overflow-y-auto min-h-0">{children}</main>
       </div>
     </div>
   );
 }
-    

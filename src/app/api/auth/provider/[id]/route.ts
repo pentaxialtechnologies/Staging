@@ -11,7 +11,8 @@ export async function GET(req: NextRequest, context: RouteContexts) {
   const { id } = await context.params;
 
   const user = await Provider.findById(id);
-  if (!user) return NextResponse.json({ message: "User not found" }, { status: 404 });
+  if (!user)
+    return NextResponse.json({ message: "User not found" }, { status: 404 });
 
   return NextResponse.json(user);
 }
@@ -28,9 +29,12 @@ export async function PUT(req: Request, context: RouteContexts) {
     hasCompletedPlanSelection: true,
   };
 
-  const updated = await Provider.findByIdAndUpdate(id, updateData, { new: true });
+  const updated = await Provider.findByIdAndUpdate(id, updateData, {
+    new: true,
+  });
 
-  if (!updated) return NextResponse.json({ message: "Update failed" }, { status: 400 });
+  if (!updated)
+    return NextResponse.json({ message: "Update failed" }, { status: 400 });
 
   return NextResponse.json({ message: "Profile updated", updated });
 }

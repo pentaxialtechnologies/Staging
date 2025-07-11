@@ -1,55 +1,60 @@
-'use client';
-import Link from 'next/link';
-import React from 'react';
-import { FaFacebookF, FaTwitter, FaLinkedinIn, FaInstagram } from 'react-icons/fa';
+"use client";
+import Link from "next/link";
+import React from "react";
+import {
+  FaFacebookF,
+  FaTwitter,
+  FaLinkedinIn,
+  FaInstagram,
+} from "react-icons/fa";
 
 const Footer = () => {
   const footerLinks = [
     {
-      title: 'Service Provider',
+      title: "Service Provider",
       links: [
-        { label: 'Find Jobs', href: '/jobs' },
-        { label: 'Why Get Listed?', href: '/why-get-listed' },
-        { label: 'Get Listed', href: '/get-listed' },
-        { label: 'Growth Hub', href: '/growth-hub' },
-        { label: 'Sponsorship', href: '/sponsorship' },
-        { label: 'Service FAQs', href: '/service-faqs' },
-        { label: 'Browse All Services', href: '/services' },
+        { label: "Find Jobs", href: "/jobs" },
+        { label: "Why Get Listed?", href: "/why-get-listed" },
+        { label: "Get Listed", href: "/get-listed" },
+        { label: "Growth Hub", href: "/growth-hub" },
+        { label: "Sponsorship", href: "/sponsorship" },
+        { label: "Service FAQs", href: "/service-faqs" },
+        { label: "Browse All Services", href: "/services" },
       ],
     },
     {
-      title: 'Buyers Section',
+      title: "Buyers Section",
       links: [
-        { label: 'Find Firms', href: '/firms' },
-        { label: 'Review Service Providers', href: '/reviews' },
-        { label: 'Buyer FAQs', href: '/buyer-faqs' },
-        { label: 'Pricing FAQs', href: '/pricing-faqs' },
-        { label: 'ITGC Controls', href: '/itgc' },
+        { label: "Find Firms", href: "/firms" },
+        { label: "Review Service Providers", href: "/reviews" },
+        { label: "Buyer FAQs", href: "/buyer-faqs" },
+        { label: "Pricing FAQs", href: "/pricing-faqs" },
+        { label: "ITGC Controls", href: "/itgc" },
       ],
     },
     {
-      title: 'Company',
+      title: "Company",
       links: [
-        { label: 'About Us', href: '/about' },
-        { label: 'Contact Us', href: '/contact' },
-        { label: 'Blog', href: '/blog' },
-        { label: 'Leave a Review', href: '/leave-review' },
-        { label: 'Help & Support', href: '/support' },
+        { label: "About Us", href: "/about" },
+        { label: "Contact Us", href: "/contact" },
+        { label: "Blog", href: "/blog" },
+        { label: "Leave a Review", href: "/leave-review" },
+        { label: "Help & Support", href: "/support" },
       ],
     },
     {
-      title: 'Services',
+      title: "Services",
       links: [
-        { label: 'Enterprise', href: '/enterprise' },
-        { label: 'GCC', href: '/gcc' },
-        { label: 'EOR', href: '/eor' },
+        { label: "Enterprise", href: "/enterprise" },
+        { label: "GCC", href: "/gcc" },
+        { label: "EOR", href: "/eor" },
       ],
     },
     {
-      title: 'Terms & Privacy',
+      title: "Terms & Privacy",
       links: [
-        { label: 'Terms of Service', href: '/terms' },
-        { label: 'Privacy Policy', href: '/privacy' },
+        { label: "Terms of Service", href: "/terms" },
+        { label: "Privacy Policy", href: "/privacy" },
       ],
     },
   ];
@@ -81,8 +86,12 @@ const Footer = () => {
         {/* Newsletter Subscription */}
         <div className="border-t border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="text-center md:text-left">
-            <h3 className="text-lg font-semibold mb-2">Subscribe to our newsletter</h3>
-            <p className="text-sm text-gray-400">Get the latest updates, articles, and more.</p>
+            <h3 className="text-lg font-semibold mb-2">
+              Subscribe to our newsletter
+            </h3>
+            <p className="text-sm text-gray-400">
+              Get the latest updates, articles, and more.
+            </p>
           </div>
           <form className="flex gap-2 w-full md:w-auto">
             <input
@@ -102,7 +111,8 @@ const Footer = () => {
         {/* Social + Copyright */}
         <div className="mt-8 flex flex-col md:flex-row justify-between items-center border-t border-gray-700 pt-6">
           <div className="text-sm text-gray-400 text-center md:text-left mb-4 md:mb-0">
-            &copy; {new Date().getFullYear()} S3 Technologies. All rights reserved.
+            &copy; {new Date().getFullYear()} S3 Technologies. All rights
+            reserved.
           </div>
           <div className="flex gap-4 text-gray-400">
             <a href="#" aria-label="Facebook" className="hover:text-white">

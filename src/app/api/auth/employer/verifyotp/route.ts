@@ -12,7 +12,7 @@ export async function POST(req: Request) {
     if (!email || !emailVerificationCode) {
       return NextResponse.json(
         { message: "Email and OTP are required." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -21,21 +21,21 @@ export async function POST(req: Request) {
     if (!pendingVerification) {
       return NextResponse.json(
         { message: "No pending verification found for this email." },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
     if (pendingVerification.otpExpiresAt < new Date()) {
       return NextResponse.json(
         { message: "OTP has expired. Please request a new one." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (pendingVerification.emailVerificationCode !== emailVerificationCode) {
       return NextResponse.json(
         { message: "Invalid OTP. Please check and try again." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -46,13 +46,13 @@ export async function POST(req: Request) {
 
     return NextResponse.json(
       { message: "Email verified successfully." },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("Verification Error:", error);
     return NextResponse.json(
       { message: "Internal server error." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

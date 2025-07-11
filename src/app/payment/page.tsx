@@ -52,7 +52,9 @@ export default function HomePage() {
 
   // ✅ Start payment function
   const startPayment = async () => {
-    const scriptLoaded = await loadRazorpayScript("https://checkout.razorpay.com/v1/checkout.js");
+    const scriptLoaded = await loadRazorpayScript(
+      "https://checkout.razorpay.com/v1/checkout.js",
+    );
     if (!scriptLoaded) {
       alert("Failed to load Razorpay SDK. Please try again.");
       return;
@@ -74,7 +76,7 @@ export default function HomePage() {
       description: "Test Payment",
       order_id: order.id,
       handler: async function (response: RazorpayResponse) {
-        const verifyRes = await fetch("/api/auth/razropay/verify",{
+        const verifyRes = await fetch("/api/auth/razropay/verify", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(response),
@@ -82,7 +84,11 @@ export default function HomePage() {
 
         const verifyJSON = await verifyRes.json();
 
-        alert(verifyJSON.verified ? "✅ Payment Success!" : "❌ Verification Failed");
+        alert(
+          verifyJSON.verified
+            ? "✅ Payment Success!"
+            : "❌ Verification Failed",
+        );
       },
       prefill: {
         name: "Test User",

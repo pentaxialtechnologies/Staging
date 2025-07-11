@@ -1,10 +1,8 @@
+"use client";
 
-
-'use client';
-
-import React, { ChangeEvent, FormEvent, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { getSession, signIn } from 'next-auth/react';
+import React, { ChangeEvent, FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
+import { getSession, signIn } from "next-auth/react";
 
 interface FormData {
   email: string;
@@ -14,7 +12,7 @@ interface FormData {
 const Login = () => {
   const router = useRouter();
 
-  const [form, setForm] = useState<FormData>({ email: '', password: '' });
+  const [form, setForm] = useState<FormData>({ email: "", password: "" });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -23,78 +21,79 @@ const Login = () => {
     setForm({ ...form, [name]: value });
   };
 
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
 
-const handleSubmit = async (e: FormEvent) => {
-  e.preventDefault();
-  setLoading(true);
-  setError(null);
+    try {
+      const response = await signIn("credentials", {
+        redirect: false,
+        email: form.email,
+        password: form.password,
+        callbackUrl: "/",
+      });
 
-  try {
-    const response = await signIn('credentials', {
-      redirect: false,
-      email: form.email,
-      password: form.password,
-      callbackUrl: '/',
-    });
+      console.log("Login response:", response);
 
-    console.log('Login response:', response);
+      if (response?.error) {
+        if (response.error.includes("verify")) {
+          alert("Please verify your email before logging in.");
+        }
 
-    if (response?.error) {
-      if (response.error.includes('verify')) {
-    alert("Please verify your email before logging in.");
-  }
+        setError(response.error);
+      } else if (response?.ok) {
+        const session = await getSession(); // or use useSession in parent component
+        const role = session?.user?.role;
+        const hasCompletedPlanSelection =
+          session?.user?.hasCompletedPlanSelection;
+        console.log(hasCompletedPlanSelection, "plan section");
 
-      setError(response.error);
-      
-    }
-    else if (response?.ok) {
-      const session = await getSession(); // or use useSession in parent component
-      const role = session?.user?.role;
-     const hasCompletedPlanSelection = session?.user?.hasCompletedPlanSelection;
-     console.log(hasCompletedPlanSelection,'plan section');
-     
-      console.log('role',role);
+        console.log("role", role);
 
-      switch (role) {
-        case 'admin':
-          router.push('/admin/dashboard');
-          break;
-        case 'provider':
-          if (!hasCompletedPlanSelection) {
-      router.push('/providers/plans');
-      } 
-      else{
-          router.push('/provider/dashboard');
-
+        switch (role) {
+          case "admin":
+            router.push("/admin/dashboard");
+            break;
+          case "provider":
+            if (!hasCompletedPlanSelection) {
+              router.push("/providers/plans");
+            } else {
+              router.push("/provider/dashboard");
+            }
+            break;
+          case "employer":
+            router.push("/employer/dashboard");
+            break;
+          default:
+            router.push("/users/login");
+        }
+      } else {
+        setError("Login failed. Please try again.");
       }
-          break;
-        case 'employer':
-          router.push('/employer/dashboard');
-          break;
-        default:
-          router.push('/users/login');
-      }
-    } else {
-      setError('Login failed. Please try again.');
+    } catch (err: any) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      console.error("Login error:", err);
+      setError("An unexpected error occurred.");
+    } finally {
+      setLoading(false);
     }
-  }// eslint-disable-next-line @typescript-eslint/no-explicit-any 
-  catch (err: any) {
-    console.error('Login error:', err);
-    setError('An unexpected error occurred.');
-  } finally {
-    setLoading(false);
-  }
-};
+  };
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="bg-white dark:bg-gray-800 shadow-2xl rounded-2xl max-w-md w-full p-8">
         <h2 className="text-3xl font-extrabold text-center text-gray-900 dark:text-white mb-8">
           Welcome Back
         </h2>
- {error && <p className="text-red-600 text-center font-semibold">{error}</p>}
+        {error && (
+          <p className="text-red-600 text-center font-semibold">{error}</p>
+        )}
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label
+              htmlFor="email"
+              className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
               Email Address
             </label>
             <input
@@ -111,7 +110,10 @@ const handleSubmit = async (e: FormEvent) => {
           </div>
 
           <div>
-            <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
+            <label
+              htmlFor="password"
+              className="block mb-2 text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
               Password
             </label>
             <input
@@ -127,23 +129,23 @@ const handleSubmit = async (e: FormEvent) => {
             />
           </div>
 
-         
-
-    <p className='text-sm text-end text-blue-500'><a href='/users/forgot-password'>Forgot password ?</a></p>
+          <p className="text-sm text-end text-blue-500">
+            <a href="/users/forgot-password">Forgot password ?</a>
+          </p>
           <button
             type="submit"
             disabled={loading}
             className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-lg transition duration-300 disabled:opacity-60"
           >
-            {loading ? 'Logging in...' : 'Log In'}
+            {loading ? "Logging in..." : "Log In"}
           </button>
         </form>
 
         <div className="mt-6 text-center">
           <p className="text-gray-600 dark:text-gray-400">
-            Don’t have an account?{' '}
+            Don’t have an account?{" "}
             <button
-              onClick={() => router.push('/users/signup')}
+              onClick={() => router.push("/users/signup")}
               className="text-indigo-600 hover:text-indigo-700 font-semibold underline cursor-pointer"
             >
               Register here

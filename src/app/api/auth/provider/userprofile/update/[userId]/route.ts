@@ -4,10 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 type RouteContext = { params: Promise<{ userId: string }> };
 // --------------------- GET by userId ---------------------
-export async function GET(
-  req: NextRequest,
-  context: RouteContext
-) {
+export async function GET(req: NextRequest, context: RouteContext) {
   try {
     await dbConnect();
     const { userId } = await context.params;
@@ -24,7 +21,7 @@ export async function GET(
 
     return NextResponse.json(
       { message: "User data fetched successfully", user },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("GET error:", error);
@@ -35,10 +32,7 @@ export async function GET(
 // --------------------- PUT update by userId ---------------------
 type RouteContexts = { params: Promise<{ userId: string }> };
 
-export async function PUT(
-  req: NextRequest,
-  context: RouteContexts
-) {
+export async function PUT(req: NextRequest, context: RouteContexts) {
   try {
     await dbConnect();
     const { userId } = await context.params;
@@ -59,19 +53,19 @@ export async function PUT(
           public_profile_url: body.public_profile_url,
         },
       },
-      { new: true, upsert: false }
+      { new: true, upsert: false },
     );
 
     if (!updatedUser) {
       return NextResponse.json(
         { message: "User profile not found or update failed" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
     return NextResponse.json(
       { message: "User updated successfully", user: updatedUser },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("PUT error:", error);

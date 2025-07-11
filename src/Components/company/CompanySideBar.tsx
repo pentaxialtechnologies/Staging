@@ -1,4 +1,4 @@
-'use client';
+"use client";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   LayoutDashboard,
@@ -19,7 +19,6 @@ type SideBarItem = {
   href?: string;
   icon: LucideIcon;
   subItems?: {
-
     icon: any;
     name: string;
     href: string;
@@ -42,10 +41,14 @@ export const CompanySideBar = () => {
     {
       name: "Organization",
       icon: Building2,
-      href:'/provider/profile',
+      href: "/provider/profile",
       subItems: [
-        { name: "About", href: "/provider/profile",icon:User },
-        { name: "Portfolio", href: "/provider/profile/portfolio",icon:Palette},
+        { name: "About", href: "/provider/profile", icon: User },
+        {
+          name: "Portfolio",
+          href: "/provider/profile/portfolio",
+          icon: Palette,
+        },
       ],
     },
     {
@@ -71,7 +74,7 @@ export const CompanySideBar = () => {
                   onClick={() => toggleMenu(item.name)}
                   className="flex items-center justify-between p-3 rounded cursor-pointer hover:text-white hover:bg-blue-400"
                 >
-                    <item.icon className="w-6 h-6 text-gray-700 " />
+                  <item.icon className="w-6 h-6 text-gray-700 " />
 
                   <div className="flex items-center gap-4">
                     <span className="font-bold">{item.name}</span>
@@ -86,10 +89,9 @@ export const CompanySideBar = () => {
                   <ul className="ml-10 mt-2 space-y-2">
                     {item.subItems.map((subItem, subIndex) => (
                       <li key={`${subItem.name}-${subIndex}`}>
-                     <subItem.icon className="w-6 h-6 text-gray-700" />
+                        <subItem.icon className="w-6 h-6 text-gray-700" />
 
                         <Link
-                        
                           href={subItem.href}
                           className="text-sm text-gray-700 hover:text-blue-500"
                         >

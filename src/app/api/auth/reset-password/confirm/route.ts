@@ -12,7 +12,10 @@ export async function POST(req: Request) {
 
     // Validate required fields
     if (!email || !token || !password) {
-      return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
+      return NextResponse.json(
+        { message: "Missing required fields" },
+        { status: 400 },
+      );
     }
 
     // Find user in Provider or Employer collection
@@ -21,21 +24,22 @@ export async function POST(req: Request) {
       user = await Employer.findOne({ email });
     }
 
-    if (
-      !user ||
-      !user.resetToken ||
-      !user.resetTokenExpiry
-    ) {
-      return NextResponse.json({ message: "Invalid or expired token" }, { status: 404 });
+    if (!user || !user.resetToken || !user.resetTokenExpiry) {
+      return NextResponse.json(
+        { message: "Invalid or expired token" },
+        { status: 404 },
+      );
     }
 
     // Validate token
     const isTokenValid =
-      user.resetToken === token &&
-      new Date(user.resetTokenExpiry) > new Date();
+      user.resetToken === token && new Date(user.resetTokenExpiry) > new Date();
 
     if (!isTokenValid) {
-      return NextResponse.json({ message: "Invalid or expired token" }, { status: 400 });
+      return NextResponse.json(
+        { message: "Invalid or expired token" },
+        { status: 400 },
+      );
     }
 
     // Hash new password and reset token fields
@@ -46,9 +50,15 @@ export async function POST(req: Request) {
 
     await user.save();
 
-    return NextResponse.json({ message: "Password has been reset successfully" }, { status: 200 });
+    return NextResponse.json(
+      { message: "Password has been reset successfully" },
+      { status: 200 },
+    );
   } catch (error) {
     console.error("Reset password error:", error);
-    return NextResponse.json({ message: "Server Error", error }, { status: 500 });
+    return NextResponse.json(
+      { message: "Server Error", error },
+      { status: 500 },
+    );
   }
 }

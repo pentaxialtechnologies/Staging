@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useParams } from 'next/navigation';
-import React, { FormEvent, useEffect, useState } from 'react';
+import { useParams } from "next/navigation";
+import React, { FormEvent, useEffect, useState } from "react";
 
 interface Staff {
   OrgId: string;
@@ -21,26 +21,28 @@ interface Staff {
 
 const Page = () => {
   const [form, setForm] = useState<Staff>({
-    OrgId: '',
-    primarySkills: '',
+    OrgId: "",
+    primarySkills: "",
     skills: [],
-    designation: '',
-    numberBenchStaff: '',
-    averageExperience: '',
-    rate: '',
-    rateType: '',
-    availability: '',
+    designation: "",
+    numberBenchStaff: "",
+    averageExperience: "",
+    rate: "",
+    rateType: "",
+    availability: "",
     inDirectMessage: false,
-    engagementType: '',
-    workFrom: '',
-    availableAtClientLocation: '',
+    engagementType: "",
+    workFrom: "",
+    availableAtClientLocation: "",
   });
 
-  const [skillInput, setSkillInput] = useState('');
+  const [skillInput, setSkillInput] = useState("");
   const params = useParams();
   const id = params.id as string;
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
@@ -48,14 +50,14 @@ const Page = () => {
     }));
   };
 
-const handleSkillKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && skillInput.trim()) {
+  const handleSkillKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && skillInput.trim()) {
       e.preventDefault();
       setForm((prev) => ({
         ...prev,
         skills: [...prev.skills, skillInput.trim()],
       }));
-      setSkillInput('');
+      setSkillInput("");
     }
   };
 
@@ -70,24 +72,24 @@ const handleSkillKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     event.preventDefault();
     try {
       const res = await fetch(`/api/auth/organization/staff/update/${id}`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({...form}),
+        body: JSON.stringify({ ...form }),
       });
 
       if (res.ok) {
         const data = await res.json();
-        alert('Staff updated successfully!');
-        console.log('Updated Staff:', data);
+        alert("Staff updated successfully!");
+        console.log("Updated Staff:", data);
       } else {
-        alert('Failed to update staff');
-        console.error('Server error:', await res.text());
+        alert("Failed to update staff");
+        console.error("Server error:", await res.text());
       }
     } catch (error) {
-      console.error('Error updating staff:', error);
-      alert('Something went wrong');
+      console.error("Error updating staff:", error);
+      alert("Something went wrong");
     }
   };
 
@@ -107,7 +109,9 @@ const handleSkillKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
       <div className="bg-white shadow-md rounded-lg p-4">
         <div className="flex flex-row justify-between">
           <h1 className="text-xl sm:text-2xl font-bold">Edit Staff Details</h1>
-          <button className="border border-orange-500 px-4 py-2 rounded-full">Back</button>
+          <button className="border border-orange-500 px-4 py-2 rounded-full">
+            Back
+          </button>
         </div>
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-6">
@@ -117,7 +121,7 @@ const handleSkillKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
                 type="text"
                 name="primarySkills"
                 value={form.primarySkills}
-                 onChange={handleChange}
+                onChange={handleChange}
                 className="px-4 py-2 border rounded-lg w-full"
               />
             </div>
@@ -220,8 +224,12 @@ const handleSkillKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
               >
                 <option value="">Select</option>
                 <option value="Immediately">Immediately</option>
-                <option value="In 1 or 2 weeks from now">In 1 or 2 weeks from now</option>
-                <option value="In 1 or 2 months from now">In 1 or 2 months from now</option>
+                <option value="In 1 or 2 weeks from now">
+                  In 1 or 2 weeks from now
+                </option>
+                <option value="In 1 or 2 months from now">
+                  In 1 or 2 months from now
+                </option>
               </select>
             </div>
 
@@ -255,7 +263,9 @@ const handleSkillKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
             </div>
 
             <div>
-              <label className="block mb-2">Available at Client&apos;s Location</label>
+              <label className="block mb-2">
+                Available at Client&apos;s Location
+              </label>
               <select
                 name="availableAtClientLocation"
                 value={form.availableAtClientLocation}

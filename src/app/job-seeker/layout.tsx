@@ -10,12 +10,9 @@ export default function DashboardLayout({
     <div className="flex h-screen">
       <JobSeekerSideBar />
       <div className="flex flex-col flex-1">
-     <JobSeekerHeader/>
-        <main className="p-4 overflow-auto">
-          {children}
-        </main>
+        <JobSeekerHeader />
+        <main className="p-4 overflow-auto">{children}</main>
       </div>
     </div>
   );
 }
-    

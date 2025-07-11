@@ -8,15 +8,25 @@ export async function POST(req: Request) {
     await dbConnect();
 
     const provider = await Provider.findById(id);
-    if (!provider) return NextResponse.json({ message: "Provider not found" }, { status: 404 });
+    if (!provider)
+      return NextResponse.json(
+        { message: "Provider not found" },
+        { status: 404 },
+      );
 
     // Update isdelete flag
     provider.portfolio[index].isdelete = true;
     await provider.save();
 
-    return NextResponse.json({ message: "Portfolio item marked as deleted" }, { status: 200 });
+    return NextResponse.json(
+      { message: "Portfolio item marked as deleted" },
+      { status: 200 },
+    );
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ message: "Error deleting portfolio item" }, { status: 500 });
+    return NextResponse.json(
+      { message: "Error deleting portfolio item" },
+      { status: 500 },
+    );
   }
 }

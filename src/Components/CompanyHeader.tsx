@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import React, { useEffect, useRef, useState } from 'react';
-import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
-import {  Menu, X } from 'lucide-react';
+import React, { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import { Menu, X } from "lucide-react";
 
 type ApiSubCategory = {
   _id: string;
@@ -29,23 +29,25 @@ const CompanyHeader = () => {
   useEffect(() => {
     const fetchDatas = async () => {
       try {
-        const res = await fetch('/api/auth/categories/get');
+        const res = await fetch("/api/auth/categories/get");
         const data = await res.json();
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const dynamicCategory: ApiCategory[] = data.category.map((cat: any) => ({
-          _id: cat._id,
-          name: cat.name,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          subcategory: cat.subcategory.map((sub: any) => ({
-            _id: sub._id,
-            name: sub.name,
-            href: `/category/${cat._id}/subcategory/${sub._id}`,
-          })),
-        }));
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const dynamicCategory: ApiCategory[] = data.category.map(
+          (cat: any) => ({
+            _id: cat._id,
+            name: cat.name,
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            subcategory: cat.subcategory.map((sub: any) => ({
+              _id: sub._id,
+              name: sub.name,
+              href: `/category/${cat._id}/subcategory/${sub._id}`,
+            })),
+          }),
+        );
 
         setCategories(dynamicCategory);
       } catch (error) {
-        console.error('Error fetching categories:', error);
+        console.error("Error fetching categories:", error);
       }
     };
 
@@ -55,26 +57,39 @@ const CompanyHeader = () => {
   // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsDropdownOpen(false);
         setActiveCategoryId(null);
         setOpenEnterprise(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
     <header className="w-full bg-white dark:bg-gray-900 shadow- z-50 flex justify-between items-center">
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
         {/* Left - Mobile Menu Icon */}
-        <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="md:hidden">
-          {isMobileMenuOpen ? <X className="w-6 h-6 text-gray-700 dark:text-white" /> : <Menu className="w-6 h-6 text-gray-700 dark:text-white" />}
+        <button
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="md:hidden"
+        >
+          {isMobileMenuOpen ? (
+            <X className="w-6 h-6 text-gray-700 dark:text-white" />
+          ) : (
+            <Menu className="w-6 h-6 text-gray-700 dark:text-white" />
+          )}
         </button>
 
         {/* Middle - Nav Links */}
-        <nav className="hidden md:flex items-center space-x-6" ref={dropdownRef}>
+        <nav
+          className="hidden md:flex items-center space-x-6"
+          ref={dropdownRef}
+        >
           {/* Service Categories Dropdown */}
           <div className="relative">
             <button
@@ -95,7 +110,13 @@ const CompanyHeader = () => {
                   {categories.map((category) => (
                     <div key={category._id} className="relative">
                       <div
-                        onClick={() =>setActiveCategoryId(activeCategoryId === category._id ? null : category._id)}
+                        onClick={() =>
+                          setActiveCategoryId(
+                            activeCategoryId === category._id
+                              ? null
+                              : category._id,
+                          )
+                        }
                         className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer flex justify-between items-center"
                       >
                         {category.name}
@@ -132,9 +153,25 @@ const CompanyHeader = () => {
           </div>
 
           {/* Standard Links */}
-          <Link href="/find" className="text-gray-700 dark:text-white hover:text-blue-600">Find Firms</Link>
-          <Link href="/jobs" className="text-gray-700 dark:text-white hover:text-blue-600">Find Jobs </Link>
-          <Link href="/pricing" className="text-gray-700 dark:text-white hover:text-blue-600"> Pricing & Plans</Link>
+          <Link
+            href="/find"
+            className="text-gray-700 dark:text-white hover:text-blue-600"
+          >
+            Find Firms
+          </Link>
+          <Link
+            href="/jobs"
+            className="text-gray-700 dark:text-white hover:text-blue-600"
+          >
+            Find Jobs{" "}
+          </Link>
+          <Link
+            href="/pricing"
+            className="text-gray-700 dark:text-white hover:text-blue-600"
+          >
+            {" "}
+            Pricing & Plans
+          </Link>
 
           {/* Enterprises Dropdown */}
           <div className="relative">
@@ -179,11 +216,28 @@ const CompanyHeader = () => {
       {/* Mobile Navigation Menu */}
       {isMobileMenuOpen && (
         <div className="md:hidden bg-white dark:bg-gray-900 px-6 pb-4 space-y-2">
-          <Link href="/find" className="block text-gray-700 dark:text-white">Find Firms</Link>
-          <Link href="/jobs" className="block text-gray-700 dark:text-white">Find Jobs</Link>
-          <Link href="/pricing" className="block text-gray-700 dark:text-white"> Pricing & Plans</Link>
-          <Link href="/enterprise/employer-record" className="block text-gray-700 dark:text-white">Employer of the Record</Link>
-          <Link href="/enterprise/gcc-services" className="block text-gray-700 dark:text-white">GCC Services</Link>
+          <Link href="/find" className="block text-gray-700 dark:text-white">
+            Find Firms
+          </Link>
+          <Link href="/jobs" className="block text-gray-700 dark:text-white">
+            Find Jobs
+          </Link>
+          <Link href="/pricing" className="block text-gray-700 dark:text-white">
+            {" "}
+            Pricing & Plans
+          </Link>
+          <Link
+            href="/enterprise/employer-record"
+            className="block text-gray-700 dark:text-white"
+          >
+            Employer of the Record
+          </Link>
+          <Link
+            href="/enterprise/gcc-services"
+            className="block text-gray-700 dark:text-white"
+          >
+            GCC Services
+          </Link>
         </div>
       )}
     </header>

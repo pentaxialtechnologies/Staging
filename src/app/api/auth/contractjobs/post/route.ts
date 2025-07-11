@@ -2,8 +2,6 @@ import { Jobs } from "@/models/ContractJob";
 import dbConnect from "@/lib/Mongodb";
 import { NextResponse } from "next/server";
 
-
-
 export async function POST(req: Request) {
   try {
     await dbConnect();
@@ -15,20 +13,20 @@ export async function POST(req: Request) {
 
     const job = await Jobs.create({
       ...payload,
-      postedBy, 
+      postedBy,
       status: "pending",
     });
 
     return NextResponse.json({ message: "Job created", job }, { status: 201 });
-  } // eslint-disable-next-line @typescript-eslint/no-explicit-any 
-  catch (error: any) {
+  } catch (error: any) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     console.error("Job creation error:", error);
     return NextResponse.json(
       {
         message: "Server Error",
         error: error.message || error,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

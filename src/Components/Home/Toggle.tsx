@@ -44,21 +44,22 @@ const SwitchToggle: React.FC = () => {
     >
       <div className="relative flex w-full max-w-2xl border border-gray-300 bg-white rounded-full shadow-md overflow-hidden">
         {/* Animated Indicator */}
-       <div
-  ref={indicatorRef}
-  className={clsx(
-    "absolute top-0 bottom-0 w-1/2 transition-all duration-300 rounded-full bg-[#1A2B6B]",
-    activeTab === "find" ? "left-1/2" : "left-0"
-  )}
-/>
-
+        <div
+          ref={indicatorRef}
+          className={clsx(
+            "absolute top-0 bottom-0 w-1/2 transition-all duration-300 rounded-full bg-[#1A2B6B]",
+            activeTab === "find" ? "left-1/2" : "left-0",
+          )}
+        />
 
         {/* Hire Button */}
         <button
           onClick={() => handleSwitch("hire")}
           className={clsx(
             "relative z-10 w-1/2 py-3 flex items-center justify-center gap-2 text-sm sm:text-base md:text-lg font-semibold transition-all duration-300",
-            activeTab === "hire" ? "text-white" : "text-gray-700 hover:bg-gray-100"
+            activeTab === "hire"
+              ? "text-white"
+              : "text-gray-700 hover:bg-gray-100",
           )}
           role="tab"
           aria-selected={activeTab === "hire"}
@@ -72,7 +73,9 @@ const SwitchToggle: React.FC = () => {
           onClick={() => handleSwitch("find")}
           className={clsx(
             "relative z-10 w-1/2 py-3 flex items-center justify-center gap-2 text-sm sm:text-base md:text-lg font-semibold transition-all duration-300",
-            activeTab === "find" ? "text-white" : "text-gray-700 hover:bg-gray-100"
+            activeTab === "find"
+              ? "text-white"
+              : "text-gray-700 hover:bg-gray-100",
           )}
           role="tab"
           aria-selected={activeTab === "find"}

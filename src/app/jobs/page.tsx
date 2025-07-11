@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { Search } from 'lucide-react';
+import { Search } from "lucide-react";
 import React, {
   useEffect,
   useState,
   ChangeEvent,
   FormEvent,
   useCallback,
-} from 'react';
-import { useRouter } from 'next/navigation';
-import axios from 'axios';
+} from "react";
+import { useRouter } from "next/navigation";
+import axios from "axios";
 
 interface Job {
   _id: string;
@@ -36,7 +36,7 @@ interface JobFilters {
 }
 
 const JobPage = () => {
-  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [datas, setDatas] = useState<Job[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -50,14 +50,14 @@ const JobPage = () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await axios.post('/api/auth/jobs/search', filters);
+      const res = await axios.post("/api/auth/jobs/search", filters);
       setDatas(res.data.jobs || []);
-    } // eslint-disable-next-line @typescript-eslint/no-explicit-any
-     catch (err: any) {
+    } catch (err: any) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       setError(
         err.response?.data?.message ||
           err.message ||
-          'Failed to load jobs. Please try again later.'
+          "Failed to load jobs. Please try again later.",
       );
       setDatas([]);
     } finally {
@@ -65,47 +65,42 @@ const JobPage = () => {
     }
   }, []);
 
-  const debouncedFetchSuggestions = useCallback(
-    (keyword: string) => {
-      const handler = setTimeout(async () => {
-        setSearchTerm(keyword);
-        setShowSuggestions(true);
+  const debouncedFetchSuggestions = useCallback((keyword: string) => {
+    const handler = setTimeout(async () => {
+      setSearchTerm(keyword);
+      setShowSuggestions(true);
 
-        try {
-          const res = await axios.post<{ jobs: Job[] }>(
-            '/api/auth/jobs/search',
-            { keyword }
-          );
+      try {
+        const res = await axios.post<{ jobs: Job[] }>("/api/auth/jobs/search", {
+          keyword,
+        });
 
-          const titles = [...new Set(res.data.jobs.map((job) => job.title))];
-          setSuggestions(titles.slice(0, 5)); // Limit to 5
-        } catch (err) {
-          console.error('Error fetching suggestions:', err);
-          setSuggestions([]);
-        }
-      }, 300);
+        const titles = [...new Set(res.data.jobs.map((job) => job.title))];
+        setSuggestions(titles.slice(0, 5)); // Limit to 5
+      } catch (err) {
+        console.error("Error fetching suggestions:", err);
+        setSuggestions([]);
+      }
+    }, 300);
 
-      return () => clearTimeout(handler);
-    },
-    []
-  );
+    return () => clearTimeout(handler);
+  }, []);
 
   useEffect(() => {
     fetchJobs(filters);
-  }, [fetchJobs,filters]);
+  }, [fetchJobs, filters]);
 
- const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
-  const newSearchTerm = e.target.value;
-  setSearchTerm(newSearchTerm);
-  setActiveSuggestionIndex(-1); // reset index
-  if (newSearchTerm.length > 1) {
-    debouncedFetchSuggestions(newSearchTerm);
-  } else {
-    setSuggestions([]);
-    setShowSuggestions(false);
-  }
-};
-
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const newSearchTerm = e.target.value;
+    setSearchTerm(newSearchTerm);
+    setActiveSuggestionIndex(-1); // reset index
+    if (newSearchTerm.length > 1) {
+      debouncedFetchSuggestions(newSearchTerm);
+    } else {
+      setSuggestions([]);
+      setShowSuggestions(false);
+    }
+  };
 
   const handleSuggestionSelect = (suggestion: string) => {
     setSearchTerm(suggestion);
@@ -121,7 +116,7 @@ const JobPage = () => {
   };
 
   const handleFilterChange = (
-    e: ChangeEvent<HTMLSelectElement | HTMLInputElement>
+    e: ChangeEvent<HTMLSelectElement | HTMLInputElement>,
   ) => {
     const { name, value } = e.target;
     setFilters((prev) => {
@@ -150,7 +145,8 @@ const JobPage = () => {
       return updated;
     });
   };
-const [activeSuggestionIndex, setActiveSuggestionIndex] = useState<number>(-1);
+  const [activeSuggestionIndex, setActiveSuggestionIndex] =
+    useState<number>(-1);
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8">
@@ -159,38 +155,44 @@ const [activeSuggestionIndex, setActiveSuggestionIndex] = useState<number>(-1);
       </h1>
 
       {/* Search Bar */}
-      <form onSubmit={handleSubmit} className="flex justify-center mb-6 relative">
+      <form
+        onSubmit={handleSubmit}
+        className="flex justify-center mb-6 relative"
+      >
         <div className="relative w-full max-w-2xl">
-         <input
-  type="search"
-  placeholder="Search for jobs by keyword..."
-  className="w-full border border-gray-300 rounded-full py-3 pl-5 pr-12 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ease-in-out shadow-sm text-lg"
-  value={searchTerm}
-  onChange={handleSearchChange}
-  onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
-  onKeyDown={(e) => {
-    if (!showSuggestions) return;
+          <input
+            type="search"
+            placeholder="Search for jobs by keyword..."
+            className="w-full border border-gray-300 rounded-full py-3 pl-5 pr-12 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 ease-in-out shadow-sm text-lg"
+            value={searchTerm}
+            onChange={handleSearchChange}
+            onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
+            onKeyDown={(e) => {
+              if (!showSuggestions) return;
 
-    if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      setActiveSuggestionIndex((prev) =>
-        prev < suggestions.length - 1 ? prev + 1 : 0
-      );
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      setActiveSuggestionIndex((prev) =>
-        prev > 0 ? prev - 1 : suggestions.length - 1
-      );
-    } else if (e.key === 'Enter') {
-      e.preventDefault();
-      if (activeSuggestionIndex >= 0 && suggestions[activeSuggestionIndex]) {
-        handleSuggestionSelect(suggestions[activeSuggestionIndex]);
-      }
-    } else if (e.key === 'Escape') {
-      setShowSuggestions(false);
-    }
-  }}
-/>
+              if (e.key === "ArrowDown") {
+                e.preventDefault();
+                setActiveSuggestionIndex((prev) =>
+                  prev < suggestions.length - 1 ? prev + 1 : 0,
+                );
+              } else if (e.key === "ArrowUp") {
+                e.preventDefault();
+                setActiveSuggestionIndex((prev) =>
+                  prev > 0 ? prev - 1 : suggestions.length - 1,
+                );
+              } else if (e.key === "Enter") {
+                e.preventDefault();
+                if (
+                  activeSuggestionIndex >= 0 &&
+                  suggestions[activeSuggestionIndex]
+                ) {
+                  handleSuggestionSelect(suggestions[activeSuggestionIndex]);
+                }
+              } else if (e.key === "Escape") {
+                setShowSuggestions(false);
+              }
+            }}
+          />
 
           <button
             type="submit"
@@ -200,23 +202,24 @@ const [activeSuggestionIndex, setActiveSuggestionIndex] = useState<number>(-1);
             <Search size={24} />
           </button>
 
-       {showSuggestions && suggestions.length > 0 && (
-  <ul className="absolute z-10 bg-white shadow-lg rounded-md w-full mt-1 border border-gray-200 max-h-60 overflow-auto">
-    {suggestions.map((suggestion, idx) => (
-      <li
-        key={idx}
-        className={`px-4 py-2 cursor-pointer ${
-          idx === activeSuggestionIndex ? 'bg-blue-100' : 'hover:bg-blue-50'
-        }`}
-        onMouseEnter={() => setActiveSuggestionIndex(idx)}
-        onClick={() => handleSuggestionSelect(suggestion)}
-      >
-        {suggestion}
-      </li>
-    ))}
-  </ul>
-)}
-
+          {showSuggestions && suggestions.length > 0 && (
+            <ul className="absolute z-10 bg-white shadow-lg rounded-md w-full mt-1 border border-gray-200 max-h-60 overflow-auto">
+              {suggestions.map((suggestion, idx) => (
+                <li
+                  key={idx}
+                  className={`px-4 py-2 cursor-pointer ${
+                    idx === activeSuggestionIndex
+                      ? "bg-blue-100"
+                      : "hover:bg-blue-50"
+                  }`}
+                  onMouseEnter={() => setActiveSuggestionIndex(idx)}
+                  onClick={() => handleSuggestionSelect(suggestion)}
+                >
+                  {suggestion}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </form>
 
@@ -224,7 +227,7 @@ const [activeSuggestionIndex, setActiveSuggestionIndex] = useState<number>(-1);
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
         <select
           name="workmode"
-          value={filters.workmode || ''}
+          value={filters.workmode || ""}
           onChange={handleFilterChange}
           className="w-full p-2 rounded border border-gray-300"
         >
@@ -236,7 +239,7 @@ const [activeSuggestionIndex, setActiveSuggestionIndex] = useState<number>(-1);
 
         <select
           name="country"
-          value={filters.country || ''}
+          value={filters.country || ""}
           onChange={handleFilterChange}
           className="w-full p-2 rounded border border-gray-300"
         >
@@ -247,14 +250,14 @@ const [activeSuggestionIndex, setActiveSuggestionIndex] = useState<number>(-1);
 
         <input
           placeholder="Min Experience (years)"
-          value={filters.experience?.min || ''}
+          value={filters.experience?.min || ""}
           onChange={handleMinExperienceChange}
           className="w-full p-2 rounded border border-gray-300"
         />
 
         <input
           placeholder="Max Experience (years)"
-          value={filters.experience?.max || ''}
+          value={filters.experience?.max || ""}
           onChange={handleMaxExperienceChange}
           className="w-full p-2 rounded border border-gray-300"
         />
@@ -301,20 +304,20 @@ const [activeSuggestionIndex, setActiveSuggestionIndex] = useState<number>(-1);
                   )}
 
                   <p className="text-gray-600 text-sm mb-2">
-                    <span className="font-medium mr-1">Engagement:</span>{' '}
+                    <span className="font-medium mr-1">Engagement:</span>{" "}
                     {job.engagement_type}
                   </p>
                   <p className="text-gray-600 text-sm mb-2">
-                    <span className="font-medium mr-1">Duration:</span>{' '}
+                    <span className="font-medium mr-1">Duration:</span>{" "}
                     {job.duration}
                   </p>
                   <p className="text-gray-600 text-sm mb-2">
-                    <span className="font-medium mr-1">Compensation:</span>{' '}
+                    <span className="font-medium mr-1">Compensation:</span>{" "}
                     {job.currency_type}
                   </p>
                   <p className="text-gray-600 text-sm mb-4">
-                    <span className="font-medium mr-1">Location:</span>{' '}
-                    {job.location.city}, {job.location.state},{' '}
+                    <span className="font-medium mr-1">Location:</span>{" "}
+                    {job.location.city}, {job.location.state},{" "}
                     {job.location.country}
                   </p>
                   {job.description && (

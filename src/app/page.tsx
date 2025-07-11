@@ -1,6 +1,6 @@
-import SwitchToggle from '@/Components/Home/Toggle'
-import React from 'react'
-import Homepage from './home/page'
+import SwitchToggle from "@/Components/Home/Toggle";
+import React from "react";
+import Homepage from "./home/page";
 
 export default function Homepages() {
   return (
@@ -8,5 +8,5 @@ export default function Homepages() {
       <SwitchToggle />
       <Homepage />
     </div>
-  )
+  );
 }

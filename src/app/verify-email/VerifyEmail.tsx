@@ -35,7 +35,7 @@ export default function VerifyEmailPage() {
         if (res.status === 200) {
           setStatus("Email verified successfully.");
           setUserData(data); // Contains _id, email, role
-          router.push('/users/login')
+          router.push("/users/login");
         } else if (res.status === 409) {
           setStatus("Email already verified. you can now login");
           setUserData(data);
@@ -49,7 +49,7 @@ export default function VerifyEmailPage() {
     };
 
     verifyEmail();
-  }, [token, role,router]);
+  }, [token, role, router]);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4 text-center">
@@ -58,7 +58,12 @@ export default function VerifyEmailPage() {
       {userData?._id && (
         <>
           <div className="mb-8">
-            <Image src={plan} alt="Verification" className="w-full h-auto" priority />
+            <Image
+              src={plan}
+              alt="Verification"
+              className="w-full h-auto"
+              priority
+            />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-6 max-w-5xl">
@@ -80,7 +85,9 @@ export default function VerifyEmailPage() {
                 <button
                   disabled={!userData?._id}
                   onClick={() =>
-                    router.push(`/providers/complete-registration/${userData._id}`)
+                    router.push(
+                      `/providers/complete-registration/${userData._id}`,
+                    )
                   }
                   className={`w-full px-4 py-2 rounded-full mb-4 text-white ${
                     userData?._id
@@ -108,7 +115,6 @@ export default function VerifyEmailPage() {
     </div>
   );
 }
-
 
 // "use client";
 
@@ -143,12 +149,11 @@ export default function VerifyEmailPage() {
 //         const data = await res.json();
 //       setUserData(data);
 //         console.log(data,'response');
-        
-        
+
 //         if (res.status === 200) {
 //           setStatus("✅ Email verified successfully.");
 //           console.log();
-          
+
 //           // setTimeout(() => router.push("/user/login"), 3000);
 //         } else if (res.status === 409) {
 //           setStatus("⚠️ Email already verified");
@@ -170,7 +175,6 @@ export default function VerifyEmailPage() {
 //       <h1 className="text-2xl font-semibold text-gray-800 mb-4">{status}</h1>
 //    {userData && (
 //     <>
-   
 
 //    <div className="">
 //         <Image src={plan} alt="Verification" className="w-full h-auto" priority />
@@ -232,7 +236,7 @@ export default function VerifyEmailPage() {
 //   </div>
 //    </>
 //   )}
-     
+
 //     </div>
 //   );
 // }

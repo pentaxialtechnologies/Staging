@@ -1,17 +1,17 @@
-import mongoose, { Model, Schema, Document } from 'mongoose';
+import mongoose, { Model, Schema, Document } from "mongoose";
 
 interface Employers extends Document {
   fullname?: string;
   email?: string;
   password: string;
-  role: 'employer';
+  role: "employer";
   phone?: string;
   emailVerificationCode?: string | null;
-  emailVerified: boolean
-  emailToken:string | null
-  emailTokenExpiresAt: Date | null
-  resetToken:  string | undefined,
-  resetTokenExpiry: Date | undefined ,
+  emailVerified: boolean;
+  emailToken: string | null;
+  emailTokenExpiresAt: Date | null;
+  resetToken: string | undefined;
+  resetTokenExpiry: Date | undefined;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -20,44 +20,45 @@ const JobSeekerSchema: Schema<Employers> = new Schema(
   {
     fullname: {
       type: String,
-      required: true
+      required: true,
     },
     email: {
       type: String,
-      required: true
+      required: true,
     },
     password: {
       type: String,
-      required: true
+      required: true,
     },
     role: {
       type: String,
-      enum: ['employer'],
-      default: 'employer'
+      enum: ["employer"],
+      default: "employer",
     },
     phone: {
       type: String,
-      required: true
+      required: true,
     },
-    emailVerified:{
-      type:Boolean,
-      default:false
+    emailVerified: {
+      type: Boolean,
+      default: false,
     },
     emailVerificationCode: {
       type: String,
-      default: null
+      default: null,
     },
-    emailToken:{
-      type:String,
-      default:null
+    emailToken: {
+      type: String,
+      default: null,
     },
-emailTokenExpiresAt: { type: Date, default: null },
-resetToken: { type: String },
-resetTokenExpiry: { type: Date },
+    emailTokenExpiresAt: { type: Date, default: null },
+    resetToken: { type: String },
+    resetTokenExpiry: { type: Date },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // ✅ FIX HERE
 export const Employer: Model<Employers> =
-  mongoose.models.Employer || mongoose.model<Employers>('Employer', JobSeekerSchema);
+  mongoose.models.Employer ||
+  mongoose.model<Employers>("Employer", JobSeekerSchema);

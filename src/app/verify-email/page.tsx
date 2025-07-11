@@ -3,13 +3,12 @@ import { Suspense } from "react";
 
 import VerifyEmailPage from "./VerifyEmail";
 export default function page() {
-return(
-  <Suspense fallback={<div>Loading...</div>}>
-    <VerifyEmailPage/>
-     </Suspense>
-)
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <VerifyEmailPage />
+    </Suspense>
+  );
 }
-
 
 // "use client";
 
@@ -44,12 +43,11 @@ return(
 //         const data = await res.json();
 //       setUserData(data);
 //         console.log(data,'response');
-        
-        
+
 //         if (res.status === 200) {
 //           setStatus("✅ Email verified successfully.");
 //           console.log();
-          
+
 //           // setTimeout(() => router.push("/user/login"), 3000);
 //         } else if (res.status === 409) {
 //           setStatus("⚠️ Email already verified");
@@ -71,7 +69,6 @@ return(
 //       <h1 className="text-2xl font-semibold text-gray-800 mb-4">{status}</h1>
 //    {userData && (
 //     <>
-   
 
 //    <div className="">
 //         <Image src={plan} alt="Verification" className="w-full h-auto" priority />
@@ -133,7 +130,7 @@ return(
 //   </div>
 //    </>
 //   )}
-     
+
 //     </div>
 //   );
 // }
