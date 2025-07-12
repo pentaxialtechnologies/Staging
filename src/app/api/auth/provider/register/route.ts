@@ -35,7 +35,7 @@ export async function POST(req: Request) {
     const emailTokenExpiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
     // const verifyURL = `http://localhost:3000/verify-email?token=${emailToken}&role=${role}`;
-    const verifyURL = `https://s3-staffing-website-smoky.vercel.app/verify-email?token=${emailToken}&role=${role}`;
+    const verifyURL = `https://s3-staffing-website-ivory.vercel.app/verify-email?token=${emailToken}&role=${role}`;
 
 
     // Hash password
