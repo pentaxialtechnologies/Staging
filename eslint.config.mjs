@@ -23,7 +23,7 @@ const eslintConfig = [
         { 
           "ts-expect-error": "allow-with-description",
           "ts-ignore": false,
-          "ts-nocheck": true, // ✅ Allow ts-nocheck
+          "ts-nocheck": true, 
           "ts-check": false,
         },
       ],
