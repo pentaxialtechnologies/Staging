@@ -1151,7 +1151,7 @@ onClick={()=> {
           type="file"
           name='portfolio[0].thumbnail'
           className='px-4 p-4 py-2 focus:outline-none border border-gray-500 rounded-lg'
-          onChange={(e) => handleFileUpload(e, 0, 'thumbnail')} // ✅ Pass index
+          onChange={(e) => handleFileUpload(e, 0, 'thumbnail' )} // ✅ Pass index
         />
       </div>
 

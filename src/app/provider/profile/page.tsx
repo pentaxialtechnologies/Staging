@@ -133,7 +133,7 @@ const ListingPage = () => {
         {/* Logo & Info */}
         <div className="flex flex-col md:flex-row gap-6">
           <Image
-            src={data.companylogo}
+            src={data.companylogo || 'N'}
             alt="Company Logo"
             width={300}
             height={180}
@@ -205,7 +205,7 @@ const ListingPage = () => {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div className="border p-4 rounded shadow-sm bg-white">
         <Image
-          src={data.portfolio[0].thumbnail || '/fallback-image.jpg'}
+          src={data.portfolio[0].thumbnail || 'No Logo'}
           alt="Project Thumbnail"
           width={600}
           height={300}
