@@ -41,7 +41,7 @@ if(!email){
         )
 
         // const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-        const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://s3-staffing-website-smoky.vercel.app/';
+        const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://s3-staffing-website-ivory.vercel.app/';
 
         
         const resetLink = `${BASE_URL}/users/reset-password?token=${resetToken}&role=${role}`

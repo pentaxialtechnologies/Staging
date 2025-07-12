@@ -50,7 +50,9 @@ user.emailTokenExpiresAt = TokenExpiryAt
 await user.save()
 
 // const VerifyURL = `http://localhost:3000/verify-email?token=${newToken}&role=${role}`
-const VerifyURL = `https://s3-staffing-website-smoky.vercel.app/verify-email?token=${newToken}&role=${role}`
+// const VerifyURL = `https://s3-staffing-website-smoky.vercel.app/verify-email?token=${newToken}&role=${role}`
+ const VerifyURL = `https://s3-staffing-website-ivory.vercel.app/verify-email?token=${newToken}&role=${role}`
+
 
 
    
