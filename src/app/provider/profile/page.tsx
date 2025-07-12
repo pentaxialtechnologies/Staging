@@ -199,26 +199,33 @@ const ListingPage = () => {
           )}
         </div>
         {/* Portfolio Section */}
-{data.portfolio && (
+{data.portfolio && data.portfolio.length > 0 && (
   <div className="mt-8">
     <h2 className="text-2xl font-bold mb-4 text-gray-800">Portfolio</h2>
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div className="border p-4 rounded shadow-sm bg-white">
-        <Image
-          src={data.portfolio[0].thumbnail || 'No Logo'}
-          alt="Project Thumbnail"
-          width={600}
-          height={300}
-          className="rounded mb-4 object-cover w-full"
-        />
-        <h3 className="text-xl font-semibold">{data.portfolio[0].title}</h3>
-        <p className="text-gray-600 mt-1">{data.portfolio[0].description}</p>
+        {data.portfolio[0]?.thumbnail ? (
+          <Image
+            src={data.portfolio[0].thumbnail}
+            alt="Project Thumbnail"
+            width={600}
+            height={300}
+            className="rounded mb-4 object-cover w-full"
+          />
+        ) : (
+          <div className="w-full h-[300px] bg-gray-100 flex items-center justify-center rounded mb-4">
+            <span className="text-gray-400">No Image</span>
+          </div>
+        )}
+
+        <h3 className="text-xl font-semibold">{data.portfolio[0]?.title || 'Untitled Project'}</h3>
+        <p className="text-gray-600 mt-1">{data.portfolio[0]?.description || 'No description'}</p>
         <p className="text-sm mt-2 text-gray-500">
-          <strong>Category:</strong> {data.portfolio[0].project_category} <br />
-          <strong>Cost:</strong> {data.portfolio[0].project_cost} <br />
-          <strong>Timeline:</strong> {data.portfolio[0].timeline}
+          <strong>Category:</strong> {data.portfolio[0]?.project_category || 'N/A'} <br />
+          <strong>Cost:</strong> {data.portfolio[0]?.project_cost || 'N/A'} <br />
+          <strong>Timeline:</strong> {data.portfolio[0]?.timeline || 'N/A'}
         </p>
-        {data.portfolio[0].project_link?.length > 0 && (
+        {data.portfolio[0]?.project_link?.length > 0 && (
           <div className="mt-2">
             <strong>Links:</strong>
             <ul className="list-inside text-blue-600 overflow-hidden">
@@ -236,6 +243,7 @@ const ListingPage = () => {
     </div>
   </div>
 )}
+
 
 {/* Skills Section */}
 {data.skills && data.skills.length > 0 && (
