@@ -161,7 +161,7 @@ console.log(email,"email");
                 className='px-4 py-2 w-full border border-gray-400'
               />
               {portfolioData.thumbnail && (
-                <Image src={portfolioData.thumbnail} alt="Thumbnail Preview" className="mt-2 w-32 h-32 object-cover" />
+                <Image src={portfolioData.thumbnail || 'No Logo'} alt="Thumbnail Preview" className="mt-2 w-32 h-32 object-cover" />
               )}
             </div>
           </div>

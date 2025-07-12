@@ -146,7 +146,7 @@ const CompanyDetailPage = () => {
           className="block hover:shadow-lg transition duration-200 border rounded-lg overflow-hidden"
         >
           <Image
-            src={company.portfolio.thumbnail}
+            src={company.portfolio.thumbnail || '/fallback-image.jpg'}
             alt={`Project ${index + 1}`}
             className="w-full h-48 object-cover"
           />
