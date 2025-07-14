@@ -183,7 +183,7 @@
                 {/* reCAPTCHA */}
                 <ReCAPTCHA
                   ref={recaptchaRef}
-                  sitekey="6LfAknsrAAAAACIjv5bso0G3OWzo4GLFqFMYJfwd"
+                  sitekey="6LfORIIrAAAAAFxpDfxVZsa0IpTxItxLlHwliH9t"
                   onChange={(val: string | null) => setToken(val)}
                 />
                 {message && <p className="text-red-500 text-sm">{message}</p>}
