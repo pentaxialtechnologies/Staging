@@ -158,7 +158,7 @@ const CompanyHeader = () => {
                     className="block px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
                     onClick={() => setOpenEnterprise(false)}
                   >
-                    Employer of the Record
+                    Employer of the Records
                   </Link>
                   <Link
                     href="/enterprise/gcc-services"
