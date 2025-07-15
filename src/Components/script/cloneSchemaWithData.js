@@ -37,7 +37,7 @@ async function cloneSchemaWithData() {
     // Copy indexes
     const indexes = await sourceConn.db.collection(coll.name).indexes();
     for (const index of indexes) {
-      if (index.name === "_id_") continue; // Skip default index
+      if (index.name === "_id_") continue; 
       console.log(`  🔸 Creating index: ${index.name}`);
       try {
         await destConn.db.collection(coll.name).createIndex(index.key, index);

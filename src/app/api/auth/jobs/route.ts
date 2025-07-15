@@ -12,4 +12,5 @@ const jobs = await Jobs.find().sort({createdAt:-1}).lean();
 catch(error){
     return NextResponse.json({message:'Internal Server error',error},{status:501})
 }
+
 }

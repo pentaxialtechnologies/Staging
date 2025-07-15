@@ -33,14 +33,9 @@
     const [message, setMessage] = useState("");
     const recaptchaRef = useRef<ReCAPTCHA>(null);
     const router = useRouter();
-    // const secretkey = 6LfAknsrAAAAANWJTAZER3ah0UDSa1Jt1NTrBTPO
     const [banner] = useState<logoType[]>([{ img: logo }]);
 
-    // useEffect(() => {
-    //   validateField("password", form.password);
-    //   validateField("confirmPassword", form.confirmPassword);
-    //   checkPasswordStrength(form.password);
-    // }, [form.password, form.confirmPassword]);
+
 
     const validateField = (field: string, value: string) => {
       let message = "";
@@ -70,14 +65,6 @@
 
       setErrors((prev) => ({ ...prev, [field]: message }));
     };
-
-    // const checkPasswordStrength = (password: string) => {
-    //   if (!password) setPasswordStrength("");
-    //   else if (password.length < 6) setPasswordStrength("Weak");
-    //   else if (/[A-Z]/.test(password) && /[0-9]/.test(password))
-    //     setPasswordStrength("Strong");
-    //   else setPasswordStrength("Moderate");
-    // };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = e.target;
@@ -183,7 +170,7 @@
                 {/* reCAPTCHA */}
                 <ReCAPTCHA
                   ref={recaptchaRef}
-                  sitekey="6LfciYIrAAAAABzZYbLDX6O_X4KRjczpIZO43hV8"
+                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
                   onChange={(val: string | null) => setToken(val)}
                 />
                 {message && <p className="text-red-500 text-sm">{message}</p>}

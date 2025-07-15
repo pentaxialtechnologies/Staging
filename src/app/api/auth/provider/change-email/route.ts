@@ -8,14 +8,14 @@ import nodemailer from 'nodemailer';
 const transporter = nodemailer.createTransport({
 service:'Gmail',
 auth:{
-    user:'balamuruganwebdeveloper@gmail.com',
-    pass:'prfp ntni uxla sgly'
+    user:process.env.NEXT_PUBLIC_EMAIL_USER || '',
+    pass:process.env.NEXT_PUBLIC_EMAIL_PASSWORD || ""
 }
 })
 
 async function SendEmail(to:string,subject:string,message:string){
 const mailOptions ={
-    from:'balamuruganwebdeveloper@gmail.com',
+    from:process.env.NEXT_PUBLIC_EMAIL_USER,
     to: to,
     subject:subject,
     text: message,

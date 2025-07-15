@@ -102,7 +102,7 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt',
   },
-  secret: 'fallback-secret-key',
+  secret: process.env.NEXT_PUBLIC_TOKEN_KEY,
 callbacks: {
   async jwt({ token, user }) {
     if (user) {

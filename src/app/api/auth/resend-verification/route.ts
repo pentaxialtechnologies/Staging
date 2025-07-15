@@ -48,25 +48,21 @@ const TokenExpiryAt = new Date(Date.now()* 10 *60 * 1000)
 user.emailToken = newToken
 user.emailTokenExpiresAt = TokenExpiryAt
 await user.save()
+const URL = process.env.NEXT_PUBLIC_VERIFY_URL || 'http://localhost:3000'
+ 
+const VerifyURL = `${URL}/verify-email?token=${newToken}&role=${role}`
 
-// const VerifyURL = `http://localhost:3000/verify-email?token=${newToken}&role=${role}`
-// const VerifyURL = `https://s3-staffing-website-smoky.vercel.app/verify-email?token=${newToken}&role=${role}`
- const VerifyURL = `https://s3-staffing-website-ivory.vercel.app/verify-email?token=${newToken}&role=${role}`
-
-
-
-   
 const transporter = nodemailer.createTransport(
     {
-    service:'Gmail',
+  service:process.env.NEXT_PUBLIC_SERVICE || 'Gmail',
    auth:{
-    user:'balamuruganwebdeveloper@gmail.com',
-    pass:'prfp ntni uxla sgly'
+    user:process.env.NEXT_PUBLIC_EMAIL_USER || '',
+    pass:process.env.NEXT_PUBLIC_EMAIL_PASSWORD || "",
    }
     })
 
     const MailOptions ={
-        from :'balamuruganwebdeveloper@gmail.com',
+        from :process.env.NEXT_PUBLIC_EMAIL_USER,
         to:email,
         subject:'Resend: Verify your email',
          html: `

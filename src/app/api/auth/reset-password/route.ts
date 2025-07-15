@@ -32,22 +32,20 @@ if(!email){
 
         const transporter = nodemailer.createTransport(
             {
-                service:'Gmail',
+                service:process.env.NEXT_PUBLIC_SERVICE || 'Gmail',
                 auth:{
-                    user:'balamuruganwebdeveloper@gmail.com',
-                    pass:'prfp ntni uxla sgly'
+                    user:process.env.NEXT_PUBLIC_EMAIL_USER || '',
+                    pass:process.env.NEXT_PUBLIC_EMAIL_PASSWORD || ""
                 }
             }
         )
 
-        // const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-        const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://s3-staffing-website-ivory.vercel.app/';
-
+        const URL = process.env.NEXT_PUBLIC_VERIFY_URL || 'http://localhost:3000'
         
-        const resetLink = `${BASE_URL}/users/reset-password?token=${resetToken}&role=${role}`
+        const resetLink = `${URL}/users/reset-password?token=${resetToken}&role=${role}`
 
         const mailOptions = {
-            from:'balamuruganwebdeveloper@gmail.com',
+            from:process.env.NEXT_PUBLIC_EMAIL_USER,
             to:email,
             subject: "Reset Your Password",
              html: `

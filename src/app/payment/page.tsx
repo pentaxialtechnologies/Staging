@@ -40,7 +40,6 @@ declare global {
 }
 
 export default function HomePage() {
-  // ✅ Dynamically load Razorpay script
   const loadRazorpayScript = (src: string): Promise<boolean> =>
     new Promise((resolve) => {
       const script = document.createElement("script");
@@ -52,7 +51,7 @@ export default function HomePage() {
 
   // ✅ Start payment function
   const startPayment = async () => {
-    const scriptLoaded = await loadRazorpayScript("https://checkout.razorpay.com/v1/checkout.js");
+    const scriptLoaded = await loadRazorpayScript(process.env.NEXT_PUBLIC_PAYMENT_KEY || '');
     if (!scriptLoaded) {
       alert("Failed to load Razorpay SDK. Please try again.");
       return;
@@ -67,7 +66,7 @@ export default function HomePage() {
     const order = await res.json();
 
     const options: RazorpayOptions = {
-      key: "rzp_test_iyYfx6r40I8yTl",
+      key: process.env.NEXT_PUBLIC_RAZRO_KEY || '',
       amount: order.amount,
       currency: order.currency,
       name: "My App",

@@ -27,11 +27,7 @@ name:'Jobs',
 href:'/admin/jobs',
 icon:Briefcase
 },
-// {
-// name:'Providers',
-// href:'/Providers',
-// icon:Building2
-// },
+
 {
 name:'Requests',
 href:'/admin/requests',
