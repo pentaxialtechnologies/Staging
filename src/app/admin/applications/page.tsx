@@ -1,7 +1,7 @@
 
 const Page = () => {
   return (
-    <div>Applications page</div>
+    <div>Application page</div>
   )
 }
 
