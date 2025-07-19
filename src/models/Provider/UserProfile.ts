@@ -13,7 +13,7 @@ const UserSchema  =new Schema(
  {
     userId:{
         type:Schema.Types.ObjectId,
-        ref:'Provider',
+        ref:'provider',
         required: true
     },
     userprofile:{

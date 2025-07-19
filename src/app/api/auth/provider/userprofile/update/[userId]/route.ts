@@ -27,7 +27,6 @@ export async function GET(
       { status: 200 }
     );
   } catch (error) {
-    console.error("GET error:", error);
     return NextResponse.json({ message: "Server Error" }, { status: 500 });
   }
 }
@@ -74,7 +73,6 @@ export async function PUT(
       { status: 200 }
     );
   } catch (error) {
-    console.error("PUT error:", error);
     return NextResponse.json({ message: "Server Error" }, { status: 500 });
   }
 }

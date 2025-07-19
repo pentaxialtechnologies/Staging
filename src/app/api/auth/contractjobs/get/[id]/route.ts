@@ -12,13 +12,14 @@ export async function GET(
 ) {
   await dbConnect();
 
-  const { id } = await context.params; // ✅ Directly accessing the dynamic route param
+  const { id } = await context.params;
   try {
-    const jobs = await Jobs.find({ postedBy: id })
+    const jobs = await Jobs.find({ postedBy: id, isDeleted: { $exists: false }})
 
     if (!jobs) {
       return NextResponse.json({ error: "Job not found" }, { status: 404 });
     }
+
 
     return NextResponse.json(jobs, { status: 200 });
   } // eslint-disable-next-line @typescript-eslint/no-explicit-any 
@@ -50,7 +51,7 @@ catch(error){
 export async function DELETE(req:Request,context: RouteContexts){
     
 try{
-  const {id} = await context.params; // ✅ Directly accessing the dynamic route param
+  const {id} = await context.params; 
 const jobdelete = await Jobs.findByIdAndDelete(id)
 if (!jobdelete) {
       return NextResponse.json({ error: "Job deleted Failed" }, { status: 404 });

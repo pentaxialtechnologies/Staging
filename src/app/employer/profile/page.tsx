@@ -61,7 +61,7 @@ export default function CompanyForm() {
     const fetchCompany = async () => {
       setFetching(true);
       try {
-        const res = await fetch(`/api/auth/company/user/${userId}`);
+        const res = await fetch(`/api/auth/employer/userprofile/update/${userId}`);
         if (res.status === 404) {
           setHasCompany(false);
           return;
@@ -133,8 +133,8 @@ export default function CompanyForm() {
     setLoading(true);
     try {
       const url = hasCompany
-        ? `/api/auth/company/user/${userId}`
-        : `/api/auth/company/create`;
+        ? `/api/auth/employer/userprofile/user/${userId}`
+        : `/api/auth/employer/userprofile/create`;
       const method = hasCompany ? "PUT" : "POST";
 
       const res = await fetch(url, {

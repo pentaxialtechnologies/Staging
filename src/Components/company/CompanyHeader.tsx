@@ -93,7 +93,7 @@ await signOut({callbackUrl: '/users/login'})
   }
   return (
     <header className="bg-blue-600 text-white px-4 py-2 shadow flex items-center justify-between">
-      {/* left logo and menu */}
+    
       <div className="flex items-center gap-3">
         <button className="lg:hidden">
           <Menu className="w-6 h-6" />
@@ -102,8 +102,7 @@ await signOut({callbackUrl: '/users/login'})
       </div>
 
 
-     
-      {/* Avatar and dropdown */}
+
       <div className="flex flex-row gap-6">
          <div className="flex items-center gap-4">
   

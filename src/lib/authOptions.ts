@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import  { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import dbConnect from '@/lib/Mongodb';
-import { Employer } from '@/models/Employer/Employer';
+import { Employers } from '@/models/Employer/Employer';
 import {Provider} from '@/models/Provider/Organization';
 import { Admin } from '@/models/Admin';
 import bcrypt from 'bcryptjs';
@@ -40,7 +38,7 @@ export const authOptions: NextAuthOptions = {
     let user: IUser | null = null;
     let role: IUser['role'] | null = null;
 
-    const employer = await Employer.findOne({ email: credentials.email });
+    const employer = await Employers.findOne({ email: credentials.email });
     if (employer) {
       user = employer as unknown as IUser;
       role = 'employer';

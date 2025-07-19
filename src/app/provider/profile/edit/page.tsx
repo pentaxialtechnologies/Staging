@@ -561,6 +561,8 @@ return(
     <Image
       src={formdata.companylogo}
       alt="Company Logo"
+      width={200}
+      height={100}
       className="max-w-[180px] max-h-[120px] object-contain rounded border"
     />
   ) : (
@@ -631,8 +633,7 @@ return(
   name="hourly_rate"
   value={formdata.hourly_rate || ''}
   onChange={handleChange}
-  className="w-full px-4 py-2 border border-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
->
+  className="w-full px-4 py-2 border border-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition">
   <option value="" disabled>Select a value</option>
   <option value="$25">$25</option>
   <option value="$25-$49">$25-$49</option>

@@ -1,22 +1,22 @@
 import mongoose, { Model, Schema, Document } from 'mongoose';
 
-interface Employers extends Document {
-  fullname?: string;
-  email?: string;
+interface EmployerDocument extends Document {
+  fullname: string;
+  email: string;
   password: string;
   role: 'employer';
-  phone?: string;
-  emailVerificationCode?: string | null;
-  emailVerified: boolean
-  emailToken:string | null
-  emailTokenExpiresAt: Date | null
-  resetToken:  string | undefined,
-  resetTokenExpiry: Date | undefined ,
+  phone: string;
+  emailVerificationCode?: string;
+  tempEmail?: string;
+  emailToken?: string | null;
+  emailTokenExpiresAt?: Date | null;
+  resetToken?: string;
+  resetTokenExpiry?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
 
-const JobSeekerSchema: Schema<Employers> = new Schema(
+const EmployerSchema: Schema<EmployerDocument> = new Schema(
   {
     fullname: {
       type: String,
@@ -33,31 +33,40 @@ const JobSeekerSchema: Schema<Employers> = new Schema(
     role: {
       type: String,
       enum: ['employer'],
-      default: 'employer'
+      default: 'employer',
+      required: true
     },
     phone: {
       type: String,
       required: true
     },
-    emailVerified:{
-      type:Boolean,
-      default:false
-    },
     emailVerificationCode: {
+      type: String,
+      default: ''
+    },
+    tempEmail: {
+      type: String,
+      default: ''
+    },
+    emailToken: {
       type: String,
       default: null
     },
-    emailToken:{
-      type:String,
-      default:null
+    emailTokenExpiresAt: {
+      type: Date,
+      default: null
     },
-emailTokenExpiresAt: { type: Date, default: null },
-resetToken: { type: String },
-resetTokenExpiry: { type: Date },
+    resetToken: {
+      type: String,
+      default: ''
+    },
+    resetTokenExpiry: {
+      type: Date,
+      default: null
+    }
   },
   { timestamps: true }
 );
 
-// ✅ FIX HERE
-export const Employer: Model<Employers> =
-  mongoose.models.Employer || mongoose.model<Employers>('Employer', JobSeekerSchema);
+export const Employers: Model<EmployerDocument> =
+  mongoose.models.Employers || mongoose.model<EmployerDocument>('Employers', EmployerSchema);

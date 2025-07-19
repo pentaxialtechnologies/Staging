@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
 
-export interface ContractJob extends Document {
+interface ContractJob extends Document {
   title: string;
   skills: string[];
   budget: string;
@@ -41,6 +41,7 @@ export interface ContractJob extends Document {
   keywords: string[];
   postedBy: mongoose.Types.ObjectId;
   status: "pending" | "approved" | "rejected";
+  isDeleted : boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -95,6 +96,7 @@ const JobSchema = new Schema<ContractJob>(
       enum: ["pending", "approved", "rejected"],
       default: "pending",
     },
+    isDeleted:{type:Boolean, default:false},
   },
   { timestamps: true }
 );

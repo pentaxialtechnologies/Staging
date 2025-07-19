@@ -130,6 +130,8 @@ const totalPages = Math.ceil(filteredCompanies.length / itemsPerPage);
                 <Image
                   src={company.companylogo}
                   alt={`${company.company_name} logo`}
+                  height={100}
+                  width={200}
                   className="w-35 h-16 object-cover object-fit rounded border"
                 />
                 <div>

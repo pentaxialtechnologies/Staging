@@ -6,6 +6,7 @@ import {
   ChevronDown,
   ChevronRight,
   LucideIcon,
+  Settings,
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -43,6 +44,11 @@ export const ProviderSideBar = () => {
       name: "Manage Jobs",
       href: "/employer/job-list",
       icon: Briefcase,
+    },
+     {
+      name: "Setting",
+      href: "/employer/setting",
+      icon: Settings,
     },
   ];
 

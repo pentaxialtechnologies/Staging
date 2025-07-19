@@ -40,7 +40,6 @@ export async function POST(req: Request) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("Profile creation error:", error);
     return NextResponse.json({ message: "Server Error" }, { status: 500 });
   }
 }

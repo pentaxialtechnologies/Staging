@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import dbConnect from '@/lib/Mongodb';
-import { Employer } from '@/models/Employer/Employer';
+import { Employers } from '@/models/Employer/Employer';
 
 export async function POST(req: Request) {
   try {
@@ -14,7 +14,7 @@ export async function POST(req: Request) {
 
     await dbConnect();
 
-    const existingUser = await Employer.findOne({ email });
+    const existingUser = await Employers.findOne({ email });
 
     if (existingUser) {
       return NextResponse.json({ message: 'User Already Registered' }, { status: 409 });
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
     
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = new Employer({
+    const newUser = new Employers({
       fullname,
       email,
       password: hashedPassword,

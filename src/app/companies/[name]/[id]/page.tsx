@@ -71,6 +71,8 @@ const CompanyDetailPage = () => {
           <Image
             src={company.companylogo}
             alt={company.company_name}
+            width={200}
+            height={100}
             className="w-58 h-25 object-cover rounded-full border"
           />
           <div>

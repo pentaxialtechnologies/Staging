@@ -23,9 +23,9 @@ export async function POST(req:Request){
 
     await provider.save()
     return NextResponse.json({ message: 'Email updated successfully' }, { status: 200 });
-
     }
+    
     catch(error){
       return NextResponse.json({ message: 'Server error',error }, { status: 500 });
     }
-}
+}    
