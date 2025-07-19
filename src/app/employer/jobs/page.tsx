@@ -356,7 +356,7 @@ const payload = {
        Post a Job to Hire Talent on Contract
       </h2>
 
-<p className="flex items-end">Step {Step} of {Step}</p>
+<p className="flex items-end">Steps {Step} of {Step}</p>
       {error && (
         <p className="text-red-600 bg-red-100 border border-red-400 p-3 rounded">
           {error}
