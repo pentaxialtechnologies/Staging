@@ -1,7 +1,7 @@
 import dbConnect from "@/lib/Mongodb";
 import { NextResponse } from "next/server";
 import { Provider } from "@/models/Provider/Organization";
-import { Employer } from "@/models/Employer/Employer";
+import { Employers } from "@/models/Employer/Employer";
 import crypto from 'crypto'
 import nodemailer from 'nodemailer';
 export async function POST(req:Request){
@@ -15,7 +15,7 @@ if(!email){
   let user = await Provider.findOne({email})
   let role='provider'
      if(!user){
-        user = await Employer.findOne({email})
+        user = await Employers.findOne({email})
         role='employer'
      }
 

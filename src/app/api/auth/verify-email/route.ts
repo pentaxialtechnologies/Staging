@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/Mongodb";
 import { Provider } from "@/models/Provider/Organization";
-import { Employer } from "@/models/Employer/Employer";
+import { Employers } from "@/models/Employer/Employer";
 
 export async function POST(req: Request) {
   const { token, role } = await req.json();
@@ -16,9 +16,7 @@ export async function POST(req: Request) {
     let user;
     if (role === "provider") {
       user = await Provider.findOne({ emailToken: token });
-    } else if (role === "employer") {
-      user = await Employer.findOne({ emailToken: token });
-    } else {
+    }  else {
       return NextResponse.json({ message: "Invalid role" }, { status: 400 });
     }
 

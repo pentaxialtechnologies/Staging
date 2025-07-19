@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/Mongodb";
-import { Employer } from "@/models/Employer/Employer";
+import { Employers } from "@/models/Employer/Employer";
 import { Jobs } from "@/models/ContractJob";
 import {Provider} from "@/models/Provider/Organization";
 import { Applications } from "@/models/Application";
@@ -15,7 +15,7 @@ export async function GET() {
       jobPostCount,
       applicationCount,
     ] = await Promise.all([
-      Employer.countDocuments(),
+      Employers.countDocuments(),
       Provider.countDocuments(),
       Jobs.countDocuments(),
       Applications.countDocuments(),

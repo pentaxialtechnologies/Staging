@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import dbConnect from "@/lib/Mongodb";
 import crypto from 'crypto'
 import { Provider } from "@/models/Provider/Organization";
-import { Employer } from "@/models/Employer/Employer";
+import { Employers } from "@/models/Employer/Employer";
 import nodemailer from 'nodemailer'
 
 export async function POST(req:Request){
@@ -20,9 +20,6 @@ let user;
 switch(role){
     case 'provider':
     user = await Provider.findOne({email})
-    break;
-    case 'employer':
-    user = await Employer.findOne({email})
     break;
     default:
     return NextResponse.json({ message: "Invalid role" }, { status: 400 });
