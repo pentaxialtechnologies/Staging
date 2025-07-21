@@ -38,7 +38,7 @@
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.511.0",
     "mongoose": "^8.15.1",
-    "multer": "^2.0.0",
+    "multer": "^2.0.2",
     "next": "^15.3.3",
     "next-auth": "^4.24.11",
     "next-connect": "^1.0.0",
