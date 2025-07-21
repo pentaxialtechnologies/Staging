@@ -8,7 +8,7 @@ export async function POST(req:Request){
     try{
 await dbConnect();
 const {email} = await req.json();
-
+        
 if(!email){
         return NextResponse.json({message:"Email is Required"})
 }

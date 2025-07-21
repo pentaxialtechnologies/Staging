@@ -1,7 +1,7 @@
 "use client";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import dynamic from "next/dynamic";
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 
 import { convertFromRaw, convertToRaw, EditorState, } from 'draft-js';
 
@@ -17,28 +17,14 @@ import {  useSession } from "next-auth/react";
   interface JobForm {
     technical_skills: any;
     title: string;
-    skills: string[];  // explicitly define as string array
+    skills: string[]; 
     budget: string;
     rate:string
-    
     duration: string;
     availability: string;
     timezone: string;
     workmode: string;
     job_description: string;
-
-    working_days:{
-      start_day:string;
-      end_day:string;
-    }
-    working_hours:{
-      start_time:string
-      end_time:string
-    }
-    job_dates:{
-      start_date:Date
-      // end_date:string
-    }
     engagement_type:string
     currency_type: string;
     payment_schedule:string;
@@ -47,11 +33,6 @@ import {  useSession } from "next-auth/react";
     jobLocation:string
     plannedStartDate:Date
     workmodes :string
-    location: {
-      city: string;
-      state?: string;
-      country: string;
-    };
     experience: {
     minyears:string,
     maxyears:string
@@ -75,25 +56,8 @@ import {  useSession } from "next-auth/react";
     jobLocation:'',
     workmodes: '',
     plannedStartDate: new Date(),
-    working_hours: {
-      start_time: "",
-      end_time: ""
-    },
-    location: {
-      city: '',
-      state: '',
-      country: ''
-    },
-
-    job_dates: {
-      start_date: new Date()
-    },
     payment_mode: "",
     technical_skills: undefined,
-    working_days: {
-      start_day: "",
-      end_day: ""
-    },
     experience: {
       minyears: "",
       maxyears: "",
@@ -110,6 +74,7 @@ export default function CreateJobForm() {
     const [SkillState, setSkillState] = useState(() => EditorState.createEmpty());
 
     const [Step,setStep] = useState(1)
+  const isMountedRef = useRef(true);
 
     const handleNext = ()=>{
       setStep((prevStep) => prevStep+1)
@@ -124,80 +89,70 @@ export default function CreateJobForm() {
   return raw.blocks.map(block => block.text.trim()).filter(Boolean);
 }
 
+const updateEditor = (state: EditorState, key: keyof JobForm) => {
+  const raw = convertToRaw(state.getCurrentContent());
+  setForm(prev => ({ ...prev, [key]: JSON.stringify(raw) }));
+};
 
-    const onEditorStateChange = (state: EditorState) => {
-    setEditorState(state);
-    const rawContentState = convertToRaw(state.getCurrentContent());
-    setForm(prev => ({
-      ...prev,
-      job_description: JSON.stringify(rawContentState),
-    }));
-  };
 
-      const onEditorKeyChange = (state: EditorState) => {
-    setKeyState(state);
-    const rawContentState = convertToRaw(state.getCurrentContent());
-    setForm(prev => ({
-      ...prev,
-      key_responsibilities: JSON.stringify(rawContentState),
-    }));
-  };
+const onEditorStateChange = (state: EditorState) => {
+  setEditorState(state);
+  updateEditor(state, 'job_description');
+};
 
-    const onEditorSkillChange = (state: EditorState) => {
-    setSkillState(state);
-    const rawContentState = convertToRaw(state.getCurrentContent());
-    setForm(prev => ({
-      ...prev,
-      technical_skills: JSON.stringify(rawContentState),
-    }));
-  };
+const onEditorKeyChange = (state: EditorState) => {
+  setKeyState(state);
+  updateEditor(state, 'key_responsibilities');
+};
+
+const onEditorSkillChange = (state: EditorState) => {
+  setSkillState(state);
+  updateEditor(state, 'technical_skills');
+};
+
 
 useEffect(() => {
-  let isMounted = true; 
+  return () => {
+    isMountedRef.current = false; // Cleanup on unmount
+  };
+}, []);
+
+const hydratedRef = useRef(false);
+
+useEffect(() => {
+  if (hydratedRef.current) return;
 
   try {
     if (form.job_description) {
-      const contentState = convertFromRaw(JSON.parse(form.job_description));
-      if (isMounted) setEditorState(EditorState.createWithContent(contentState));
+      setEditorState(EditorState.createWithContent(convertFromRaw(JSON.parse(form.job_description))));
     }
-
     if (form.key_responsibilities) {
-      const contentState = convertFromRaw(JSON.parse(form.key_responsibilities));
-      if (isMounted) setKeyState(EditorState.createWithContent(contentState));
+      setKeyState(EditorState.createWithContent(convertFromRaw(JSON.parse(form.key_responsibilities))));
     }
-
     if (form.technical_skills) {
-      const contentState = convertFromRaw(JSON.parse(form.technical_skills));
-      if (isMounted) setSkillState(EditorState.createWithContent(contentState));
+      setSkillState(EditorState.createWithContent(convertFromRaw(JSON.parse(form.technical_skills))));
     }
+    hydratedRef.current = true;
   } catch (error) {
     console.error("Error parsing editor content:", error);
-    if (isMounted) {
-      setEditorState(EditorState.createEmpty());
-      setKeyState(EditorState.createEmpty());
-      setSkillState(EditorState.createEmpty());
-    }
   }
+}, []);
 
-  return () => {
-    // Cleanup on unmount
-    isMounted = false;
-  };
-}, [form.job_description, form.key_responsibilities, form.technical_skills]); 
 
 
 const [input, setInput] = useState("");
 
 const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-  if ((e.key === "Enter" || e.key === ",") && input.trim()) {
+  if ((e.key === 'Enter' || e.key === ',') && input.trim()) {
     e.preventDefault();
-    const newSkill = input.trim();
-    if (!form.skills.includes(newSkill)) {
+    const newSkill = input.trim().toLowerCase();
+    if (!form.skills.some(skill => skill.toLowerCase() === newSkill)) {
       setForm(prev => ({ ...prev, skills: [...prev.skills, newSkill] }));
     }
-    setInput("");
+    setInput('');
   }
 };
+
 
 const removeSkill = (index: number) => {
   const updated = [...form.skills];
@@ -215,18 +170,17 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   const keys = name.split(".");
 
   if (keys.length === 2) {
-    const isDateField = name === "job_dates.start_date" || 'plannedStartDate';
     setForm(prev => ({
       ...prev,
       [keys[0]]: {
         ...prev[keys[0] as keyof typeof prev],
-        [keys[1]]: isDateField ? new Date(value) : value
+        [keys[1]]: keys[1] === "plannedStartDate" ? new Date(value) : value
       }
     }));
   } else {
     setForm(prev => ({
       ...prev,
-      [name]: value
+      [name]: name === "plannedStartDate" ? new Date(value) : value
     }));
   }
 };
@@ -249,13 +203,7 @@ console.log(userId,"userId");
 const requiredFields = [
   { path: "title", value: form.title },
   { path: "job_description", value: form.job_description },
-  { path: "location.city", value: form.location?.city },
-  { path: "location.country", value: form.location?.country },
   { path: "plannedStartDate", value: form.plannedStartDate },
-  { path: "working_hours.start_time", value: form.working_hours?.start_time },
-  { path: "working_hours.end_time", value: form.working_hours?.end_time },
-  { path: "working_days.start_day", value: form.working_days?.start_day },
-  { path: "working_days.end_day", value: form.working_days?.end_day },
   { path: "experience.minyears", value: form.experience?.minyears },
   { path: "experience.maxyears", value: form.experience?.maxyears },
   { path: "duration", value: form.duration },
@@ -294,31 +242,17 @@ const payload = {
   payment_schedule: form.payment_schedule,
   payment_mode: form.payment_mode,
   job_description: extractTextsFromEditorState(editorState).join('\n'), // still raw JSON string
-  key_responsibilities: extractTextsFromEditorState(KeyState),
-  technical_skills: extractTextsFromEditorState(SkillState),
+  key_responsibilities: extractTextsFromEditorState(KeyState).join('\n'),
+  technical_skills: extractTextsFromEditorState(SkillState).join('\n'),
   experience: {
     minyears: parseInt(form.experience.minyears || "0"),
     maxyears: parseInt(form.experience.maxyears || "0"),
   },
-  working_days: {
-    start_day: form.working_days.start_day,
-    end_day: form.working_days.end_day,
-  },
-  working_hours: {
-    start_time: form.working_hours.start_time,
-    end_time: form.working_hours.end_time,
-  },
-  // job_dates: {
-  //   start_date: form.job_dates.start_date ? new Date(form.job_dates.start_date) : null,
-  // },
+ 
    plannedStartDate: {
     plannedStartDate: form.plannedStartDate ? new Date(form.plannedStartDate) : null,
   },
-  location: {
-    city: form.location.city,
-    state: form.location.state,
-    country: form.location.country,
-  },
+
 };
 
 
@@ -356,7 +290,7 @@ const payload = {
        Post a Job to Hire Talent on Contract
       </h2>
 
-<p className="flex items-end">Steps {Step} of {Step}</p>
+<p className="flex items-end">{Step} of {Step}</p>
       {error && (
         <p className="text-red-600 bg-red-100 border border-red-400 p-3 rounded">
           {error}
@@ -604,7 +538,11 @@ const payload = {
         type="date"
         id="plannedStartDate"
          name="plannedStartDate"
-      value={form.plannedStartDate ? form.plannedStartDate.toISOString().split('T')[0] : ""}
+    value={
+    form.plannedStartDate && !isNaN(new Date(form.plannedStartDate).getTime())
+    ? new Date(form.plannedStartDate).toISOString().split('T')[0]
+    : ""
+    }
         onChange={handleChange}
         required
         className="w-full rounded-md border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
@@ -695,7 +633,7 @@ const payload = {
 </div> */}
 
 </div>
-<div className="flex flex-row mt-4">
+<div className="flex flex-row  mt-4">
   
     <div className="w-full">
   <label htmlFor="duration" className="block font-medium mb-1 text-gray-700 w-full">
@@ -897,7 +835,7 @@ const payload = {
     
    
 
-      <h3 className="text-lg font-semibold mt-8 mb-4 text-gray-800">
+      {/* <h3 className="text-lg font-semibold mt-8 mb-4 text-gray-800">
         Location Details
       </h3>
 
@@ -957,7 +895,7 @@ const payload = {
             className="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
           />
         </div>
-      </div>
+      </div> */}
 </div>
 )}
 

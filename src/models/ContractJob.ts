@@ -16,23 +16,19 @@ interface ContractJob extends Document {
   currency_type: string;
   engagement_type: string;
   payment_schedule: string;
-  payment_mode: string;
   job_description: string;
   key_responsibilities: string[];
   technical_skills: string[];
   project_doc: string;
-  working_days: {
-    start_day: string;
-    end_day: string;
-  };
-  working_hours: {
-    start_time: string;
-    end_time: string;
-  };
-  job_dates: {
-    start_date: string;
-    // end_date: string;
-  };
+  // working_days: {
+  //   start_day: string;
+  //   end_day: string;
+  // };
+  // working_hours: {
+  //   start_time: string;
+  //   end_time: string;
+  // };
+  plannedStartDate:Date
   location: {
     city: string;
     state?: string;
@@ -40,7 +36,7 @@ interface ContractJob extends Document {
   };
   keywords: string[];
   postedBy: mongoose.Types.ObjectId;
-  status: "pending" | "approved" | "rejected";
+  status: "under review" | "approved" | "rejected";
   isDeleted : boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -62,23 +58,22 @@ const JobSchema = new Schema<ContractJob>(
     workmode: { type: String, required: true },
     engagement_type: { type: String, required: true },
     payment_schedule: { type: String, required: true },
-    payment_mode: { type: String},
     currency_type: { type: String, required: true },
     job_description: { type: String, required: true },
     key_responsibilities: { type: [String], required: true },
     technical_skills: { type: [String], required: true },
     project_doc: { type: String },
-    working_days: {
-      start_day: { type: String, required: true },
-      end_day: { type: String, required: true },
-    },
-    working_hours: {
-      start_time: { type: String, required: true },
-      end_time: { type: String, required: true },
-    },
-    job_dates: {
-      start_date: { type: String, required: true },
-      // end_date: { type: String, required: true }, // ✅ Fixed back
+    // working_days: {
+    //   start_day: { type: String, required: true },
+    //   end_day: { type: String, required: true },
+    // },
+    // working_hours: {
+    //   start_time: { type: String, required: true },
+    //   end_time: { type: String, required: true },
+    // },
+    plannedStartDate: {
+      start_date: { type: String },
+      
     },
     location: {
       city: { type: String, required: true },
@@ -93,8 +88,8 @@ const JobSchema = new Schema<ContractJob>(
     },
     status: {
       type: String,
-      enum: ["pending", "approved", "rejected"],
-      default: "pending",
+      enum: ["under review", "approved", "rejected"],
+      default: "under review",
     },
     isDeleted:{type:Boolean, default:false},
   },
