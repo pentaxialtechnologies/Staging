@@ -212,14 +212,17 @@ const handleSubmit = async (e: FormEvent) => {
   };
 
   return (
-    <div className="flex items-center justify-center bg-gray-50 py-10 px-4">
-      <div className="w-full max-w-4xl bg-white shadow-xl rounded-2xl p-8">
+    <div className="w-full">
+      <div className="w-full max-w-8xl bg-white shadow-xl rounded-2xl p-8">
         <h1 className="text-2xl font-bold mb-6 text-center">
           Let&apos;s get some basic information
           <span className="text-base float-right">
             Step {steps}/{totalSteps}
           </span>
         </h1>
+
+
+
 
         <form className="space-y-6" >
           {steps === 1 && (

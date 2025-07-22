@@ -8,7 +8,7 @@ const router = useRouter()
 
   
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4 text-center">
+    <div className="max-w-8xl mx-auto flex flex-col items-center justify-center bg-gray-50 px-4 text-center">
       <h1 className="text-2xl font-semibold text-gray-800 mb-4"></h1>
 
    

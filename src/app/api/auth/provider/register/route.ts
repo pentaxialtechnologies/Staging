@@ -34,8 +34,8 @@ export async function POST(req: Request) {
     const emailToken = crypto.randomBytes(32).toString("hex");
     const emailTokenExpiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
-    // const verifyURL = `http://localhost:3000/verify-email?token=${emailToken}&role=${role}`;
-    const verifyURL = `https://s3-staffing-website-ivory.vercel.app/verify-email?token=${emailToken}&role=${role}`;
+    const verifyURL = `http://localhost:3000/verify-email?token=${emailToken}&role=${role}`;
+    // const verifyURL = `https://s3-staffing-website-ivory.vercel.app/verify-email?token=${emailToken}&role=${role}`;
 
 
     // Hash password
@@ -63,7 +63,7 @@ export async function POST(req: Request) {
         pass: "prfp ntni uxla sgly", 
       
       },  tls: {
-    rejectUnauthorized: false, // 🚨 ONLY for testing
+    rejectUnauthorized: false,
   },
     });
 

@@ -436,10 +436,6 @@ render = { ({field})=> (
   <p className="text-red-500 text-sm mt-1">{errors.workmode.message}</p>
 )}
 </div>
-
-
-        </div>
-        {/* Conditionally show Job Location */}
 {(form.workmode === 'Hybrid' || form.workmode === 'On-site') && (
   <div className="mt-4 w-full">
     <label htmlFor="jobLocation" className="block font-medium mb-1 text-gray-700">
@@ -457,6 +453,10 @@ render = { ({field})=> (
     />
   </div>
 )}
+
+        </div>
+        {/* Conditionally show Job Location */}
+
 <div className="flex flex-row gap-6">
   {/* Min Years */}
   <div className="w-full">
