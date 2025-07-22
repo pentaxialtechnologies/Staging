@@ -5,7 +5,6 @@ interface ContractJob extends Document {
   title: string;
   skills: string[];
   budget: string;
-  rate: string;
   duration: string;
   experience: {
     minyears: string;
@@ -45,7 +44,6 @@ const JobSchema = new Schema<ContractJob>(
     title: { type: String, required: true },
     skills: { type: [String], required: true },
     budget: { type: String, required: true }, // ✅ Added
-    rate: { type: String, required: true },
     duration: { type: String, required: true },
     staff_count: { type: String, required: true },
     experience: {
@@ -107,7 +105,6 @@ JobSchema.pre("save", function (next) {
   const keywordSources = [
     job.title,
     job.budget,
-    job.rate,
     job.duration,
     job.availability,
     job.timezone,
