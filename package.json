@@ -11,6 +11,7 @@
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@hookform/resolvers": "^5.1.1",
     "@mantine/core": "^8.0.2",
     "@mantine/hooks": "^8.0.2",
     "@mantine/rte": "^5.10.5",
@@ -49,6 +50,7 @@
     "react-dom": "^18.3.1",
     "react-draft-wysiwyg": "^1.15.0",
     "react-google-recaptcha": "^3.1.0",
+    "react-hook-form": "^7.60.0",
     "react-hot-toast": "^2.5.2",
     "react-icons": "^5.5.0",
     "react-phone-input-2": "^2.15.1",
@@ -56,7 +58,8 @@
     "react-rating-stars-component": "^2.2.0",
     "react-select": "^5.10.1",
     "react-timezone-select": "^3.2.8",
-    "simple-icons": "^15.0.0"
+    "simple-icons": "^15.0.0",
+    "yup": "^1.6.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

@@ -16,7 +16,7 @@ export async function POST(req: Request) {
     const job = await Jobs.create({
       ...payload,
       postedBy, 
-      status: "pending",
+      status: "under review",
     });
 
     return NextResponse.json({ message: "Job created", job }, { status: 201 });

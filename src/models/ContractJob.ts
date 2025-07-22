@@ -1,3 +1,4 @@
+import { mixNumber } from "framer-motion";
 import mongoose, { Schema, Document, Model } from "mongoose";
 
 interface ContractJob extends Document {
@@ -20,6 +21,7 @@ interface ContractJob extends Document {
   key_responsibilities: string[];
   technical_skills: string[];
   project_doc: string;
+  staff_count?: string; // ✅ Added
   // working_days: {
   //   start_day: string;
   //   end_day: string;
@@ -29,11 +31,7 @@ interface ContractJob extends Document {
   //   end_time: string;
   // };
   plannedStartDate:Date
-  location: {
-    city: string;
-    state?: string;
-    country: string;
-  };
+
   keywords: string[];
   postedBy: mongoose.Types.ObjectId;
   status: "under review" | "approved" | "rejected";
@@ -49,6 +47,7 @@ const JobSchema = new Schema<ContractJob>(
     budget: { type: String, required: true }, // ✅ Added
     rate: { type: String, required: true },
     duration: { type: String, required: true },
+    staff_count: { type: String, required: true },
     experience: {
       minyears: { type: String, required: true },
       maxyears: { type: String, required: true },
@@ -74,11 +73,6 @@ const JobSchema = new Schema<ContractJob>(
     plannedStartDate: {
       start_date: { type: String },
       
-    },
-    location: {
-      city: { type: String, required: true },
-      state: { type: String },
-      country: { type: String, required: true },
     },
     keywords: { type: [String], index: true, default: [] },
     postedBy: {
@@ -120,9 +114,6 @@ JobSchema.pre("save", function (next) {
     job.workmode,
     job.engagement_type,
     job.payment_schedule,
-    job.location.city,
-    job.location.state || "",
-    job.location.country,
     job.experience.minyears,
     job.experience.maxyears,
     ...(job.skills || []),

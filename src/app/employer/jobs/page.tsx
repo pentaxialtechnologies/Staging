@@ -5,13 +5,12 @@ import React, { useEffect, useRef, useState } from "react"
 
 import { convertFromRaw, convertToRaw, EditorState, } from 'draft-js';
 
-// Dynamically import Editor to avoid SSR issues
 const Editor = dynamic(() => import('react-draft-wysiwyg').then(mod => mod.Editor), {
   ssr: false,
 });
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import {  useSession } from "next-auth/react";
-
+import {useForm,Controller} from 'react-hook-form'
 
 
   interface JobForm {
@@ -21,6 +20,7 @@ import {  useSession } from "next-auth/react";
     budget: string;
     rate:string
     duration: string;
+    staff_count:string
     availability: string;
     timezone: string;
     workmode: string;
@@ -28,7 +28,6 @@ import {  useSession } from "next-auth/react";
     engagement_type:string
     currency_type: string;
     payment_schedule:string;
-    payment_mode:string
     key_responsibilities: string;
     jobLocation:string
     plannedStartDate:Date
@@ -48,6 +47,7 @@ import {  useSession } from "next-auth/react";
     timezone: "",
     workmode: "",
     rate: "",
+    staff_count:'',
     job_description: "",
     currency_type: "",
     key_responsibilities: "",
@@ -56,7 +56,6 @@ import {  useSession } from "next-auth/react";
     jobLocation:'',
     workmodes: '',
     plannedStartDate: new Date(),
-    payment_mode: "",
     technical_skills: undefined,
     experience: {
       minyears: "",
@@ -68,7 +67,8 @@ import {  useSession } from "next-auth/react";
 
 export default function CreateJobForm() {
     const [form, setForm] = useState<JobForm>(initialFormState);
-    const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
+    const [SkillError,setSkillError] = useState('');
+    const {register,control,handleSubmit,setValue,trigger,formState:{errors}} = useForm({defaultValues:initialFormState});
     const [KeyState, setKeyState] = useState(() => EditorState.createEmpty());
  
     const [SkillState, setSkillState] = useState(() => EditorState.createEmpty());
@@ -76,23 +76,47 @@ export default function CreateJobForm() {
     const [Step,setStep] = useState(1)
   const isMountedRef = useRef(true);
 
-    const handleNext = ()=>{
-      setStep((prevStep) => prevStep+1)
+
+  
+    const handleNext = async()=>{
+      let hasErors = false;
+      if(form.skills.length === 0){ 
+        setSkillError('Please add at least one skill');
+        hasErors = true
+      }
+      const isStep1Valid = await trigger(Step ===1 ? ['title','skills','availability','workmode','staff_count','budget','duration','engagement_type','experience.minyears','experience.maxyears']: ['job_description','key_responsibilities','technical_skills']);
+
+      if (isStep1Valid)setStep((prevStep) => prevStep+1)
     }
 
     const handlePrev = ()=>{
       setStep((prevStep)=> prevStep-1)
     }
 
-  function extractTextsFromEditorState(state: EditorState): string[] {
+    
+
+function extractTextsFromEditorState(state: EditorState): string[] {
   const raw = convertToRaw(state.getCurrentContent());
   return raw.blocks.map(block => block.text.trim()).filter(Boolean);
 }
 
 const updateEditor = (state: EditorState, key: keyof JobForm) => {
   const raw = convertToRaw(state.getCurrentContent());
-  setForm(prev => ({ ...prev, [key]: JSON.stringify(raw) }));
+  const stringified = JSON.stringify(raw);
+
+  setForm(prev => ({ ...prev, [key]: stringified }));
+  setValue(key, stringified, { shouldValidate: true }); // sync with react-hook-form
 };
+
+
+useEffect(() => {
+  register("job_description", { required: "Job Description is required" });
+  register("key_responsibilities", { required: "Key Responsibilities are required" });
+  register("technical_skills", { required: "Technical Skills are required" });
+}, [register]);
+
+
+const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
 
 
 const onEditorStateChange = (state: EditorState) => {
@@ -148,6 +172,7 @@ const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     const newSkill = input.trim().toLowerCase();
     if (!form.skills.some(skill => skill.toLowerCase() === newSkill)) {
       setForm(prev => ({ ...prev, skills: [...prev.skills, newSkill] }));
+      setSkillError('');
     }
     setInput('');
   }
@@ -158,6 +183,9 @@ const removeSkill = (index: number) => {
   const updated = [...form.skills];
   updated.splice(index, 1);
   setForm(prev => ({ ...prev, skills: updated }));
+  if (updated.length === 0) {
+    setSkillError('Please enter at least one skill');
+  }
 };
 
   // const [value, setValue] = useState('');
@@ -191,98 +219,89 @@ const {data: session} = useSession();
 const userId = session?.user.id
 console.log(userId,"userId");
 
-
-
-  async function handleSubmit(e: React.FormEvent) {
-
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-    setSuccess(false);
-
-const requiredFields = [
-  { path: "title", value: form.title },
-  { path: "job_description", value: form.job_description },
-  { path: "plannedStartDate", value: form.plannedStartDate },
-  { path: "experience.minyears", value: form.experience?.minyears },
-  { path: "experience.maxyears", value: form.experience?.maxyears },
-  { path: "duration", value: form.duration },
-  { path: "rate", value: form.rate },
-  { path: "currency_type", value: form.currency_type },
-  { path: "payment_mode", value: form.payment_mode },
-  { path: "payment_schedule", value: form.payment_schedule },
-  { path: "engagement_type", value: form.engagement_type },
-  { path: "workmode", value: form.workmode },
-  { path: "timezone", value: form.timezone },
-  { path: "availability", value: form.availability },
-];
-
-const missingFields = requiredFields
-  .filter(field => !field.value)
-  .map(field => `\${${field.path}}`);
-
-if (missingFields.length > 0) {
-  alert(`Please fill the following required fields:\n${missingFields.join("\n")}`);
-  return;
+function extractTextsFromRawString(rawString: string): string[] {
+  try {
+    if (!rawString) return [];
+    const raw = JSON.parse(rawString);
+    return raw.blocks?.map((block: any) => block.text.trim()).filter(Boolean) || [];
+  } catch (err) {
+    console.error("Invalid raw JSON in DraftJS content:", rawString);
+    return [];
+  }
 }
 
 
+const onSubmit = async (FormData: any) => {
+  setLoading(true);
+  setError(null);
+  setSuccess(false);
+
+const isValid = await trigger([
+  "job_description",
+  "key_responsibilities",
+  "technical_skills",
+]);
+
 
 const payload = {
-  title: form.title,
-  skills: form.skills,
-  budget: form.budget,
-  rate:form.rate,
-  duration: form.duration,
-  availability: form.availability,
-  timezone: form.timezone,
-  workmode: form.workmode,
-  currency_type: form.currency_type,
-  engagement_type: form.engagement_type,
-  payment_schedule: form.payment_schedule,
-  payment_mode: form.payment_mode,
-  job_description: extractTextsFromEditorState(editorState).join('\n'), // still raw JSON string
-  key_responsibilities: extractTextsFromEditorState(KeyState).join('\n'),
-  technical_skills: extractTextsFromEditorState(SkillState).join('\n'),
+  ...FormData,
+
+  rate: FormData.rate, 
+  currency_type: FormData.currency_type ?? 'USD', 
+  timezone: FormData.timezone ?? 'Asia/Kolkata', 
+
   experience: {
     minyears: parseInt(form.experience.minyears || "0"),
     maxyears: parseInt(form.experience.maxyears || "0"),
   },
- 
-   plannedStartDate: {
+  plannedStartDate: {
     plannedStartDate: form.plannedStartDate ? new Date(form.plannedStartDate) : null,
   },
 
+  job_description: FormData.job_description
+    ? extractTextsFromRawString(FormData.job_description).join('\n')
+    : "",
+
+  key_responsibilities: FormData.key_responsibilities
+    ? extractTextsFromRawString(FormData.key_responsibilities).join('\n')
+    : "",
+
+  technical_skills: FormData.technical_skills
+    ? extractTextsFromRawString(FormData.technical_skills).join('\n')
+    : "",
 };
 
 
-    try {
-      const res = await fetch("/api/auth/contractjobs/post", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({payload,postedBy: session?.user?.id}),
-      });
 
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || "Failed to create job");
-      }
+  try {
+    const res = await fetch("/api/auth/contractjobs/post", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ payload, postedBy: session?.user?.id }),
+    });
 
-      setSuccess(true);
-      setForm(initialFormState);
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+    if (!res.ok) {
+      const errorData = await res.json();
+      throw new Error(errorData.error || "Failed to create job");
     }
+
+    setSuccess(true);
+    setForm(initialFormState);
+  } catch (err: any) {
+    setError(err.message);
+  } finally {
+    setLoading(false);
   }
+};
+
+
 
   return (
     <div>
 
   
     <form
-      onSubmit={handleSubmit}
+      onSubmit={handleSubmit(onSubmit)}
       className="max-w-7xl mx-auto p-8 bg-white rounded-lg shadow-md space-y-6"
     >
       
@@ -309,17 +328,24 @@ const payload = {
           <label htmlFor="title" className="block font-medium mb-1 text-gray-700">
             Contract job title <span className="text-red-500">*</span>
           </label>
-          <input
-            type="text"
-            name="title"
-            value={form.title}
-            onChange={handleChange}
-            placeholder="e.g. Senior React Developer"
-            required
-            className="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+          <Controller 
+          name="title"
+          control={control}
+          rules={ { required: "Job title is required" }}
+          render={({field})=> (
+         <input
+                {...field}
+                placeholder="e.g. Senior React Developer"
+                className={`w-full rounded-md border px-4 py-2 ${
+                  errors.title ? "border-red-500" : "border-gray-300"
+                }`}
+              />
+          )} 
           />
-        </div>
-
+          {errors.title && (
+            <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
+          )}
+       </div>     
         <div>
       <label className="block font-medium mb-1 text-gray-700">
         Skills <span className="text-red-500">*</span>
@@ -353,50 +379,67 @@ const payload = {
       </div>
 
       <p className="text-sm text-gray-500 mt-1">Press Enter or comma to add skill</p>
+      {SkillError && (
+        <p className="text-red-500 text-sm mt-1">{SkillError}</p>
+      )}
     </div>
 
-          <div className="flex flex-row gap-4 ">
-              <div className="w-full">
+          <div className="flex  flex-row gap-6">
+      <div className="w-full">
         <label htmlFor="availability" className="block font-medium mb-1 text-gray-700 w-95">
        Availability <span className="text-red-500">*</span>
       </label>
-      <select
-      name="availability"
-      value={form.availability}
-      onChange={handleChange}
-      className="w-full rounded-md border px-4 py-2"
-    >
-      <option value=''>Select Avalibility</option>
+
+<Controller 
+name="availability"
+control={control}
+rules={ {required:'Avalibility is required'}}
+render ={ ({field})=> (
+  <select
+  {...field}
+  className={`w-full rounded-md border px-4 py-2 ${errors.availability ? 'border-red-500' : 'border-gray-300'}`}
+>
+ <option value=''>Select Avalibility</option>
       <option value='Immediately'>Immediately</option>
       <option value="In 1 or 2 weeks from now">In 1 or 2 weeks from now</option>
       <option value="In 1 or 2 months from now">In 1 or 2 months from now</option>
       <option value="I am not sure at this point">I am not sure at this point</option>
     </select>
+)}
+/>
+{errors.availability && (
+  <p className="text-red-500 text-sm mt-1">{errors.availability.message}</p>
+)}
         </div>
-            
-            
-
   <div className="w-full">
   <label htmlFor="workmode" className="block font-medium mb-1 text-gray-700 w-95">
     Work Mode <span className="text-red-500">*</span>
-  </label>
-  <select
-    id="workmode"
-    name="workmode"
-    value={form.workmode}
-    onChange={handleChange}
-    required
-    className="w-full rounded-md border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+<Controller
+name="workmode"
+control={control}
+rules ={ { required: 'Work mode is required' }}
+render = { ({field})=> (
+  <select 
+  {...field}
+  className={`w-full rounded-md border px-4 py-2 ${errors.workmode ? 'border-red-500' : 'border-gray-300'}`}
   >
-    <option value=''>Select WorkMode</option>
+  <option value=''>Select WorkMode</option>
     <option value="Remote">Remote</option>
      <option value="Hybrid">Hybrid</option>
     <option value="On-site">On-site</option>
     <option value="Service Provider Agency Location">Service Provider Agency Location</option>
   </select>
+)}
+/>
+  </label>
+{errors.workmode && (
+  <p className="text-red-500 text-sm mt-1">{errors.workmode.message}</p>
+)}
 </div>
 
-{/* Conditionally show Job Location */}
+
+        </div>
+        {/* Conditionally show Job Location */}
 {(form.workmode === 'Hybrid' || form.workmode === 'On-site') && (
   <div className="mt-4 w-full">
     <label htmlFor="jobLocation" className="block font-medium mb-1 text-gray-700">
@@ -414,55 +457,84 @@ const payload = {
     />
   </div>
 )}
-        </div>
-        
 <div className="flex flex-row gap-6">
-    
+  {/* Min Years */}
   <div className="w-full">
-
-       <label className="font-medium mb-1 text-gray-700">
+    <label className="font-medium mb-1 text-gray-700">
       Experience (From)
     </label>
-    <input
-      type="number"
+    <Controller
       name="experience.minyears"
-      value={form.experience.minyears}
-      onChange={handleChange}
-      className="w-full rounded-md border border-gray-300 px-4 py-2"
-      placeholder="e.g. 2"
+      control={control}
+      rules={{ required: 'Minimum years of experience is required' }}
+      render={({ field }) => (
+        <input
+          {...field}
+          type="number"
+          className={`w-full rounded-md border px-4 py-2 ${
+            errors.experience?.minyears ? 'border-red-500' : 'border-gray-300'
+          }`}
+          placeholder="e.g. 2"
+        />
+      )}
     />
+    {errors.experience?.minyears && (
+      <p className="text-red-500 text-sm mt-1">
+        {errors.experience.minyears.message}
+      </p>
+    )}
   </div>
 
-  <div className="w-full"> 
+  {/* Max Years */}
+  <div className="w-full">
     <label className="font-medium mb-1 text-gray-700">
       Experience (To)
     </label>
-    <input
-      type="number"
+    <Controller
       name="experience.maxyears"
-      value={form.experience.maxyears}
-      onChange={handleChange}
-      className="w-full rounded-md border border-gray-300 px-4 py-2"
-      placeholder="e.g. 6"
+      control={control}
+      rules={{ required: 'Maximum years of experience is required' }}
+      render={({ field }) => (
+        <input
+          {...field}
+          type="number"
+          className={`w-full rounded-md border px-4 py-2 ${
+            errors.experience?.maxyears ? 'border-red-500' : 'border-gray-300'
+          }`}
+          placeholder="e.g. 5"
+        />
+      )}
     />
+    {errors.experience?.maxyears && (
+      <p className="text-red-500 text-sm mt-1">
+        {errors.experience.maxyears.message}
+      </p>
+    )}
   </div>
 </div>
 
-      <div>
-          
-         <div>
-         <label htmlFor="title" className="block font-medium mb-1 text-gray-700">
-           Number of people you wish to hire for this job <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="text"
-            name="title"
-            value={form.title}
-            onChange={handleChange}
-            placeholder="Enter number of resources"
-            required
-            className="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
-          />
+
+<div>
+    <div>
+<label htmlFor="title" className="block font-medium mb-1 text-gray-700">
+  Number of people you wish to hire for this job <span className="text-red-500">*</span>
+    </label>
+<Controller
+name="staff_count"
+control={control}
+rules ={ {required:'Number of resources is required'}}
+render = { ({field})=> (
+  <input
+  {...field}
+  placeholder="Enter number of resources"
+  className={`w-full rounded-md border px-4 py-2 ${errors.staff_count ? 'border-red-500' : 'border-gray-300'}`}
+  />
+)}
+/>
+
+{errors.staff_count && (  
+  <p className="text-red-500 text-sm mt-1">{errors.staff_count.message}</p>
+)}
         </div>
         </div>
 
@@ -473,19 +545,24 @@ const payload = {
           <label htmlFor="budget" className="block font-medium mb-1 text-gray-700">
             Budget <span className="text-red-500">*</span>
           </label>
-          <input
-            type="text"
-            id="budget"
-            name="budget"
-            value={form.budget}
-            onChange={handleChange}
-            placeholder="e.g. $1000 - $2000"
-            required
-            className="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
-          />
+<Controller
+name="budget"
+control={control}
+rules={{ required:'Budget is required' }}
+render = { ({field})=> (
+  <input 
+  {...field}
+  className={`w-full rounded-md border px-4 py-2 ${errors.budget ? 'border-red-500' : 'border-gray-300'}`}
+  />
+)}
+/>
+
+{errors.budget && ( 
+  <p className="text-red-500 text-sm mt-1">{errors.budget.message}</p>
+)}
         </div>
  <label htmlFor="budget" className="block font-medium text-gray-700">
-    Is there a planned start date for this job? <span className="text-red-500">*</span>
+    Is there a planned start date for this job? 
           </label>
 <div className="flex gap-6">
   {/* Yes Radio */}
@@ -532,7 +609,7 @@ const payload = {
 
     <div>
       <label htmlFor="plannedStartDate" className="block font-medium mb-1 text-gray-700">
-        Planned Start Date <span className="text-red-500">*</span>
+        Planned Start Date
       </label>
       <input
         type="date"
@@ -550,88 +627,6 @@ const payload = {
     </div>
   </div>
 )}
-
-
-           {/* <div>
-          <label htmlFor="budget" className="block font-medium mb-1 text-gray-700">
-            payment_Mode <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="text"
-            id="payment_mode"
-            name="payment_mode"
-            value={form.payment_mode}
-            onChange={handleChange}
-            placeholder="e.g. Gpay"
-            required
-            className="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
-          />
-        </div> */}
-
-{/* <div className="grid grid-cols-2 gap-4">
-  <div>
-  <label className="block font-medium mb-1">Start Working Day</label>
-  <select
-    name="working_days.start_day"
-    value={form.working_days.start_day}
-    onChange={handleChange}
-    className="w-full rounded-md border px-4 py-2"
-  >
-    <option value="" disabled>Select Day</option>
-    <option value="Monday">Monday</option>
-    <option value="Tuesday">Tuesday</option>
-    <option value="Wednesday">Wednesday</option>
-    <option value="Thursday">Thursday</option>
-    <option value="Friday">Friday</option>
-    <option value="Saturday">Saturday</option>
-    <option value="Sunday">Sunday</option>
-  </select>
-</div>
-
-  <div>
-    <label className="block font-medium mb-1">End Working Day</label>
-    <select
-      name="working_days.end_day"
-      value={form.working_days.end_day}
-      onChange={handleChange}
-      className="w-full rounded-md border px-4 py-2"
-    >
-       <option value='Monday'>Monday</option>
-      <option value='Tuesday'>Tuesday</option>
-      <option value='Wednesday'> Wednesday</option>
-      <option value='Thursday'>Thursday</option>
-      <option value='Friday'>Friday</option>
-      <option value='Saturday'>Saturday</option>
-      <option value='Sunday'>Sunday</option>
-    </select>
-  </div>
-</div> */}
-
-
-{/* <div className="grid grid-cols-2 gap-4">
-  <div>
-    <label className="block font-medium mb-1">Work Start Time</label>
-    <input
-      type="time"
-      name="working_hours.start_time"
-      value={form.working_hours.start_time}
-      onChange={handleChange}
-      className="w-full rounded-md border px-4 py-2"
-    />
-  </div>
-  <div>
-    <label className="block font-medium mb-1">Work End Time</label>
-    <input
-    
-      type="time"
-      name="working_hours.end_time"
-      value={form.working_hours.end_time}
-      onChange={handleChange}
-      className="w-full rounded-md border px-4 py-2"
-    />
-  </div>
-</div> */}
-
 </div>
 <div className="flex flex-row  mt-4">
   
@@ -639,34 +634,52 @@ const payload = {
   <label htmlFor="duration" className="block font-medium mb-1 text-gray-700 w-full">
     Contract Duration <span className="text-red-500">*</span>
   </label>
+
+<Controller 
+name="duration"
+control={control}
+rules= {{required:'Duration is required'}}
+render = { ({field})=> (
   <select
-    id="duration"
-    name="duration"
-    value={form.duration}
-    onChange={handleChange}
-    className="rounded-md border border-gray-300 px-4 py-2 w-90"
+  {...field}
+    className={`w-full rounded-md border px-4 py-2 ${errors.duration ? 'border-red-500' : 'border-gray-300'}`}
   >
-    <option value="">-- Select Duration --</option>
+  <option value="">-- Select Duration --</option>
     <option value="1 to 3 months">1 to 3 months</option>
     <option value="3 to 6 months">3 to 6 months</option>
     <option value="more than 6 months">More than 6 months</option>
     <option value="not sure at this time">Not sure at this time</option>
   </select>
+)}
+/>
+{errors.duration && (
+  <p className="text-red-500 text-sm mt-1">{errors.duration.message}</p>
+)}
 </div>
 <div className="w-full">
       <label htmlFor="engagement_type" className="block font-medium mb-1 text-gray-700 w-full">
       Engagement type  <span className="text-red-500">*</span>
       </label>
-      <select
-      name="engagement_type"
-      value={form.engagement_type}
-      onChange={handleChange}
-      className="w-full rounded-md border px-4 py-2"
-    >
-      <option>Select engagement type</option>
+
+<Controller 
+name="engagement_type"
+control={control}
+rules={{ required: 'Engagement type is required' }}
+render = { ({field})=> (
+  <select
+   {...field}
+   className={`w-full rounded-md border px-4 py-2 ${errors.engagement_type ? 'border-red-500' : 'border-gray-300'}`}
+   >
+  <option>Select engagement type</option>
       <option>Full time</option>
       <option>Part time</option>
-    </select>
+</select>
+
+)}
+/>
+{errors.engagement_type && (  
+  <p className="text-red-500 text-sm mt-1">{errors.engagement_type.message}</p>
+)}
   </div>
 </div>
       
@@ -678,15 +691,16 @@ const payload = {
      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
       <div>
 <label htmlFor="payment_schedule" className="block font-medium mb-1 text-gray-700">
-           Payment schedule <span className="text-red-500">*</span>
-          </label>
+  Payment schedule <span className="text-red-500">*</span>
+  </label>
+<Controller 
+name="payment_schedule"
+control={control}
+rules={{ required: 'Payment schedule is required' }}
+render = { ({field})=> (
           <select
-            id="payment_schedule"
-            name="payment_schedule"
-            value={form.payment_schedule}
-            onChange={handleChange}
-            required
-            className="w-full rounded-md border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+            {...field}
+            className={`w-full rounded-md border px-4 py-2 ${errors.payment_schedule ? 'border-red-500' : 'border-gray-300'}`}
           >
             <option value="Daily">Daily</option>
             <option value="Hourly">Hourly</option>
@@ -695,20 +709,26 @@ const payload = {
             <option value="Monthly">Monthly</option>
             <option value="Quarterly">Quarterly</option>
           </select>
-      </div>
+)}
+/>
+{errors.payment_schedule && (
+            <p className="text-red-500 text-sm mt-1">{errors.payment_schedule.message}</p>
+          )}
+  </div>
+      
           <div>
           <label htmlFor="currency_type" className="block font-medium mb-1 text-gray-700">
            Currency <span className="text-red-500">*</span>
           </label>
-          <select
-         
-            id="currency_type"
-            name="currency_type"
-            value={form.currency_type}
-            onChange={handleChange}
-            required
-            className="w-full rounded-md border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
-          >
+<Controller
+name="currency_type"
+control={control}
+rules={{ required: 'Currency type is required' }}
+render = { ({field})=> (
+      <select 
+      {...field}
+      className={`w-full rounded-md border px-4 py-2 ${errors.currency_type ? 'border-red-500' : 'border-gray-300'}`}
+      >
             <option value="INR">INR</option>
             <option value="USD">USD</option>
             <option value="NZD">NZD</option>
@@ -721,32 +741,58 @@ const payload = {
             <option value="AED">AED</option>
             <option value="QAR">QAR</option>
             <option value="KWD">KWD</option>  
-          </select>
+
+      </select>
+          
+)}
+          
+/>
+{errors.currency_type && (
+            <p className="text-red-500 text-sm mt-1">{errors.currency_type.message}</p>
+          )}
         </div>
+           
+
+
+<div>
+  <label className="block font-medium text-gray-700">Rate <span className="text-red-500">*</span></label>
+  <input
+    type="number"
+    {...register("rate", { required: "Rate is required" })}
+   className="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+    placeholder="Enter rate"
+  />
+  {errors.rate && <p className="text-red-500 text-sm">{errors.rate.message}</p>}
+</div>
+
          <div>
-          <label
-            htmlFor="Rate"
-            className="block font-medium mb-1 text-gray-700"
-          >
-            Rate <span className="text-red-500">*</span>
+          <label htmlFor="budget" className="block font-medium mb-1 text-gray-700">
+            Budget 
           </label>
           <input
-            id="rate"
-            name="rate"
-            value={form.rate}
+            id="budget"
+            name="budget"
+            value={form.budget}
             onChange={handleChange}
-            placeholder="Rate"
+            placeholder="Budget"
             required
             className="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
           />
-        </div>
+</div>
+          
         </div>
              <div>
           <label htmlFor="timezone" className="block font-medium  text-gray-700">
             Timezone <span className="text-red-500">*</span>
           </label>
-          <select name="timezone" onChange={handleChange} value={form.timezone} className="px-0 mt-1 py-2 rounded border border-gray-400 w-full">
-                      <option >Select time zone</option>
+
+          <Controller
+  name="timezone"
+  control={control}
+  rules={{ required: "Timezone is required" }}
+  render={({ field }) => 
+  <select {...field} className={`w-full rounded-md border px-4 py-2 ${errors.timezone ? 'border-red-500' : 'border-gray-300'}`}>
+  <option >Select time zone</option>
              <option value="(UTC+00:00) Africa/Abidjan">
          (UTC+00:00) Africa/Abidjan</option>  
       <option value="(UTC+00:00) Africa/Accra">
@@ -761,8 +807,10 @@ const payload = {
       (UTC+00:00) Africa/Bamako</option>
     <option value="(UTC+5:30)IST Indian Standard Time">
     (UTC+5:30)IST Indian Standard Time</option>
-    </select>
-        </div>
+
+  </select>}
+ />
+  </div>
  
        
 
@@ -832,70 +880,6 @@ const payload = {
         placeholder="Write the Required Skills here..."
       />
     </div>
-    
-   
-
-      {/* <h3 className="text-lg font-semibold mt-8 mb-4 text-gray-800">
-        Location Details
-      </h3>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div>
-          <label
-            htmlFor="location.city"
-            className="block font-medium mb-1 text-gray-700"
-          >
-            City <span className="text-red-500">*</span>
-          </label>
-          <input
-          type="text"
-            id="location.city"
-            name="location.city"
-            value={form.location.city}
-            onChange={handleChange}
-            placeholder="City"
-            required
-            className="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="location.state"
-            className="block font-medium mb-1 text-gray-700"
-          >
-            State
-          </label>
-          <input
-          type="text"
-            id="location.state"
-            name="location.state"
-            value={form.location.state}
-            onChange={handleChange}
-            placeholder="State"
-            className="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="location.country"
-            className="block font-medium mb-1 text-gray-700"
-          >
-            Country <span className="text-red-500">*</span>
-          </label>
-          <input
-          type="text"
-            id="location.country"
-            name="location.country"
-            value={form.location.country}
-            onChange={handleChange}
-            placeholder="Country"
-            required
-            className="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
-          />
-        </div>
-      </div> */}
 </div>
 )}
 
