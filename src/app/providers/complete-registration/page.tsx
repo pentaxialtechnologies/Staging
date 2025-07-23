@@ -3,7 +3,7 @@ import { useSession } from 'next-auth/react';
 
 import React, { useEffect, useState, Key, FormEvent } from 'react';
 import {  useRouter } from "next/navigation";
-
+import {Controller,useForm} from 'react-hook-form'
 interface IndustryFocus {
   category: string;
   percentage?: string;
@@ -45,7 +45,7 @@ interface Profile {
 
 const Page = () => {
   const [steps, setSteps] = useState(1);
-  const totalSteps = 3;
+  const totalSteps = 2;
 
     const router = useRouter()
   const [formdata, setFormdata] = useState<Profile>({
@@ -64,6 +64,29 @@ const Page = () => {
     industry_focus: [{ category: '' }],
   });
 
+const {control,handleSubmit,trigger,formState:{errors}} = useForm<Profile>({defaultValues: formdata})
+
+
+
+const onSubmit = async(formdata : any) => {
+  try {
+    const res = await fetch(`/api/auth/provider/${Id}`, {
+      method: 'PUT', 
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...formdata,hasCompletedPlanSelection:true }),
+    });
+
+    if (res.ok) {
+      alert('Profile updated successfully!');
+      router.push('/provider/dashboard?profileCompleted=true');
+    } else {
+      alert('Something went wrong.');
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
   const [categories, setcategories] = useState<Category[]>([]);
   const [countries, setCountries] = useState<string[]>([]);
   const [states, setStates] = useState<string[]>([]);
@@ -74,9 +97,7 @@ const Page = () => {
 
 
   const {data:session} = useSession()
-  // const  email= session?.user?.email
   const Id = session?.user?.id
-//   const mail = localStorage.getItem('userEmail')
   console.log(Id,'ID');
   useEffect(() => {
   const fetchUser = async () => {
@@ -86,7 +107,7 @@ const Page = () => {
       const data = await res.json();
       setFormdata((prev) => ({
         ...prev,
-        ...data // pre-fill values
+        ...data 
       }));
     } catch (err) {
       console.error("Failed to fetch user", err);
@@ -151,44 +172,29 @@ const Page = () => {
         console.error(error);
       }
     };
-
-// const sessions = async()=>{
-//         try{
-//  const res = await fetch('/api/auth/user/session');
-//         if (res.ok) {
-//           const data = await res.json();
-//           setcategories(data.category);
-//         }
-//         }
-//         catch(error){
-// console.error(error);
-//         }
-//     }
     fetchData();
-    // sessions();
   }, []);
 
 
-
-const handleSubmit = async (e: FormEvent) => {
-  e.preventDefault();
-  try {
-    const res = await fetch(`/api/auth/provider/${Id}`, {
-      method: 'PUT', // or PATCH
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...formdata,hasCompletedPlanSelection:true }),
-    });
-
-    if (res.ok) {
-      alert('Profile updated successfully!');
-      router.push('/provider/dashboard?profileCompleted=true');
-    } else {
-      alert('Something went wrong.');
+const handleNext = async() =>{
+  const isLastStep = steps === totalSteps;
+  if (isLastStep) {
+    handleSubmit(onSubmit)();
+  } else {
+    const isValid = true; 
+    if (!isValid) {
+      alert('Please fill all required fields.');
+      return;
     }
-  } catch (error) {
-    console.error(error);
-  }
-};
+    const StepValid = await trigger(steps === 1 ? ['company_name','company_website','phone_number','company_location','location.city','location.country','location.state','location.postal_code']:['service_lines'])
+    if(!StepValid) {
+      alert('Please fill all required fields.');
+      return;
+    }
+      if(StepValid) 
+      setSteps(steps + 1);
+}
+}
 
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -224,39 +230,190 @@ const handleSubmit = async (e: FormEvent) => {
 
 
 
-        <form className="space-y-6" >
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" >
           {steps === 1 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-              <input type="file" className="w-full px-4 py-2 border rounded-lg col-span-1" onChange={handleImageUpload} />
-              <input type="text" value={formdata.company_name} onChange={(e) => setFormdata({ ...formdata, company_name: e.target.value })} placeholder="Company Name" className="w-full px-4 py-2 border rounded-lg" />
-              <input type="text" value={formdata.company_website} onChange={(e) => setFormdata({ ...formdata, company_website: e.target.value })} placeholder="Website" className="w-full px-4 py-2 border rounded-lg" />
-              <input type="text" value={formdata.phone_number} onChange={(e) => setFormdata({ ...formdata, phone_number: e.target.value })} placeholder="Phone Number" className="w-full px-4 py-2 border rounded-lg" />
-              <input type="text" value={formdata.company_location} onChange={(e) => setFormdata({ ...formdata, company_location: e.target.value })} placeholder="Company Location" className="w-full px-4 py-2 border rounded-lg" />
+              {/* <input type="file" className="w-full px-4 py-2 border rounded-lg col-span-1" onChange={handleImageUpload} /> */}
+              <div>
+   <Controller
+  name="companylogo"
+  control={control}
+  rules={{ required: 'Company logo is required' }}
+  render={({ field }) => (
+    <input
+      type="file"
+      onChange={handleImageUpload} 
+      accept="image/*"
+      className="w-full px-4 py-2 border rounded-lg col-span-2"
+    />
+  )}
+/>
+{errors.companylogo && (
+  <p className="text-red-500 text-sm">{errors.companylogo.message}</p>
+)}
 
-              <select value={formdata.location.country} onChange={(e) => {
-                setSelectedCountry(e.target.value);
-                setFormdata((prev) => ({ ...prev, location: { ...prev.location, country: e.target.value } }));
-              }} className="w-full px-4 py-2 border rounded-lg">
-                <option value="">Select Country</option>
-                {countries.map((country) => <option key={country} value={country}>{country}</option>)}
-              </select>
+              </div>  
+<div>
+  <Controller
+  name='company_name'
+  control={control}
+  rules={{ required: 'Company name is required' }}
+  render = { ({field}) =>(
+    <input
+      type="text"
+      {...field}
+      placeholder="Company Name"
+      className="w-full px-4 py-2 border rounded-lg"
+    />
+  )}
+  />
+  <p className="text-red-500 text-sm">
+    {errors.company_name && errors.company_name.message}  
+  </p>
+</div>
 
-              <select value={formdata.location.state} onChange={(e) => {
-                setSelectedState(e.target.value);
-                setFormdata((prev) => ({ ...prev, location: { ...prev.location, state: e.target.value } }));
-              }} className="w-full px-4 py-2 border rounded-lg" disabled={!states.length}>
-                <option value="">Select State</option>
-                {states.map((state) => <option key={state} value={state}>{state}</option>)}
-              </select>
+<div>
+  <Controller
+    name="company_website"
+    control={control}
+    rules={{ required: 'Company website is required' }}
+    render={({ field }) => (
+      <input
+        type="text"
+        {...field}
+        placeholder="Company Website"
+        className="w-full px-4 py-2 border rounded-lg"
+      />
+    )}
+  />
+  {errors.company_website && <p className="text-red-500 text-sm">{errors.company_website.message}</p>}
+</div>
+          
+<div>
+  <Controller
+    name="phone_number"
+    control={control}
+    rules={{ required: 'Phone number is required' }}
+    render={({ field }) => (
+      <input
+        type="text"
+        {...field}
+        placeholder="Phone Number"
+        className="w-full px-4 py-2 border rounded-lg"
+      />
+    )}
+  />
+  {errors.phone_number && <p className="text-red-500 text-sm">{errors.phone_number.message}</p>}
+</div>
 
-              <select value={formdata.location.city} onChange={(e) => {
-                setFormdata((prev) => ({ ...prev, location: { ...prev.location, city: e.target.value } }));
-              }} className="w-full px-4 py-2 border rounded-lg" disabled={!cities.length}>
-                <option value="">Select City</option>
-                {cities.map((city) => <option key={city} value={city}>{city}</option>)}
-              </select>
+<div>
+  <Controller
+    name="company_location"
+    control={control}
+    rules={{ required: 'Company location is required' }}
+    render={({ field }) => (
+      <input
+        type="text"
+        {...field}
+        placeholder="Company Location"
+        className="w-full px-4 py-2 border rounded-lg"
+      />
+    )}
+  />
+  {errors.company_location && <p className="text-red-500 text-sm">{errors.company_location.message}</p>}
+</div>
 
-              <input type="text" value={formdata.location.postal_code} onChange={(e) => setFormdata((prev) => ({ ...prev, location: { ...prev.location, postal_code: e.target.value } }))} placeholder="Postal Code" className="w-full px-4 py-2 border rounded-lg" />
+<div>
+  <Controller
+    name="location.country"
+    control={control}
+    rules={{ required: 'Country is required' }}
+    render={({ field }) => (
+      <select
+        {...field}
+        className="w-full px-4 py-2 border rounded-lg"
+        onChange={(e) => {
+          field.onChange(e.target.value);
+          setSelectedCountry(e.target.value);
+        }}
+      >
+        <option value="">Select Country</option>
+        {countries.map((country) => (
+          <option key={country} value={country}>{country}</option>
+        ))}
+      </select>
+    )}
+  />
+  {errors.location?.country && <p className="text-red-500 text-sm">{errors.location.country.message}</p>}
+</div>
+
+
+<div>
+<Controller 
+name='location.state'
+control = {control}
+rules = { {required: 'State is required'  }}
+render = {({field})=> (
+  <select
+  {...field}
+  className="w-full px-4 py-2 border rounded-lg"
+  onChange={(e) => {
+    field.onChange(e.target.value);
+    setSelectedState(e.target.value);
+    setCities([]); 
+  }}
+>
+    <option value="">Select State</option>
+    {states.map((state) => (
+      <option key={state} value={state}>{state}</option>
+    ))}
+  </select>
+)}
+/>
+  {errors.location?.state && <p className="text-red-500 text-sm">{errors.location.state.message}</p>}
+</div>
+
+<div>
+  <Controller 
+  name = 'location.city'
+  control = {control}
+  rules = {{ required: 'City is required' }}
+  render = {({field}) => (
+    <select
+      {...field}
+      className="w-full px-4 py-2 border rounded-lg"
+      onChange={(e) => {
+        field.onChange(e.target.value);
+        setSelectedCity(e.target.value);
+      }}
+    >
+      <option value="">Select City</option>
+      {cities.map((city) => (
+        <option key={city} value={city}>{city}</option>
+      ))}
+    </select>
+  )}
+  />
+  {errors.location?.city && <p className="text-red-500 text-sm">{errors.location.city.message}</p>}
+</div>
+
+  <div>
+  <Controller
+    name="location.postal_code"
+    control={control}
+    rules={{ required: 'Postal code is required' }}
+    render={({ field }) => (
+      <input
+        type="text"
+        {...field}
+        placeholder="Postal Code"
+        className="w-full px-4 py-2 border rounded-lg"
+      />
+    )}
+  />
+  {errors.location?.postal_code && <p className="text-red-500 text-sm">{errors.location.postal_code.message}</p>}
+
+    </div>           
             </div>
           )}
 
@@ -338,29 +495,6 @@ const handleSubmit = async (e: FormEvent) => {
             </div>
           )}
 
-          {steps === 3 && (
-            <div className="space-y-4">
-              <h2 className="text-xl font-semibold mb-4">Review Your Details</h2>
-
-              <div><strong>Company:</strong> {formdata.company_name}</div>
-              <div><strong>Website:</strong> {formdata.company_website}</div>
-              <div><strong>Phone:</strong> {formdata.phone_number}</div>
-              <div><strong>Location:</strong> {formdata.company_location}, {formdata.location.city}, {formdata.location.state}, {formdata.location.country} - {formdata.location.postal_code}</div>
-
-              <div><strong>Services:</strong>
-                <ul className="list-disc ml-5">
-                  {formdata.service_lines.map((s, i) => <li key={i}>{s.category} → {s.serviceline}</li>)}
-                </ul>
-              </div>
-
-              <div><strong>Industries:</strong>
-                <ul className="list-disc ml-5">
-                  {formdata.industry_focus.map((f, i) => <li key={i}>{f.category}</li>)}
-                </ul>
-              </div>
-            </div>
-          )}
-
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
             {steps > 1 && (
               <button
@@ -375,7 +509,7 @@ const handleSubmit = async (e: FormEvent) => {
             {steps !== totalSteps ? (
               <button
                 type="button"
-                onClick={() => setSteps(steps + 1)}
+                onClick={handleNext}
                 className="w-full sm:w-auto bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
               >
                 Continue
@@ -383,7 +517,7 @@ const handleSubmit = async (e: FormEvent) => {
             ) : (
               <button
                 type="button"
-                onClick={handleSubmit}
+                onClick={handleSubmit(onSubmit)}
                 className="w-full sm:w-auto bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700"
               >
                 Submit

@@ -107,6 +107,9 @@ const ListingPage = () => {
     </div>
   );
 
+const validLogo =  data.companylogo? data.companylogo
+  : '/placeholder-logo.png';
+
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
@@ -131,22 +134,22 @@ const ListingPage = () => {
 
       <div className="bg-white rounded-lg shadow-md p-6 space-y-6">
         {/* Logo & Info */}
-        <div className="flex flex-col md:flex-row gap-6">
-          <Image
-            src={data.companylogo || 'N'}
-            alt="Company Logo"
-            width={300}
-            height={180}
-            priority
-            className="rounded-md object-contain"
-          />
-          <div className="flex flex-col justify-center">
-            <h2 className="text-2xl font-semibold text-black">
-              {data.company_name}
-            </h2>
-            <p className="text-gray-600 text-xl mt-2 text-center">{data.tagline}</p>
-          </div>
-        </div>
+      <div className="flex flex-col md:flex-row gap-6">
+  <Image
+    src={validLogo}
+    alt="Company Logo"
+    width={300}
+    height={180}
+    priority
+    className="rounded-md object-contain"
+  />
+  <div className="flex flex-col justify-center">
+    <h2 className="text-2xl font-semibold text-black">
+      {data.company_name}
+    </h2>
+    <p className="text-gray-600 text-xl mt-2 text-center">{data.tagline}</p>
+  </div>
+</div>
 
         {/* Overview */}
         <div>
