@@ -31,12 +31,12 @@ const JobPostSchema = new mongoose.Schema({
   },
   companyId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Employer',
+    ref: 'employer',
     required: true,
   },
   employerId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Employer',
+    ref: 'employer',
     required: true,
   },
   description: {

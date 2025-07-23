@@ -128,9 +128,12 @@ export default function CompanyForm() {
     if (!userId) {
       alert("Please login first.");
       return;
-    }
-
+    }   
     setLoading(true);
+     if(!form.firstname || !form.lastname || !form.companyname) {
+      alert("Please fill in all required fields.");
+      return;
+    }
     try {
       const url = hasCompany
         ? `/api/auth/employer/userprofile/user/${userId}`
@@ -195,7 +198,7 @@ export default function CompanyForm() {
 
          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-            <label>First Name *</label>
+            <label>First Name <span className="text-red-500"> *</span></label>
     <input className="input"
           name="firstname"
           value={form.firstname}
@@ -205,7 +208,7 @@ export default function CompanyForm() {
         />
         </div>
           <div>
-            <label>Last Name *</label>
+            <label>Last Name <span className="text-red-500"> *</span></label>
     <input className="input"
           name="lastname"
           value={form.lastname}
@@ -215,7 +218,7 @@ export default function CompanyForm() {
         />
         </div>
           <div>
-            <label>Company Name *</label>
+            <label>Company Name <span className="text-red-500"> *</span></label>
     <input className="input"
           name="companyname"
           value={form.companyname}
@@ -226,7 +229,7 @@ export default function CompanyForm() {
         </div>
 
         {/* Email */}
-       <div className="w-full max-w-md mx-auto">
+  <div className="w-full max-w-md mx-auto">
   <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
     Email
   </label>

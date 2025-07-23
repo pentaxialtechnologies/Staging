@@ -20,17 +20,8 @@ interface ContractJob extends Document {
   key_responsibilities: string[];
   technical_skills: string[];
   project_doc: string;
-  staff_count?: string; // ✅ Added
-  // working_days: {
-  //   start_day: string;
-  //   end_day: string;
-  // };
-  // working_hours: {
-  //   start_time: string;
-  //   end_time: string;
-  // };
+  staff_count?: string; 
   plannedStartDate:Date
-
   keywords: string[];
   postedBy: mongoose.Types.ObjectId;
   status: "under review" | "approved" | "rejected";
@@ -43,7 +34,7 @@ const JobSchema = new Schema<ContractJob>(
   {
     title: { type: String, required: true },
     skills: { type: [String], required: true },
-    budget: { type: String, required: true }, // ✅ Added
+    budget: { type: String, required: true }, 
     duration: { type: String, required: true },
     staff_count: { type: String, required: true },
     experience: {
@@ -60,22 +51,11 @@ const JobSchema = new Schema<ContractJob>(
     key_responsibilities: { type: [String], required: true },
     technical_skills: { type: [String], required: true },
     project_doc: { type: String },
-    // working_days: {
-    //   start_day: { type: String, required: true },
-    //   end_day: { type: String, required: true },
-    // },
-    // working_hours: {
-    //   start_time: { type: String, required: true },
-    //   end_time: { type: String, required: true },
-    // },
-    plannedStartDate: {
-      start_date: { type: String },
-      
-    },
+    plannedStartDate: { type: Date },
     keywords: { type: [String], index: true, default: [] },
     postedBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Employer",
+      ref: "employer",
       required: true,
     },
     status: {

@@ -14,28 +14,29 @@ import {useForm,Controller} from 'react-hook-form'
 
 
   interface JobForm {
-    technical_skills: any;
-    title: string;
-    skills: string[]; 
+    technical_skills: any
+    title: string
+    skills: string[]
     budget: string;
     rate:string
-    duration: string;
+    duration: string
     staff_count:string
-    availability: string;
-    timezone: string;
-    workmode: string;
-    job_description: string;
+    availability: string
+    timezone: string
+    workmode: string
+    job_description: string
     engagement_type:string
-    currency_type: string;
-    payment_schedule:string;
-    key_responsibilities: string;
+    currency_type: string
+    payment_schedule:string
+    key_responsibilities: string
     jobLocation:string
     plannedStartDate:Date
     workmodes :string
     experience: {
-    minyears:string,
+    minyears:string
     maxyears:string
-  },postedBy:any
+  }
+   postedBy: string; 
   }
 
   const initialFormState: JobForm = {
@@ -61,29 +62,26 @@ import {useForm,Controller} from 'react-hook-form'
       minyears: "",
       maxyears: "",
     },
-    postedBy: new Object
+    postedBy: "",
   };
 
 
 export default function CreateJobForm() {
     const [form, setForm] = useState<JobForm>(initialFormState);
     const [SkillError,setSkillError] = useState('');
-    const {register,control,handleSubmit,setValue,trigger,formState:{errors}} = useForm({defaultValues:initialFormState});
+    const {register,control,handleSubmit,setValue,getValues,reset,trigger,formState:{errors}} = useForm({defaultValues:initialFormState});
     const [KeyState, setKeyState] = useState(() => EditorState.createEmpty());
  
     const [SkillState, setSkillState] = useState(() => EditorState.createEmpty());
 
     const [Step,setStep] = useState(1)
-  const isMountedRef = useRef(true);
+    const isMountedRef = useRef(true);
 
 
   
+
     const handleNext = async()=>{
-      let hasErors = false;
-      if(form.skills.length === 0){ 
-        setSkillError('Please add at least one skill');
-        hasErors = true
-      }
+     
       const isStep1Valid = await trigger(Step ===1 ? ['title','skills','availability','workmode','staff_count','budget','duration','engagement_type','experience.minyears','experience.maxyears']: ['job_description','key_responsibilities','technical_skills']);
 
       if (isStep1Valid)setStep((prevStep) => prevStep+1)
@@ -95,10 +93,7 @@ export default function CreateJobForm() {
 
     
 
-function extractTextsFromEditorState(state: EditorState): string[] {
-  const raw = convertToRaw(state.getCurrentContent());
-  return raw.blocks.map(block => block.text.trim()).filter(Boolean);
-}
+
 
 const updateEditor = (state: EditorState, key: keyof JobForm) => {
   const raw = convertToRaw(state.getCurrentContent());
@@ -118,7 +113,6 @@ useEffect(() => {
 
 const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
 
-
 const onEditorStateChange = (state: EditorState) => {
   setEditorState(state);
   updateEditor(state, 'job_description');
@@ -137,7 +131,7 @@ const onEditorSkillChange = (state: EditorState) => {
 
 useEffect(() => {
   return () => {
-    isMountedRef.current = false; // Cleanup on unmount
+    isMountedRef.current = false; 
   };
 }, []);
 
@@ -188,7 +182,6 @@ const removeSkill = (index: number) => {
   }
 };
 
-  // const [value, setValue] = useState('');
   const [, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -236,48 +229,46 @@ const onSubmit = async (FormData: any) => {
   setError(null);
   setSuccess(false);
 
-const isValid = await trigger([
-  "job_description",
-  "key_responsibilities",
-  "technical_skills",
-]);
+  const isValid = await trigger([
+    "job_description",
+    "key_responsibilities",
+    "technical_skills",
+  ]);
+
+  if (!isValid) {
+    setLoading(false);
+    return;
+  } 
+ 
 
 
 const payload = {
   ...FormData,
-
-  rate: FormData.rate, 
-  currency_type: FormData.currency_type ?? 'USD', 
-  timezone: FormData.timezone ?? 'Asia/Kolkata', 
+  currency_type: FormData.currency_type ?? "USD",
+  timezone: FormData.timezone ?? "Asia/Kolkata",
 
   experience: {
-    minyears: parseInt(form.experience.minyears || "0"),
-    maxyears: parseInt(form.experience.maxyears || "0"),
-  },
-  plannedStartDate: {
-    plannedStartDate: form.plannedStartDate ? new Date(form.plannedStartDate) : null,
+    minyears: parseInt(FormData.experience?.minyears || "0"),
+    maxyears: parseInt(FormData.experience?.maxyears || "0"),
   },
 
-  job_description: FormData.job_description
-    ? extractTextsFromRawString(FormData.job_description).join('\n')
-    : "",
+  plannedStartDate: FormData.plannedStartDate
+    ? new Date(FormData.plannedStartDate)
+    : null,
 
-  key_responsibilities: FormData.key_responsibilities
-    ? extractTextsFromRawString(FormData.key_responsibilities).join('\n')
-    : "",
-
-  technical_skills: FormData.technical_skills
-    ? extractTextsFromRawString(FormData.technical_skills).join('\n')
-    : "",
+  skills: FormData.skills.map((skill: string) => skill.trim().toLowerCase()),
+  job_description: extractTextsFromRawString(FormData.job_description || "").join("\n"),
+  key_responsibilities: extractTextsFromRawString(FormData.key_responsibilities || "").join("\n"),
+  technical_skills: extractTextsFromRawString(FormData.technical_skills || "").join("\n"),
+  
 };
-
 
 
   try {
     const res = await fetch("/api/auth/contractjobs/post", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ payload, postedBy: session?.user?.id }),
+      body: JSON.stringify({ payload,postedBy: session?.user?.id}),
     });
 
     if (!res.ok) {
@@ -285,8 +276,9 @@ const payload = {
       throw new Error(errorData.error || "Failed to create job");
     }
 
-    setSuccess(true);
-    setForm(initialFormState);
+    setSuccess(true); 
+    setForm(initialFormState); 
+    reset();
   } catch (err: any) {
     setError(err.message);
   } finally {
@@ -294,17 +286,12 @@ const payload = {
   }
 };
 
-
-
   return (
     <div>
-
-  
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="max-w-7xl mx-auto p-8 bg-white rounded-lg shadow-md space-y-6"
-    >
-      
+    > 
       <h2 className="text-2xl font-semibold text-gray-800 mb-4 text-center">
        Post a Job to Hire Talent on Contract
       </h2>
@@ -455,7 +442,6 @@ render = { ({field})=> (
 )}
 
         </div>
-        {/* Conditionally show Job Location */}
 
 <div className="flex flex-row gap-6">
   {/* Min Years */}
@@ -512,8 +498,6 @@ render = { ({field})=> (
     )}
   </div>
 </div>
-
-
 <div>
     <div>
 <label htmlFor="title" className="block font-medium mb-1 text-gray-700">
@@ -537,10 +521,6 @@ render = { ({field})=> (
 )}
         </div>
         </div>
-
-
-
-
         <div>
           <label htmlFor="budget" className="block font-medium mb-1 text-gray-700">
             Budget <span className="text-red-500">*</span>
@@ -763,30 +743,14 @@ render = { ({field})=> (
     placeholder="Enter rate"
   />
   {errors.rate && <p className="text-red-500 text-sm">{errors.rate.message}</p>}
-</div>
-
-         <div>
-          <label htmlFor="budget" className="block font-medium mb-1 text-gray-700">
-            Budget 
-          </label>
-          <input
-            id="budget"
-            name="budget"
-            value={form.budget}
-            onChange={handleChange}
-            placeholder="Budget"
-            required
-            className="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
-          />
-</div>
-          
+</div>   
         </div>
              <div>
           <label htmlFor="timezone" className="block font-medium  text-gray-700">
             Timezone <span className="text-red-500">*</span>
           </label>
 
-          <Controller
+  <Controller
   name="timezone"
   control={control}
   rules={{ required: "Timezone is required" }}

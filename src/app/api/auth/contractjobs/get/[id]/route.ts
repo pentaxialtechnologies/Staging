@@ -19,8 +19,6 @@ export async function GET(
     if (!jobs) {
       return NextResponse.json({ error: "Job not found" }, { status: 404 });
     }
-
-
     return NextResponse.json(jobs, { status: 200 });
   } // eslint-disable-next-line @typescript-eslint/no-explicit-any 
   catch (error: any) {

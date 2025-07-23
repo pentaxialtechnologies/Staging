@@ -33,18 +33,18 @@ const Page = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
               <h2 className="text-gray-500">Provider Name</h2>
-              <p className="font-medium text-blue-700">{data.postedBy.firstname}</p>
+              <p className="font-medium text-blue-700">{data?.postedBy?.firstname || '' }</p>
             </div>
             <div>
               <h2 className="text-gray-500">Provider Email</h2>
-              <p className="font-medium">{data.postedBy.email}</p>
+              <p className="font-medium">{data?.postedBy?.email || ''}</p>
             </div>
             <div>
               <h2 className="text-gray-500">Status</h2>
               {/* <p className="font-medium text-green-600">{data.status}</p> */}
               <select
               className=''
-              value={data.status}
+              value={data?.status || '' }
               onChange={async (e)=> {
                 const newStatus = e.target.value
                 try{
@@ -73,7 +73,7 @@ const Page = () => {
                 }
               }}
               > 
-    <option value="pending">Pending</option>
+    <option value="under review">Pending</option>
     <option value="approved">Approved</option>
     <option value="rejected">Rejected</option>
 
@@ -109,25 +109,25 @@ const Page = () => {
             <p><strong>Duration:</strong> {data.duration}</p>
             <p><strong>Work Mode:</strong> {data.workmode}</p>
             <p><strong>Currency:</strong> {data.currency_type}</p>
-            <p><strong>Experience:</strong> {data.experience.minyears} - {data.experience.maxyears} yrs</p>
+            <p><strong>Experience:</strong> {data?.experience?.minyears || ''} - {data?.experience?.maxyears || ''} yrs</p>
             <p><strong>Engagement Type:</strong> {data.engagement_type}</p>
             <p><strong>Payment Schedule:</strong> {data.payment_schedule}</p>
             <p><strong>Rate:</strong> {data.rate}</p>
-            <p><strong>Working Days:</strong> {data.working_days.start_day} - {data.working_days.end_day}</p>
-            <p><strong>Working Hours:</strong> {data.working_hours.start_time} - {data.working_hours.end_time}</p>
-            <p><strong>Start Date:</strong> {data.job_dates.start_date}</p>
+            <p><strong>Working Days:</strong> {data?.working_days?.start_day || ''} - {data?.working_days?.end_day || ''}</p>
+            <p><strong>Working Hours:</strong> {data?.working_hours?.start_time || ''} - {data?.working_hours?.end_time || ''}</p>
+            <p><strong>Start Date:</strong> {data?.job_dates?.start_date || ''}</p>
           </div>
 
           {/* Description */}
           <div>
             <h3 className="font-semibold mb-1">Job Description</h3>
-            <p className="text-gray-700">{data.job_description}</p>
+            <p className="text-gray-700">{data?.job_description || ''}</p>
           </div>
 
           {/* Key Responsibilities */}
           <div>
             <h3 className="font-semibold mb-1">Key Responsibilities</h3>
-            <p className="text-gray-700">{data.key_responsibilities}</p>
+            <p className="text-gray-700">{data?.key_responsibilities || ''}</p>
           </div>
 
           {/* Technical Skills */}
