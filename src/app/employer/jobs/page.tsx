@@ -278,6 +278,12 @@ const payload = {
 
     setSuccess(true); 
     setForm(initialFormState); 
+    setEditorState(EditorState.createEmpty());
+    setKeyState(EditorState.createEmpty());
+    setSkillState(EditorState.createEmpty());
+    setInput("");
+    setSkillError('');
+    setStep(1)
     reset();
   } catch (err: any) {
     setError(err.message);

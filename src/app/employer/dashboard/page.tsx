@@ -77,7 +77,7 @@ const Page = () => {
         </div>
         <div>
           <button
-            onClick={() => router.push('/employer/jobs')}
+            onClick={() => router.push('/employer/job-list')}
             className="bg-[#f27264] px-4 py-2 rounded-lg font-bold text-white"
           >
            View All Jobs

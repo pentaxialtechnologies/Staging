@@ -312,11 +312,11 @@ const [activeSuggestionIndex, setActiveSuggestionIndex] = useState<number>(-1);
                     <span className="font-medium mr-1">Compensation:</span>{' '}
                     {job.currency_type}
                   </p>
-                  <p className="text-gray-600 text-sm mb-4">
+                  {/* <p className="text-gray-600 text-sm mb-4">
                     <span className="font-medium mr-1">Location:</span>{' '}
                     {job.location.city}, {job.location.state},{' '}
                     {job.location.country}
-                  </p>
+                  </p> */}
                   {job.description && (
                     <p className="text-gray-700 text-base line-clamp-3 mb-4">
                       {job.description}

@@ -190,7 +190,7 @@ export default function CompanyForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 max-w-2xl mx-auto bg-white p-6 rounded shadow"
+      className="space-y-4 max-w-7xl mx-auto bg-white p-6 rounded shadow"
     >
       <h2 className="text-2xl font-bold mb-4">
         {hasCompany ? "Update Company Details" : "Create Company"}
