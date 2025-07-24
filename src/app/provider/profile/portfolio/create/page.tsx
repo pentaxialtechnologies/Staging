@@ -1,61 +1,62 @@
 'use client'
 import { useSession } from 'next-auth/react'
 import Image from 'next/image'
-import React, { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import React, { useEffect } from 'react'
+import { Controller, useForm, useFieldArray } from 'react-hook-form'
 
 interface PortFolioType {
-  title: string
-  thumbnail: string
-  project_link: string[]
-  project_category: string
-  timeline: string
-  project_cost: string
-  screenshot: string
-  description: string
+  title: string;
+  thumbnail: string;
+  project_link: { value: string }[]; // ✅ changed
+  project_category: string;
+  timeline: string;
+  project_cost: string;
+  screenshot: string;
+  description: string;
 }
 
+
 const Page = () => {
-  const [portfolioData, setPortfolioData] = useState<PortFolioType>({
+  const { data: session } = useSession()
+  const email = session?.user?.email || ''
+  const router = useRouter()
+
+  const {
+    control,
+    handleSubmit,
+    register,
+    formState: { errors },
+    setValue,
+    watch,
+    reset,
+  } = 
+useForm<PortFolioType>({
+  defaultValues: {
     title: '',
     thumbnail: '',
-    project_link: [''],
+    project_link: [{ value: '' }], // ✅ changed
     project_category: '',
     timeline: '',
     project_cost: '',
     screenshot: '',
-    description: ''
-  })
-const {data:session} = useSession()
-const email = session?.user.email
-console.log(email,"email");
+    description: '',
+  },
+});
 
 
-  const AddProject = () => {
-    if (portfolioData.project_link.length < 3) {
-      setPortfolioData(prev => ({
-        ...prev,
-        project_link: [...prev.project_link, '']
-      }))
-    }
-  }
+const { fields, append, remove } = useFieldArray({
+  control,
+  name: 'project_link', // ✅ now TypeScript knows it's string[]
+});
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target
-    setPortfolioData(prev => ({ ...prev, [name]: value }))
-  }
+  const watchThumbnail = watch('thumbnail')
+  const watchScreenshot = watch('screenshot')
 
-  const handleProjectLinkChange = (index: number, value: string) => {
-    const UpdatedLinks = [...portfolioData.project_link]
-    UpdatedLinks[index] = value
-    setPortfolioData(prev => ({ ...prev, project_link: UpdatedLinks }))
-  }
-
-  const removeProjectLink = (index: number) => {
-    const UpdatedLinks = portfolioData.project_link.filter((_, i) => i !== index)
-    setPortfolioData(prev => ({ ...prev, project_link: UpdatedLinks }))
-  }
-
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: 'thumbnail' | 'screenshot') => {
+  const handleFileUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: 'thumbnail' | 'screenshot'
+  ) => {
     const file = e.target.files?.[0]
     if (!file) return
 
@@ -75,20 +76,20 @@ console.log(email,"email");
     try {
       const formDataObj = new FormData()
       formDataObj.append('file', file)
-   formDataObj.append('upload_preset', 'profile')
-    formDataObj.append('folder', 'company/profiles')
+      formDataObj.append('upload_preset', 'profile')
+      formDataObj.append('folder', 'company/profiles')
 
-      const res = await fetch('https://api.cloudinary.com/v1_1/dfrfq0ch8/image/upload', {
-        method: 'POST',
-        body: formDataObj
-      })
+      const res = await fetch(
+        'https://api.cloudinary.com/v1_1/dfrfq0ch8/image/upload',
+        {
+          method: 'POST',
+          body: formDataObj,
+        }
+      )
 
       const data = await res.json()
       if (data.secure_url) {
-        setPortfolioData(prev => ({
-          ...prev,
-          [field]: data.secure_url
-        }))
+        setValue(field, data.secure_url)
         alert('File uploaded successfully!')
       }
     } catch (error) {
@@ -97,183 +98,238 @@ console.log(email,"email");
     }
   }
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    console.log('Form Submitted:', portfolioData)
+ const onSubmit = async (data: PortFolioType) => {
+  const cleanedData = {
+    ...data,
+    project_link: data.project_link.map((item) => item.value),
+  };
 
-    try {
-      const res = await fetch('/api/auth/provider/portfolio/create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-        email: email, 
-        portfolioItem: portfolioData 
-        })
-      })
+  try {
+    const res = await fetch('/api/auth/provider/portfolio/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email,
+        portfolioItem: cleanedData,
+      }),
+    });
 
-      if (res.ok) {
-        alert('Portfolio submitted successfully!')
-        setPortfolioData({
-          title: '',
-          thumbnail: '',
-          project_link: [''],
-          project_category: '',
-          timeline: '',
-          project_cost: '',
-          screenshot: '',
-          description: ''
-        })
-      } else {
-        alert('Failed to submit portfolio.')
-      }
-    } catch (error) {
-      console.error(error)
-      alert('Error submitting portfolio.')
+    if (res.ok) {
+      alert('Portfolio submitted successfully!');
+      reset();
+    } else {
+      alert('Failed to submit portfolio.');
     }
+  } catch (error) {
+    console.error(error);
+    alert('Error submitting portfolio.');
   }
+};
+
 
   return (
     <div>
-      <div>
-        <h1 className='text-2xl'>Add Portfolio</h1>
-        <div className='border w-40 mt-2'></div>
+      <h1 className='text-2xl'>Add Portfolio</h1>
+      <div className='border w-40 mt-2'></div>
 
-        <form onSubmit={handleSubmit}>
-          <div className='grid grid-cols-1 sm:grid-cols-2 gap-8 mt-7'>
-            {/* Title */}
-            <div>
-              <label className='block mb-2 text-xl'>Title</label>
-              <input
-                type='text'
-                name='title'
-                value={portfolioData.title}
-                onChange={handleInputChange}
-                className='px-4 py-2 w-full border border-gray-400'
-              />
-            </div>
-
-            {/* Thumbnail */}
-            <div>
-              <label className='block mb-2 text-xl'>Thumbnail</label>
-              <input
-                type='file'
-                onChange={(e) => handleFileUpload(e, 'thumbnail')}
-                className='px-4 py-2 w-full border border-gray-400'
-              />
-              {portfolioData.thumbnail && (
-                <Image src={portfolioData.thumbnail || 'No Logo'} alt="Thumbnail Preview" className="mt-2 w-32 h-32 object-cover" />
-              )}
-            </div>
-          </div>
-
-          {/* Project Links */}
-          <div className='mt-6'>
-            <label className='block mb-2 text-xl'>Project Links</label>
-            {portfolioData.project_link.map((link, index) => (
-              <div key={index} className='mb-2 flex items-center gap-2'>
+      <form onSubmit={handleSubmit(onSubmit)} className='mt-6'>
+        <div className='grid grid-cols-1 sm:grid-cols-2 gap-8'>
+          <div>
+            <label className='block mb-2 text-xl'>Title</label>
+            <Controller
+              name='title'
+              control={control}
+              rules={{ required: 'Title is required' }}
+              render={({ field }) => (
                 <input
-                  type='text'
-                  value={link}
-                  onChange={(e) => handleProjectLinkChange(index, e.target.value)}
-                  className='px-4 py-2 w-full border border-gray-400'
+                  {...field}
+                  className={`px-4 py-2 w-full border ${
+                    errors.title ? 'border-red-500' : 'border-gray-400'
+                  }`}
+                  placeholder='Enter portfolio title'
                 />
-                <button
-                  type='button'
-                  onClick={() => removeProjectLink(index)}
-                  className='px-2 py-1 bg-red-500 text-white rounded'
-                >
-                  Remove
-                </button>
-              </div>
-            ))}
-            {portfolioData.project_link.length < 3 && (
-              <button
-                type='button'
-                onClick={AddProject}
-                className='px-4 py-2 bg-blue-500 text-white mt-2'
-              >
-                Add Project Link
-              </button>
-            )}
+              )}
+            />
+            {errors.title && <p className='text-red-500 text-sm'>{errors.title.message}</p>}
           </div>
 
-          {/* Project Category */}
-          <div className='flex flex-col mt-6'>
-            <label className='block mb-2'>Project Category</label>
-            <select name='project_category' className="w-full border rounded px-3 py-2" value={portfolioData.project_category} onChange={handleInputChange}>
-              <option value="">Select a value</option>
-              {/* Category Options */}
-              {/* ... keep your existing options */}
-              <option value="Web Development">Web Development</option>
-              <option value="Mobile App Development">Mobile App Development</option>
-              <option value="UI/UX Design">UI/UX Design</option>
-              <option value="Digital Marketing">Digital Marketing</option>
-              <option value="SEO & PPC">SEO & PPC</option>
-              <option value="Social Media Marketing">Social Media Marketing</option>
-              <option value="Game Development">Game Development</option>
-              <option value="Branding">Branding</option>
-              <option value="Content Marketing">Content Marketing</option>
-              <option value="IoT Development">IoT Development</option>
-              <option value="Cybersecurity">Cybersecurity</option>
-            </select>
-          </div>
-
-          {/* Timeline */}
-          <div className='flex flex-col mt-6'>
-            <label className='block mb-2'>Timeline (Weeks)</label>
-            <select name='timeline' className="w-full border rounded px-3 py-2" value={portfolioData.timeline} onChange={handleInputChange}>
-              <option disabled>Select weeks</option>
-              {[...Array(12)].map((_, index) => (
-                <option key={index} value={index + 1}>{index + 1}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Project Cost */}
-          <div className='flex flex-col mt-6'>
-            <label className='block mb-2'>Project Cost</label>
-            <select name='project_cost' className="w-full border rounded px-3 py-2" value={portfolioData.project_cost} onChange={handleInputChange}>
-              <option  disabled>Select Cost</option>
-              <option value="Not Disclosed">Not Disclosed</option>
-              <option value="$0 to $10000">$0 to $10000</option>
-              <option value="$10001 to $50000">$10001 to $50000</option>
-              <option value="$50001 to $100000">$50001 to $100000</option>
-              <option value="$100001 to $500000">$100001 to $500000</option>
-              <option value="$500000+">$500000+</option>
-            </select>
-          </div>
-
-          {/* Screenshot Upload */}
-          <div className='flex flex-col mt-6'>
-            <label className='block mb-2 text-xl'>Screenshot</label>
+          <div>
+            <label className='block mb-2 text-xl'>Thumbnail</label>
             <input
               type='file'
-              onChange={(e) => handleFileUpload(e, 'screenshot')}
+              onChange={(e) => handleFileUpload(e, 'thumbnail')}
               className='px-4 py-2 w-full border border-gray-400'
             />
-            {portfolioData.screenshot && (
-              <Image src={portfolioData.screenshot} alt="Screenshot Preview" className="mt-2 w-32 h-32 object-cover" />
+            {watchThumbnail && (
+              <Image
+                src={watchThumbnail}
+                width={200}
+                height={100}
+                alt='Thumbnail Preview'
+                className='mt-2 w-32 h-32 object-cover'
+              />
             )}
           </div>
+        </div>
 
-          {/* Description */}
-          <div className='flex flex-col mt-6'>
-            <label className='block mb-2 text-xl'>Description</label>
-            <input
-              type='text'
-              name='description'
-              value={portfolioData.description}
-              onChange={handleInputChange}
-              className='px-4 py-2 w-full border border-gray-400'
+       <div className='mt-6'>
+  <label className='block mb-2 text-xl'>Project Links</label>
+{fields.map((field, index) => (
+  <div key={field.id} className='flex items-center gap-2 mb-2'>
+    <input
+      {...register(`project_link.${index}.value` as const, {
+        required: 'Project link is required',
+      })}
+      className='px-4 py-2 w-full border border-gray-400'
+    />
+    <button
+      type='button'
+      onClick={() => remove(index)}
+      className='px-2 py-1 bg-red-500 text-white rounded'
+    >
+      Remove
+    </button>
+  </div>
+))}
+
+
+
+
+{fields.length < 3 && (
+  <button
+    type='button'
+    onClick={() => append({ value: '' })} // ✅ correct structure
+
+    className='px-4 py-2 bg-blue-500 text-white mt-2'
+  >
+    Add Project Link
+  </button>
+)}
+
+</div>
+
+
+        <div className='flex flex-col mt-6'>
+          <label className='block mb-2'>Project Category</label>
+          <Controller
+            name='project_category'
+            control={control}
+            rules={{ required: 'Project category is required' }}
+            render={({ field }) => (
+              <select
+                {...field}
+                className={`w-full border rounded px-3 py-2 ${
+                  errors.project_category ? 'border-red-500' : 'border-gray-400'
+                }`}
+              >
+                <option value=''>Select Category</option>
+                <option value='Web Development'>Web Development</option>
+                <option value='Mobile App Development'>Mobile App Development</option>
+                <option value='UI/UX Design'>UI/UX Design</option>
+                <option value='Digital Marketing'>Digital Marketing</option>
+                <option value='SEO & PPC'>SEO & PPC</option>
+                <option value='Social Media Marketing'>Social Media Marketing</option>
+                <option value='Game Development'>Game Development</option>
+                <option value='Branding'>Branding</option>
+                <option value='Content Marketing'>Content Marketing</option>
+                <option value='IoT Development'>IoT Development</option>
+                <option value='Cybersecurity'>Cybersecurity</option>
+              </select>
+            )}
+          />
+          {errors.project_category && (
+            <p className='text-red-500 text-sm'>{errors.project_category.message}</p>
+          )}
+        </div>
+
+        <div className='flex flex-col mt-6'>
+          <label className='block mb-2'>Timeline (Weeks)</label>
+          <Controller
+            name='timeline'
+            control={control}
+            rules={{ required: 'Timeline is required' }}
+            render={({ field }) => (
+              <select
+                {...field}
+                className={`w-full border rounded px-3 py-2 ${
+                  errors.timeline ? 'border-red-500' : 'border-gray-400'
+                }`}
+              >
+                <option value=''>Select weeks</option>
+                {[...Array(12)].map((_, index) => (
+                  <option key={index} value={index + 1}>{index + 1}</option>
+                ))}
+              </select>
+            )}
+          />
+          {errors.timeline && <p className='text-red-500 text-sm'>{errors.timeline.message}</p>}
+        </div>
+
+        <div className='flex flex-col mt-6'>
+          <label className='block mb-2'>Project Cost</label>
+          <Controller
+            name='project_cost'
+            control={control}
+            rules={{ required: 'Project cost is required' }}
+            render={({ field }) => (
+              <select
+                {...field}
+                className={`w-full border rounded px-3 py-2 ${
+                  errors.project_cost ? 'border-red-500' : 'border-gray-400'
+                }`}
+              >
+                <option value=''>Select Cost</option>
+                <option value='Not Disclosed'>Not Disclosed</option>
+                <option value='$0 to $10000'>$0 to $10000</option>
+                <option value='$10001 to $50000'>$10001 to $50000</option>
+                <option value='$50001 to $100000'>$50001 to $100000</option>
+                <option value='$100001 to $500000'>$100001 to $500000</option>
+                <option value='$500000+'>$500000+</option>
+              </select>
+            )}
+          />
+          {errors.project_cost && <p className='text-red-500 text-sm'>{errors.project_cost.message}</p>}
+        </div>
+
+        <div className='flex flex-col mt-6'>
+          <label className='block mb-2 text-xl'>Screenshot</label>
+          <input
+            type='file'
+            onChange={(e) => handleFileUpload(e, 'screenshot')}
+            className='px-4 py-2 w-full border border-gray-400'
+          />
+          {watchScreenshot && (
+            <Image
+              src={watchScreenshot}
+              width={200}
+              height={100}
+              alt='Screenshot Preview'
+              className='mt-2 w-32 h-32 object-cover'
             />
-          </div>
+          )}
+        </div>
 
-          {/* Submit Button */}
-          <button type='submit' className='px-4 py-2 bg-green-500 text-white mt-6'>
-            Submit
-          </button>
-        </form>
-      </div>
+        <div className='flex flex-col mt-6'>
+          <label className='block mb-2 text-xl'>Description</label>
+          <Controller
+            name='description'
+            control={control}
+            rules={{ required: 'Description is required' }}
+            render={({ field }) => (
+              <textarea
+                {...field}
+                className='px-4 py-2 w-full border border-gray-400'
+                placeholder='Enter project description'
+              />
+            )}
+          />
+          {errors.description && <p className='text-red-500 text-sm'>{errors.description.message}</p>}
+        </div>
+
+        <button type='submit' className='px-4 py-2 bg-green-500 text-white mt-6'>
+          Submit
+        </button>
+      </form>
     </div>
   )
 }

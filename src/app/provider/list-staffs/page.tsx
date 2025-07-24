@@ -115,8 +115,10 @@ const handleDeleteStaff = async (id: string) => {
 
         <div className="mb-6">
           <Image
-            src={companyData.companylogo}
+            src={companyData.companylogo || ''}
             alt="Company Logo"
+            width={300}
+            height={100}
             className="w-65 h-auto object-contain"
           />
         </div>
