@@ -15,8 +15,8 @@ export async function GET(req: Request, Context: RouteContexts) {
     if (!provider) {
       return NextResponse.json({ message: 'Not found' }, { status: 400 });
     }
-
-    return NextResponse.json({ message: 'Portfolio', portfolio: provider.portfolio }, { status: 200 });
+ const filteredPortfolio = provider.portfolio.filter((item: any) => !item.isdelete);
+    return NextResponse.json({ message: 'Portfolio', portfolio: filteredPortfolio }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ message: 'Internal Server Error',error }, { status: 500 });
   }
