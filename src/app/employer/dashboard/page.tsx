@@ -1,14 +1,19 @@
 'use client'
-import { Dot, MoreHorizontal } from 'lucide-react'
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
+import { Dot, MoreHorizontal, Search } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
+
 const Page = () => {
   const [datas, setDatas] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null)
+  const [searchQuery, setsearchQuery] = useState('')
+  const [sortOrder, setsortOrder] = useState<'asc' | 'desc'>('desc')
+
   const { data: session } = useSession()
-const router = useRouter()
+  const router = useRouter()
 
   useEffect(() => {
     const FetchData = async () => {
@@ -21,7 +26,6 @@ const router = useRouter()
         }
         const data = await res.json()
         setDatas(data)
-        console.log('Jobs fetched:', data)
       } catch (err) {
         console.error('Error fetching jobs:', err)
       } finally {
@@ -32,77 +36,125 @@ const router = useRouter()
     FetchData()
   }, [session?.user?.id])
 
-const handleDelete = async (id: string) => {
-  try {
-    const res = await fetch(`/api/auth/jobs/delete/${id}`, {
-      method: 'PUT', // ✅ Use PUT if you're soft-deleting
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ isDeleted: true }),
-    });
+  const handleDelete = async (id: string) => {
+    try {
+      const res = await fetch(`/api/auth/jobs/delete/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ isDeleted: true }),
+      })
 
-    if (!res.ok) {
-      const errorData = await res.json();
-      alert(`Failed to delete job: ${errorData.message || 'Unknown error'}`);
-      return;
+      if (!res.ok) {
+        const errorData = await res.json()
+        alert(`Failed to delete job: ${errorData.message || 'Unknown error'}`)
+        return
+      }
+
+      alert('Job deleted successfully')
+      setDatas((prev) => prev.filter((job) => job._id !== id))
+    } catch (error) {
+      console.error('Delete failed:', error)
+      alert('Something went wrong while deleting the job')
     }
-
-    alert('Job deleted successfully');
-    // Optionally refresh job list here
-  } catch (error) {
-    console.error('Delete failed:', error);
-    alert('Something went wrong while deleting the job');
   }
-};
 
-
-const [IsOpen,setOpen] = useState(false)
+  const filteredJobs = datas
+    .filter((job) => job.title.toLowerCase().includes(searchQuery.toLowerCase()))
+    .sort((a, b) => {
+      const dateA = new Date(a.createdAt).getTime()
+      const dateB = new Date(b.createdAt).getTime()
+      return sortOrder === 'asc' ? dateA - dateB : dateB - dateA
+    })
 
   return (
     <div className="p-6 max-w-5xl mx-auto">
-      <h1 className="text-3xl font-bold mb-2">Recent Jobs</h1>
-      <span className="block border-b-2 border-blue-600 w-43 mb-4" />
+      <div className="flex flex-row items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">Recent Jobs</h1>
+          <span className="block border-b-2 border-blue-600 w-16 mb-4" />
+        </div>
+        <div>
+          <button
+            onClick={() => router.push('/employer/jobs')}
+            className="bg-[#f27264] px-4 py-2 rounded-lg font-bold text-white"
+          >
+           View All Jobs
+          </button>
+        </div>
+      </div>
+
+   
 
       {loading ? (
         <p>Loading jobs...</p>
-      ) : !datas || datas.length === 0 ? (
-        <h2 className="text-lg text-gray-600">Jobs Are Empty</h2>
+      ) : filteredJobs.length === 0 ? (
+        <h2 className="text-lg text-gray-600">No matching jobs found</h2>
       ) : (
         <div className="space-y-4">
-          <div className='flex justify-end'>
-          <button className='px-4 py-2 bg-[#f27264] text-white flex items-end justify-end'>View All Job</button>
-          </div>
-          {datas.map((job: any) => (
-            <div key={job._id} className="flex flex-row justify-between p-4 border rounded shadow hover:shadow-lg transition">
-                <div>
-                 <h1 className="text-2xl mb-2 text-violet-600 rounded hover:text-blue-700">
-                {job.title}
-              </h1>
-               <p>Posted At: {new Date(job.createdAt).toLocaleDateString()}</p>
-              </div>
+          {filteredJobs.map((job: any) => (
+            <div
+              key={job._id}
+              className="flex flex-row justify-between items-center mt-6 p-4 border rounded shadow hover:shadow-lg transition relative"
+            >
               <div>
-              <select>
-                <option>Paused</option>
-                <option>Open</option>
-                <option>Closed</option>
-              </select>
-            </div>
-           <div className='relative inline-block text-left'>
-          <button onClick={()=> setOpen(!IsOpen)}> <MoreHorizontal size={20} /></button>
-            </div>
+                <h1 className="text-2xl mb-2 text-violet-600 hover:text-blue-700 cursor-pointer">
+                  {job.title}
+                </h1>
+                <p>Posted At: {new Date(job.createdAt).toLocaleDateString()}</p>
+              </div>
 
-{IsOpen && (
-   <div className='absolute right-0  mt-8 w-48 bg-white border-gray-200 rounded shadow-xl z-10'>
-                <ul className='py-1'>
-                  <li onClick={()=>router.push('/edit job') } className='px-4 py-2 hover:bg-gray-100 cursor-pointer'>Edit Job </li>
-                  <li onClick={()=>router.push(`/employer/dashboard/${job._id}`) } className='px-4 py-2 hover:bg-gray-100 cursor-pointer'>View Job Details </li>
-                  <li onClick={()=>handleDelete(job._id) } className='px-4 py-2 hover:bg-gray-100 cursor-pointer'>Delete job </li>
-                  <li onClick={()=>router.push('#') } className='px-4 py-2 hover:bg-gray-100 cursor-pointer'> Invite company</li>
-                </ul>
-                </div>
-)}
-           
+              <div>
+                <select>
+                  <option>Paused</option>
+                  <option>Open</option>
+                  <option>Closed</option>
+                </select>
+              </div>
+
+              {/* Dropdown button */}
+              <div className="relative">
+                <button
+                  onClick={() =>
+                    setOpenMenuId((prev) => (prev === job._id ? null : job._id))
+                  }
+                >
+                  <MoreHorizontal size={20} />
+                </button>
+
+                {/* Dropdown menu */}
+                {openMenuId === job._id && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded shadow-xl z-20">
+                    <ul className="py-1 text-sm text-gray-700">
+                      <li
+                        onClick={() => router.push(`/employer/jobs/edit/${job._id}`)}
+                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                      >
+                        Edit Job
+                      </li>
+                      <li
+                        onClick={() => router.push(`/employer/dashboard/${job._id}`)}
+                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                      >
+                        View Job Details
+                      </li>
+                      <li
+                        onClick={() => handleDelete(job._id)}
+                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-red-500"
+                      >
+                        Delete Job
+                      </li>
+                      <li
+                        onClick={() => router.push('#')}
+                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                      >
+                        Invite Company
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </div>
             </div>
           ))}
         </div>
@@ -112,5 +164,3 @@ const [IsOpen,setOpen] = useState(false)
 }
 
 export default Page
-
-
