@@ -522,8 +522,12 @@ const handleFileUpload = async (
 };
 
 
-
+const [error,setError] = useState('')
 const nextstep = ()=> {
+  if(!formdata.gst_status){
+    setError('Please select GST status')
+    return;
+  }
   setStep(prev => Math.min(prev +1,6))
   window.scrollTo({top:0, behavior:'smooth'})
 }
@@ -827,6 +831,8 @@ return(
     <h1 className='text-center py-5 text-3xl font-bold text-gray-700'>Goods and Services Tax (GST)</h1>
 
     {/* Radio buttons */}
+    {!formdata.gst_status && <p className="text-red-500 text-sm">GST status is required</p>}
+
     <div className='flex items-center gap-6 mb-5'>
       <label className='flex items-center gap-2'>
         <input
