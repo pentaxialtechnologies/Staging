@@ -73,7 +73,6 @@ const Page = () => {
                      <p><span className='text-base '>Work Duration :</span>   {data.duration}</p>
                     </div>
 </div>
-          <p><span className='font-bold'>Location: </span> {data.location.city}, {data.location.country}</p>
        
        <div className='py-10'>
         <p className='font-bold text-xl mb-5'>Description:</p>

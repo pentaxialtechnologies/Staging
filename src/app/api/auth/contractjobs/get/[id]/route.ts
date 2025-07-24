@@ -1,27 +1,23 @@
 import { Jobs } from "@/models/ContractJob";
 import dbConnect from "@/lib/Mongodb";
-import { NextResponse,NextRequest } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 
+export type RouteContext = { params: { id: string } }
 
-export type RouteContext = { params: Promise<{ id: string }> }
-export type RouteContexts = { params: Promise<{ id: string }> }
-
-export async function GET(
-  req: Request,
-  context: RouteContexts
-) {
+// ✅ GET job(s) by `postedBy`
+export async function GET(req: Request, context: RouteContext) {
   await dbConnect();
+  const { id } = context.params;
 
-  const { id } = await context.params;
   try {
-    const jobs = await Jobs.find({ postedBy: id, isDeleted: { $exists: false }})
+    const jobs = await Jobs.find({ postedBy: id,  });
 
-    if (!jobs) {
-      return NextResponse.json({ error: "Job not found" }, { status: 404 });
+    if (!jobs || jobs.length === 0) {
+      return NextResponse.json({ error: "Jobs not found" }, { status: 404 });
     }
+
     return NextResponse.json(jobs, { status: 200 });
-  } // eslint-disable-next-line @typescript-eslint/no-explicit-any 
-  catch (error: any) {
+  } catch (error: any) {
     return NextResponse.json(
       { message: "Server Error", error: error.message },
       { status: 500 }
@@ -29,36 +25,39 @@ export async function GET(
   }
 }
 
+// ✅ PUT update job by ID
+export async function PUT(req: NextRequest, context: RouteContext) {
+  await dbConnect();
+  const { id } = context.params;
 
-export async function PUT(req:NextRequest,context:RouteContext){
-await dbConnect();
-try{
-const  { id } = await context.params;
-    const body = await req.json()
-const updatedJob = await Jobs.findByIdAndUpdate(id,body,{new:true})
+  try {
+    const body = await req.json();
+    const updatedJob = await Jobs.findByIdAndUpdate(id, body, { new: true });
+
     if (!updatedJob) {
       return NextResponse.json({ error: "Job not found" }, { status: 404 });
     }
-        return NextResponse.json({ message: "Job updated", updatedJob });
-}
-catch(error){
-        return NextResponse.json({message:'Internal Server Error',error})
-    }
+
+    return NextResponse.json({ message: "Job updated", updatedJob });
+  } catch (error: any) {
+    return NextResponse.json({ message: "Internal Server Error", error: error.message }, { status: 500 });
+  }
 }
 
-export async function DELETE(req:Request,context: RouteContexts){
-    
-try{
-  const {id} = await context.params; 
-const jobdelete = await Jobs.findByIdAndDelete(id)
-if (!jobdelete) {
-      return NextResponse.json({ error: "Job deleted Failed" }, { status: 404 });
-    }
-        return NextResponse.json({ message: "Job Deleted", jobdelete });
+// ✅ DELETE job by ID
+export async function DELETE(req: Request, context: RouteContext) {
+  await dbConnect();
+  const { id } = context.params;
 
-}
-catch(error){
-        return NextResponse.json({message:'Internal Server Error',error})
+  try {
+    const deletedJob = await Jobs.findByIdAndDelete(id);
+
+    if (!deletedJob) {
+      return NextResponse.json({ error: "Job deletion failed" }, { status: 404 });
     }
 
+    return NextResponse.json({ message: "Job deleted", deletedJob });
+  } catch (error: any) {
+    return NextResponse.json({ message: "Internal Server Error", error: error.message }, { status: 500 });
+  }
 }

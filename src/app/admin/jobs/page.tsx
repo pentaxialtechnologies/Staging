@@ -45,7 +45,7 @@
 
     const handleStatusChange = async (jobId: string, newStatus: Job["status"]) => {
       try {
-        const res = await fetch(`/api/auth/jobs/status/${jobId}`, {
+        const res = await fetch(`/api/auth/jobs/${jobId}/status`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
