@@ -33,9 +33,8 @@ export async function POST(req: Request) {
     // Generate email verification token and expiry
     const emailToken = crypto.randomBytes(32).toString("hex");
     const emailTokenExpiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
-
-    const verifyURL = `http://localhost:3000/verify-email?token=${emailToken}&role=${role}`;
-    // const verifyURL = `https://s3-staffing-website-ivory.vercel.app/verify-email?token=${emailToken}&role=${role}`;
+    const BaseURL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const verifyURL = `${BaseURL}/verify-email?token=${emailToken}&role=${role}`;
 
 
     // Hash password
