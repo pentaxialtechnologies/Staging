@@ -74,7 +74,7 @@
       },
       createdBy: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "employer",
+        ref: "Employers",
         required: true,
       },
     },

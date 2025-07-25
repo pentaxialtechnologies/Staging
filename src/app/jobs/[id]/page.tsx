@@ -17,7 +17,8 @@ const Page = () => {
 
   useEffect(() => {
     const fetchDatas = async () => {
-      const res = await fetch(`/api/auth/jobs/${params.id}`, {
+      try{
+const res = await fetch(`/api/auth/jobs/${params.id}`, {
         method: 'GET',
         headers: { 'content-Type': 'application/json' },
       });
@@ -25,7 +26,11 @@ const Page = () => {
       if (!res.ok) throw new Error('Failed to fetch Job');
       const job = await res.json();
       setDatas([job]);
-    };
+    }
+      catch(error){
+        console.error(error);
+      }
+    }
     fetchDatas();
   }, [params.id]);
 
@@ -85,9 +90,9 @@ const Page = () => {
               <p><strong>Experience:</strong> {job.experience.minyears} - {job.experience.maxyears} years</p>
               <p><strong>Availability:</strong> {job.availability}</p>
               <p><strong>Timezone:</strong> {job.timezone}</p>
-              <p><strong>Start Date:</strong> {formatDate(job.job_dates.start_date)}</p>
+              {/* <p><strong>Start Date:</strong> {formatDate(job.job_dates.start_date)}</p> */}
               <p><strong>Work Mode:</strong> {job.workmode}</p>
-              <p><strong>Work Location:</strong> {job.location.city}, {job.location.state}</p>
+              {/* <p><strong>Work Location:</strong> {job.location.city}, {job.location.state}</p> */}
             </div>
 
             {/* Client Info */}

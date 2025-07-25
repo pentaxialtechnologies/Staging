@@ -55,7 +55,7 @@ const JobSchema = new Schema<ContractJob>(
     keywords: { type: [String], index: true, default: [] },
     postedBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "employer",
+      ref: "Employers",
       required: true,
     },
     status: {

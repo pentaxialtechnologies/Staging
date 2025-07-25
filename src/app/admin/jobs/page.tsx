@@ -53,15 +53,18 @@
           body: JSON.stringify({ status: newStatus }),
         });
 
-        if (res.ok) {
-          setJobs((prevJobs) =>
-            prevJobs.map((job) =>
-              job._id === jobId ? { ...job, status: newStatus } : job
-            )
-          );
-        } else {
-          console.error("Failed to update status");
-        }
+      if (res.ok) {
+      setJobs((prevJobs) =>
+        prevJobs.map((job) =>
+          job._id === jobId ? { ...job, status: newStatus } : job
+        )
+      );
+  } 
+        else {
+      const errorData = await res.json().catch(() => null);
+      console.error("Failed to update status:", res.status, errorData);
+    }
+
       } catch (error) {
         console.error("Error updating status:", error);
       }

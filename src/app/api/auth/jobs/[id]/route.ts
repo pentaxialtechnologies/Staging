@@ -7,9 +7,9 @@ type RouteContexts = { params: Promise<{ id: string }> };
 export async function GET(req:Request,context:RouteContexts){
 
     try{
-      const {id} = await context.params; // ✅ Directly accessing the dynamic route param
+      const {id} = await context.params; 
       await dbConnect()
-const job = await Jobs.findById(id).populate('postedBy')
+    const job = await Jobs.findById(id).lean()
 
     if (!job) {
       return NextResponse.json({ message: "Job not found" }, { status: 404 });

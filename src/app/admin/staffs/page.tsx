@@ -134,7 +134,7 @@ catch(error){
     <div key={staffs._id} className='bg-white p-6 border border-gray-150 shadow-md transition'>
       <div className='flex flex-row gap-8  mb-5 '>
         <div>
-          <Image src={staffs.OrgId.companylogo} alt='logo' className='object-cover w-60 h-auto rounded' />
+          <Image src={staffs.OrgId.companylogo} width={200} height={100} alt='logo' className='object-cover w-60 h-auto rounded' />
         </div>
         <div>
           <p className='text-xl sm:text-2xl'>{staffs.OrgId.company_name}</p>
