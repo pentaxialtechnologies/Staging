@@ -112,8 +112,7 @@ const CompanyDetailPage = () => {
             ))}
             </div>
     )}
-</div>
-
+    </div>
 
 <div>
   <h1 className="text-xl font-semibold mb-4 text-gray-800">Focus Areas</h1>
