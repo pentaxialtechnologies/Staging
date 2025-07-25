@@ -2,10 +2,10 @@ import { Jobs } from "@/models/ContractJob";
 import dbConnect from "@/lib/Mongodb";
 import { NextResponse } from "next/server";
 
-type RouteContexts = { params : { id:string}}
+type RouteContexts = { params : Promise<{ id:string}>}
 export async function PUT(req:Request,context: RouteContexts){
 try{
-  const {id} = context.params
+  const {id} = await context.params
 await dbConnect();
 const {status}= await req.json()
 const job = await Jobs.findByIdAndUpdate(id,{status},{new: true})
