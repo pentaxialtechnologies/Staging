@@ -73,9 +73,9 @@ const Page = () => {
                 }
               }}
               > 
-    <option value="under review">Pending</option>
-    <option value="approved">Approved</option>
-    <option value="rejected">Rejected</option>
+            <option value="under review">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
 
               </select>
             </div>
@@ -112,10 +112,10 @@ const Page = () => {
             <p><strong>Experience:</strong> {data?.experience?.minyears || ''} - {data?.experience?.maxyears || ''} yrs</p>
             <p><strong>Engagement Type:</strong> {data.engagement_type}</p>
             <p><strong>Payment Schedule:</strong> {data.payment_schedule}</p>
-            <p><strong>Rate:</strong> {data.rate}</p>
-            <p><strong>Working Days:</strong> {data?.working_days?.start_day || ''} - {data?.working_days?.end_day || ''}</p>
+            <p><strong>Rate:</strong> {data.budget}</p>
+            {/* <p><strong>Working Days:</strong> {data?.working_days?.start_day || ''} - {data?.working_days?.end_day || ''}</p>
             <p><strong>Working Hours:</strong> {data?.working_hours?.start_time || ''} - {data?.working_hours?.end_time || ''}</p>
-            <p><strong>Start Date:</strong> {data?.job_dates?.start_date || ''}</p>
+            <p><strong>Start Date:</strong> {data?.job_dates?.start_date || ''}</p> */}
           </div>
 
           {/* Description */}
