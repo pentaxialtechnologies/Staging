@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import dbConnect from "@/lib/Mongodb";
 import crypto from 'crypto'
 import { Provider } from "@/models/Provider/Organization";
-import { Employers } from "@/models/Employer/Employer";
 import nodemailer from 'nodemailer'
 
 export async function POST(req:Request){
@@ -61,7 +60,7 @@ const transporter = nodemailer.createTransport(
     const MailOptions ={
         from :process.env.NEXT_PUBLIC_EMAIL_USER,
         to:email,
-        subject:'Resend: Verify your email',
+        subject:'Resend: Verify your email address',
          html: `
         <p>Please click the link below to verify your email address:</p>
         <a href="${VerifyURL}">${VerifyURL}</a>
