@@ -16,7 +16,7 @@
     "@mantine/hooks": "^8.0.2",
     "@mantine/rte": "^5.10.5",
     "@tiptap/extension-color": "^2.13.0",
-    "@tiptap/extension-heading": "^2.13.0",
+    "@tiptap/extension-heading": "^2.25.0",
     "@tiptap/extension-highlight": "^2.13.0",
     "@tiptap/extension-image": "^2.13.0",
     "@tiptap/extension-link": "^2.13.0",
