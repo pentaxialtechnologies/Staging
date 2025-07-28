@@ -30,7 +30,7 @@ interface ContractJob extends Document {
   updatedAt: Date;
 }
 
-const JobSchema = new Schema<ContractJob>(
+const JobSchema  = new Schema<ContractJob>(
   {
     title: { type: String, required: true },
     skills: { type: [String], required: true },
@@ -68,7 +68,6 @@ const JobSchema = new Schema<ContractJob>(
   { timestamps: true }
 );
 
-// ✅ Text Index
 JobSchema.index({
   title: "text",
   job_description: "text",
@@ -78,7 +77,7 @@ JobSchema.index({
   keywords: "text",
 });
 
-// ✅ Keyword Preprocessing
+
 JobSchema.pre("save", function (next) {
   const job = this as ContractJob;
 
