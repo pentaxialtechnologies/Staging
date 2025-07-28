@@ -9,7 +9,7 @@ export async function GET(req:Request,context:RouteContexts){
     try{
       const {id} = await context.params; 
       await dbConnect()
-    const job = await Jobs.findById(id).lean()
+    const job = await Jobs.findById(id).lean().populate('postedBy', 'firstname email id');
 
     if (!job) {
       return NextResponse.json({ message: "Job not found" }, { status: 404 });

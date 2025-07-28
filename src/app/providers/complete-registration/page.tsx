@@ -197,25 +197,6 @@ const handleNext = async() =>{
 }
 
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', 'profile');
-    formData.append('folder', 'company/profiles');
-
-    const res = await fetch('https://api.cloudinary.com/v1_1/dfrfq0ch8/image/upload', {
-      method: 'POST',
-      body: formData,
-    });
-
-    const data = await res.json();
-    if (data.secure_url) {
-      setFormdata((prev) => ({ ...prev, companylogo: data.secure_url }));
-    }
-  };
 
   return (
     <div className="w-full">
@@ -226,31 +207,70 @@ const handleNext = async() =>{
             Step {steps}/{totalSteps}
           </span>
         </h1>
-
-
-
-
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" >
           {steps === 1 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
               {/* <input type="file" className="w-full px-4 py-2 border rounded-lg col-span-1" onChange={handleImageUpload} /> */}
               <div>
-   <Controller
+<Controller
   name="companylogo"
   control={control}
   rules={{ required: 'Company logo is required' }}
   render={({ field }) => (
-    <input
-      type="file"
-      onChange={handleImageUpload} 
-      accept="image/*"
-      className="w-full px-4 py-2 border rounded-lg col-span-2"
-    />
+    <>
+      <input
+        type="file"
+        accept="image/*"
+        className="w-full px-4 py-2 border rounded-lg col-span-2"
+        onChange={async (e) => {
+          const file = e.target.files?.[0];
+          if (!file) return;
+
+          const allowedTypes = ['image/jpeg', 'image/png'];
+          const maxSizeMB = 2;
+
+          if (!allowedTypes.includes(file.type)) {
+            alert('Only JPG or PNG files are allowed!');
+            return;
+          }
+
+          if (file.size > maxSizeMB * 1024 * 1024) {
+            alert(`File is too large. Max size: ${maxSizeMB}MB`);
+            return;
+          }
+
+          const formData = new FormData();
+          formData.append('file', file);
+          formData.append('upload_preset', 'profile');
+          formData.append('folder', 'company/profiles');
+
+          const res = await fetch(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUNDINARY_CLOUD_NAME}/image/upload`, {
+            method: 'POST',
+            body: formData,
+          });
+
+          const data = await res.json();
+          if (data.secure_url) {
+            field.onChange(data.secure_url); // sets the secure_url into react-hook-form
+          } else {
+            alert('Image upload failed.');
+          }
+        }}
+      />
+      {field.value && (
+        <img
+          src={field.value}
+          alt="Uploaded"
+          className="w-24 h-24 mt-2 object-cover border rounded"
+        />
+      )}
+    </>
   )}
 />
 {errors.companylogo && (
   <p className="text-red-500 text-sm">{errors.companylogo.message}</p>
 )}
+
 
               </div>  
 <div>

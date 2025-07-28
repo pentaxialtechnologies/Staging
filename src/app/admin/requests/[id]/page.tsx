@@ -6,7 +6,10 @@ import { useParams } from 'next/navigation';
 const Page = () => {
   const params = useParams();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<any>({
+    postedby:'',
+    firstname:''
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -23,6 +26,11 @@ const Page = () => {
     fetchData();
   }, [params?.id]);
 
+console.log('Job ID:', data.postedBy?.id || 'No ID found');
+console.log('firstname:', data.postedBy?.firstname || 'No ID found');
+
+
+
   return (
     <div className="max-w-5xl mx-auto  py-2">
       <h1 className="text-3xl font-bold text-center text-blue-800 mb-8">Job Details</h1>
@@ -30,8 +38,8 @@ const Page = () => {
       {data ? (
         <div className="bg-white shadow-xl rounded-2xl p-6 space-y-6 border border-gray-200">
           {/* Provider Info */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
+          <div className="grid grid-cols-1 md:grid-cols-2  gap-8">
+            <div className=''>
               <h2 className="text-gray-500">Provider Name</h2>
               <p className="font-medium text-blue-700">{data?.postedBy?.firstname || '' }</p>
             </div>

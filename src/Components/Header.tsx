@@ -111,73 +111,42 @@ const publicMenuItems: MenuItem[] = [
   
 ];
 
-const providerMenuItems: MenuItem[] = [
+const EmployerMenuItems: MenuItem[] = [
+  // {
+  //   title: "For Provider",
+  //   href: "/provider/dashboard",
+  //   subItems: [],
+  // },
   {
-    title: "For Provider",
-    href: "/provider/dashboard",
-    subItems: [],
-  },
-  {
-    title: "Provider Jobs",
-    href: "/provider/jobs",
+    title: "Employer Jobs",
+    href: "/employer/job-list",
     subItems: [
-      { title: "Post Job", href: "/provider/jobs" },
-      { title: "Manage Jobs", href: "/provider/job-list" },
+      { title: "Post Job", href: "/employer/jobs" },
+      { title: "Manage Jobs", href: "/employer/job-list" },
     ],
   },
   {
     title: "Account",
     href: "/provider/account",
     subItems: [
-      { title: "Profile", href: "/provider/account/profile" },
-      { title: "Settings", href: "/provider/account/settings" },
+      // { title: "Profile", href: "/provider/account/profile" },
+      { title: "Settings", href: "/employer/setting" },
       { title: "Logout", onClick: () => signOut({ callbackUrl: "/" }) },
     ],
   },
    {
-    title: "Dashboard",
-    href: "/dashboard",
-    subItems: [
-      { title: "Profile", href: "/provider/account/profile" },
-      { title: "Settings", href: "/provider/account/settings" },
-      { title: "Logout", onClick: () => signOut({ callbackUrl: "/" }) },
-    ],
-  },
-];
-
-const jobseekerMenuItems: MenuItem[] = [
-  {
-    title: "Job Listings",
-    href: "/jobs",
-    subItems: [],
-  },
-  {
-    title: "My Applications",
-    href: "/applications",
-    subItems: [],
-  },
-  {
-    title: "Account",
-    href: "/account",
-    subItems: [
-      { title: "Profile", href: "/account/profile" },
-      { title: "Settings", href: "/account/settings" },
-      { title: "Logout", onClick: () => signOut({ callbackUrl: "/" }) },
-    ],
-  },
-  {
-    title: "Dashboard",
-    href: "/dashboard",
+    title: "Dashboard", 
+    href: "/employer/dashboard",
     subItems: [
       // { title: "Profile", href: "/provider/account/profile" },
-      { title: "Providers", href: "/provider/account/settings" },
-      { title: "Logout", onClick: () => signOut({ callbackUrl: "/" }) },
+      // { title: "Settings", href: "/provider/account/settings" },
+      // { title: "Logout", onClick: () => signOut({ callbackUrl: "/" }) },
     ],
   },
 ];
 
 
-const CompanyMenuItems :MenuItem[]= [
+const ProviderMenuItems :MenuItem[]= [
   {
     title: "For Provider",
     href: "/jobs",
@@ -244,11 +213,46 @@ const CompanyMenuItems :MenuItem[]= [
 //   },
 // ]
 const adminMenuItems: MenuItem[] = [
-  ...jobseekerMenuItems,
+   {
+    title: "Staff-List",
+    href: "/admin/staffs",
+    subItems: [
+      // { title: 'Profile', href: '/provider/account/profile' },
+      // { title: 'Settings', href: '/provider/account/settings'},
+    ],
+  },
+   {
+    title: "Staff-Requests",
+    href: "/admin/staff-requests",
+    subItems: [
+      // { title: 'Profile', href: '/provider/account/profile' },
+      // { title: 'Settings', href: '/provider/account/settings'},
+    ],
+  },
   {
-    title: "Admin Panel",
-    href: "/admin",
-    subItems: [],
+    title: "Jobs",
+    href: "/admin/jobs",
+    subItems: [
+      // { title: 'Profile', href: '/provider/account/profile' },
+      // { title: 'Settings', href: '/provider/account/settings'},
+    ],
+  },
+  {
+    title: "Requests",
+    href: "/admin/requests",
+    subItems: [
+      // { title: 'Profile', href: '/provider/account/profile' },
+      // { title: 'Settings', href: '/provider/account/settings'},
+    ],
+  },
+  {
+    title: "Dashboard",
+    href: "/admin/dashboard",
+    subItems: [
+    { title: 'Profile', href: '' },
+    { title: "Logout", onClick: () => signOut({ callbackUrl: "/" }) },
+      // { title: 'Settings', href: '/provider/account/settings'},
+    ],
   },
 ];
 
@@ -259,16 +263,13 @@ const Header = () => {
   let menuToRender: MenuItem[] = [];
   switch (role) {
     case "employer":
-      menuToRender = providerMenuItems;
-      break;
-    case "jobseeker":
-      menuToRender = jobseekerMenuItems;
+      menuToRender = EmployerMenuItems;
       break;
     case "admin":
       menuToRender = adminMenuItems;
       break;
       case "provider":
-      menuToRender = CompanyMenuItems;
+      menuToRender = ProviderMenuItems;
       break;
     default:
       menuToRender = publicMenuItems;

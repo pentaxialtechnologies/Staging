@@ -80,7 +80,7 @@ const { fields, append, remove } = useFieldArray({
       formDataObj.append('folder', 'company/profiles')
 
       const res = await fetch(
-        'https://api.cloudinary.com/v1_1/dfrfq0ch8/image/upload',
+        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUNDINARY_CLOUD_NAME}/image/upload`,
         {
           method: 'POST',
           body: formDataObj,

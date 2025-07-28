@@ -479,7 +479,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 const handleFileUpload = async (
   e: React.ChangeEvent<HTMLInputElement>,
   projectIndex: number,
-  field: 'thumbnail' | 'screenshot'| 'companylogo'
+  field: 'thumbnail' | 'screenshot' | 'companylogo'
 ) => {
   const file = e.target.files?.[0];
   if (!file) return;
@@ -502,22 +502,34 @@ const handleFileUpload = async (
   formData.append('upload_preset', 'profile');
   formData.append('folder', 'company/profiles');
 
-  const res = await fetch('https://api.cloudinary.com/v1_1/dfrfq0ch8/image/upload', {
-    method: 'POST',
-    body: formData,
-  });
+  const res = await fetch(
+    `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUNDINARY_CLOUD_NAME}/image/upload`,
+    {
+      method: 'POST',
+      body: formData,
+    }
+  );
 
   const data = await res.json();
 
   if (data.secure_url) {
-    setFormData(prev => {
-      const updatedPortfolio = [...prev.portfolio];
-      updatedPortfolio[projectIndex] = {
-        ...updatedPortfolio[projectIndex],
-        [field]: data.secure_url,
-      };
-      return { ...prev, portfolio: updatedPortfolio };
-    });
+    if (field === 'companylogo') {
+      // ✅ Update logo in root of formdata
+      setFormData(prev => ({
+        ...prev,
+        companylogo: data.secure_url,
+      }));
+    } else {
+      // ✅ Update inside portfolio
+      setFormData(prev => {
+        const updatedPortfolio = [...prev.portfolio];
+        updatedPortfolio[projectIndex] = {
+          ...updatedPortfolio[projectIndex],
+          [field]: data.secure_url,
+        };
+        return { ...prev, portfolio: updatedPortfolio };
+      });
+    }
   }
 };
 
@@ -1152,7 +1164,7 @@ onClick={()=> {
           type="file"
           name='portfolio[0].thumbnail'
           className='px-4 p-4 py-2 focus:outline-none border border-gray-500 rounded-lg'
-          onChange={(e) => handleFileUpload(e, 0, 'thumbnail' )} // ✅ Pass index
+          onChange={(e) => handleFileUpload(e, 0, 'thumbnail' )} 
         />
       </div>
 
@@ -1258,7 +1270,7 @@ onClick={()=> {
           type="file"
           name='portfolio[0].screenshot'
           className='px-4 p-4 py-2 focus:outline-none border border-gray-500 rounded-lg'
-          onChange={(e) => handleFileUpload(e, 0, 'screenshot')} // ✅ Pass index
+          onChange={(e) => handleFileUpload(e, 0, 'screenshot')}
         />
       </div>
 
