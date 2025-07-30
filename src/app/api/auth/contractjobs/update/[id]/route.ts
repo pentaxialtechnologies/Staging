@@ -2,11 +2,13 @@ import dbConnect from "@/lib/Mongodb";
 import { Jobs } from "@/models/ContractJob";
 import { NextResponse,NextRequest } from "next/server";
 
-export async function PUT(req:NextRequest,{params}:{params:{id:string}}){
+type RouteContext = {params: Promise<{id:string}>}
+
+export async function PUT(req:NextRequest,context:RouteContext){
 
     try{
 await dbConnect();
-const {id} = params
+const {id} = await context.params;
 const user = await Jobs.findById(id)
 if(!user){
     return NextResponse.json({message:'Job not found'},{status:404})

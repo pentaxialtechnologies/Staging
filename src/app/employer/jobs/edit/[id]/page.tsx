@@ -304,17 +304,17 @@ const handleSubmit = async (e:React.FormEvent) => {
 };
 
 
-  return (
-    <div>
-    <form
-      onSubmit={handleSubmit}
-      className="max-w-7xl mx-auto p-8 bg-white rounded-lg shadow-md space-y-6"
-    > 
-      <h2 className="text-2xl font-semibold text-gray-800 mb-4 text-center">
-       Post a Job to Hire Talent on Contract
-      </h2>
+    return (
+      <div>
+      <form
+        onSubmit={handleSubmit}
+        className="max-w-7xl mx-auto p-8 bg-white rounded-lg shadow-md space-y-6"
+      > 
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4 text-center">
+        Post a Job to Hire Talent on Contract
+        </h2>
 
-<p className="flex items-end">{Step} of {Step}</p>
+      <p className="flex items-end">{Step} of {Step}</p>
       {error && (
         <p className="text-red-600 bg-red-100 border border-red-400 p-3 rounded">
           {error}
@@ -326,10 +326,10 @@ const handleSubmit = async (e:React.FormEvent) => {
         </p>
       )}
    
-   {Step ===1 && (
- <div>
-      <div className="grid grid-cols-1  gap-6">
-        <div>
+        {Step ===1 && (
+      <div>
+            <div className="grid grid-cols-1  gap-6">
+              <div>
           <label htmlFor="title" className="block font-medium mb-1 text-gray-700">
             Contract job title <span className="text-red-500">*</span>
           </label>
@@ -383,25 +383,25 @@ const handleSubmit = async (e:React.FormEvent) => {
       )}
     </div>
 
-          <div className="flex  flex-row gap-6">
+      <div className="flex  flex-row gap-6">
       <div className="w-full">
         <label htmlFor="availability" className="block font-medium mb-1 text-gray-700 w-95">
        Availability <span className="text-red-500">*</span>
       </label>
 
 
-  <select 
-   value={JobData.availability}
-   name="avalibility"
-   onChange={handleChange}
-  className={`w-full rounded-md border px-4 py-2`}
->
- <option value=''>Select Avalibility</option>
-      <option value='Immediately'>Immediately</option>
-      <option value="In 1 or 2 weeks from now">In 1 or 2 weeks from now</option>
-      <option value="In 1 or 2 months from now">In 1 or 2 months from now</option>
-      <option value="I am not sure at this point">I am not sure at this point</option>
-    </select>
+        <select 
+        value={JobData.availability}
+        name="avalibility"
+        onChange={handleChange}
+        className={`w-full rounded-md border px-4 py-2`}
+      >
+    <option value=''>Select Avalibility</option>
+          <option value='Immediately'>Immediately</option>
+          <option value="In 1 or 2 weeks from now">In 1 or 2 weeks from now</option>
+          <option value="In 1 or 2 months from now">In 1 or 2 months from now</option>
+          <option value="I am not sure at this point">I am not sure at this point</option>
+        </select>
 
 
         </div>
@@ -409,48 +409,48 @@ const handleSubmit = async (e:React.FormEvent) => {
   <label htmlFor="workmode" className="block font-medium mb-1 text-gray-700 w-95">
     Work Mode <span className="text-red-500">*</span>
 
-  <select 
-value={JobData.workmode}
-name="workmode"
-onChange={handleChange}
-  className={`w-full rounded-md border px-4 py-2 `}
-  >
-  <option value=''>Select WorkMode</option>
-    <option value="Remote">Remote</option>
-     <option value="Hybrid">Hybrid</option>
-    <option value="On-site">On-site</option>
-    <option value="Service Provider Agency Location">Service Provider Agency Location</option>
-  </select>
-
-  </label>
-
-</div>
-{(form.workmode === 'Hybrid' || form.workmode === 'On-site') && (
-  <div className="mt-4 w-full">
-    <label htmlFor="jobLocation" className="block font-medium mb-1 text-gray-700">
-      Job Location <span className="text-red-500">*</span>
-    </label>
-    <input
-      type="text"
-      id="jobLocation"
-      name="jobLocation"
-      value={form.jobLocation || ""}
+        <select 
+      value={JobData.workmode}
+      name="workmode"
       onChange={handleChange}
-      placeholder="Enter Job Location"
-      required
-      className="w-full rounded-md border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
-    />
-  </div>
-)}
+        className={`w-full rounded-md border px-4 py-2 `}
+        >
+        <option value=''>Select WorkMode</option>
+          <option value="Remote">Remote</option>
+          <option value="Hybrid">Hybrid</option>
+          <option value="On-site">On-site</option>
+          <option value="Service Provider Agency Location">Service Provider Agency Location</option>
+        </select>
 
-        </div>
+        </label>
 
-<div className="flex flex-row gap-6">
-  {/* Min Years */}
-  <div className="w-full">
-    <label className="font-medium mb-1 text-gray-700">
-      Experience (From)
-    </label>
+      </div>
+      {(form.workmode === 'Hybrid' || form.workmode === 'On-site') && (
+        <div className="mt-4 w-full">
+          <label htmlFor="jobLocation" className="block font-medium mb-1 text-gray-700">
+            Job Location <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="jobLocation"
+            name="jobLocation"
+            value={form.jobLocation || ""}
+            onChange={handleChange}
+            placeholder="Enter Job Location"
+            required
+            className="w-full rounded-md border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+          />
+      </div>
+    )}
+
+            </div>
+
+    <div className="flex flex-row gap-6">
+      {/* Min Years */}
+      <div className="w-full">
+        <label className="font-medium mb-1 text-gray-700">
+          Experience (From)
+        </label>
         <input
           type="number"
           name="experience.minyears"
@@ -460,14 +460,14 @@ onChange={handleChange}
           placeholder="e.g. 2"
         />
 
-   
-  </div>
+      
+      </div>
 
   {/* Max Years */}
-  <div className="w-full">
-    <label className="font-medium mb-1 text-gray-700">
-      Experience (To)
-    </label>
+      <div className="w-full">
+        <label className="font-medium mb-1 text-gray-700">
+          Experience (To)
+        </label>
         <input
           value={JobData.experience.maxyears}
           type="number"
@@ -476,21 +476,21 @@ onChange={handleChange}
           placeholder="e.g. 5"
         />
 
-  </div>
-</div>
-<div>
-    <div>
-<label htmlFor="title" className="block font-medium mb-1 text-gray-700">
-  Number of people you wish to hire for this job <span className="text-red-500">*</span>
-    </label>
+        </div>
+      </div>
+      <div>
+          <div>
+      <label htmlFor="title" className="block font-medium mb-1 text-gray-700">
+        Number of people you wish to hire for this job <span className="text-red-500">*</span>
+          </label>
 
-  <input
-  type="number"
-  value={JobData.staff_count}
-  onChange={handleChange}
-  placeholder="Enter number of resources"
-  className={`w-full rounded-md border px-4 py-2 `}
-  />
+        <input
+        type="number"
+        value={JobData.staff_count}
+        onChange={handleChange}
+        placeholder="Enter number of resources"
+        className={`w-full rounded-md border px-4 py-2 `}
+        />
         </div>
         </div>
         <div>
@@ -511,20 +511,20 @@ onChange={handleChange}
  <label htmlFor="budget" className="block font-medium text-gray-700">
     Is there a planned start date for this job? 
           </label>
-<div className="flex gap-6">
+    <div className="flex gap-6">
   {/* Yes Radio */}
   
-  <label className="flex items-center gap-2 cursor-pointer">
-    <input
-      type="radio"
-      name="workmode"
-      value="Yes"
-      checked={form.workmodes === 'Yes'}
-      onChange={(e) =>
-        setForm((prev) => ({
-          ...prev,
-          workmodes: e.target.value,
-        }))
+      <label className="flex items-center gap-2 cursor-pointer">
+        <input
+          type="radio"
+          name="workmode"
+          value="Yes"
+          checked={form.workmodes === 'Yes'}
+          onChange={(e) =>
+            setForm((prev) => ({
+              ...prev,
+              workmodes: e.target.value,
+            }))
       }
       className="h-5 w-5 text-green-500 focus:ring-green-500 border-gray-300"
     />
@@ -546,13 +546,13 @@ onChange={handleChange}
       }
       className="h-5 w-5 text-red-500 focus:ring-red-500 border-gray-300"
     />
-    <span className="text-gray-700">No</span>
-  </label>
-</div>
+        <span className="text-gray-700">No</span>
+      </label>
+    </div>
 
 
-{form.workmodes === 'Yes' && (
-  <div className="mt-4 space-y-4">
+    {form.workmodes === 'Yes' && (
+      <div className="mt-4 space-y-4">
 
     <div>
       <label htmlFor="plannedStartDate" className="block font-medium mb-1 text-gray-700">
@@ -570,64 +570,64 @@ onChange={handleChange}
         onChange={handleChange}
         required
         className="w-full rounded-md border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
-      />
-    </div>
-  </div>
-)}
-</div>
-<div className="flex flex-row  mt-4">
+            />
+          </div>
+        </div>
+      )}
+      </div>
+      <div className="flex flex-row  mt-4">
   
-    <div className="w-full">
-  <label htmlFor="duration"  className="block font-medium mb-1 text-gray-700 w-full">
-    Contract Duration <span className="text-red-500">*</span>
-  </label>
-
-  <select
-  value={JobData.duration} name="duration"
-  onChange={handleChange}
-    className={`w-full rounded-md border px-4 py-2 `}
-  >
-  <option value="">-- Select Duration --</option>
-    <option value="1 to 3 months">1 to 3 months</option>
-    <option value="3 to 6 months">3 to 6 months</option>
-    <option value="more than 6 months">More than 6 months</option>
-    <option value="not sure at this time">Not sure at this time</option>
-  </select>
-
-
-</div>
-<div className="w-full">
-      <label htmlFor="engagement_type" className="block font-medium mb-1 text-gray-700 w-full">
-      Engagement type  <span className="text-red-500">*</span>
+        <div className="w-full">
+      <label htmlFor="duration"  className="block font-medium mb-1 text-gray-700 w-full">
+        Contract Duration <span className="text-red-500">*</span>
       </label>
 
+      <select
+      value={JobData.duration} name="duration"
+      onChange={handleChange}
+        className={`w-full rounded-md border px-4 py-2 `}
+      >
+      <option value="">-- Select Duration --</option>
+        <option value="1 to 3 months">1 to 3 months</option>
+        <option value="3 to 6 months">3 to 6 months</option>
+        <option value="more than 6 months">More than 6 months</option>
+        <option value="not sure at this time">Not sure at this time</option>
+      </select>
 
-  <select
-  value={JobData.engagement_type}
-  name="engagement_type"
-  onChange={handleChange}
-   className={`w-full rounded-md border px-4 py-2 `}
-   >
-  <option>Select engagement type</option>
-      <option>Full time</option>
-      <option>Part time</option>
-</select>
+
+    </div>
+    <div className="w-full">
+          <label htmlFor="engagement_type" className="block font-medium mb-1 text-gray-700 w-full">
+          Engagement type  <span className="text-red-500">*</span>
+          </label>
+
+
+      <select
+      value={JobData.engagement_type}
+      name="engagement_type"
+      onChange={handleChange}
+      className={`w-full rounded-md border px-4 py-2 `}
+        >
+        <option>Select engagement type</option>
+            <option>Full time</option>
+            <option>Part time</option>
+      </select>
 
 
 
-  </div>
-</div>
-      
-         </div>
-       )}
+        </div>
+      </div>
+            
+              </div>
+            )}
 
-{Step ===2 && (
-<div>
-     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-      <div>
-<label htmlFor="payment_schedule" className="block font-medium mb-1 text-gray-700">
-  Payment schedule <span className="text-red-500">*</span>
-  </label>
+    {Step ===2 && (
+    <div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <div>
+    <label htmlFor="payment_schedule" className="block font-medium mb-1 text-gray-700">
+      Payment schedule <span className="text-red-500">*</span>
+      </label>
 
           <select
            value={JobData.payment_schedule}
@@ -644,7 +644,7 @@ onChange={handleChange}
           </select>
 
 
-  </div>
+        </div>
       
           <div>
           <label htmlFor="currency_type" className="block font-medium mb-1 text-gray-700">
@@ -652,7 +652,7 @@ onChange={handleChange}
           </label>
 
       <select 
-    value={JobData.currency_type}  name="currency_type" onChange={handleChange} className={`w-full rounded-md border px-4 py-2 `}>
+        value={JobData.currency_type}  name="currency_type" onChange={handleChange} className={`w-full rounded-md border px-4 py-2 `}>
             <option value="INR">INR</option>
             <option value="USD">USD</option>
             <option value="NZD">NZD</option>
@@ -666,25 +666,25 @@ onChange={handleChange}
             <option value="QAR">QAR</option>
             <option value="KWD">KWD</option>  
 
-      </select>
-</div>
-           
-<div>
-  <label className="block font-medium text-gray-700">Rate <span className="text-red-500">*</span></label>
-  <input
-    type="number"
-   name="number"
-   value={JobData.rate}
-   onChange={handleChange}
-   className="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
-    placeholder="Enter rate"
-  />
-</div>   
+          </select>
         </div>
-             <div>
-          <label htmlFor="timezone" className="block font-medium  text-gray-700">
-            Timezone <span className="text-red-500">*</span>
-          </label>
+              
+          <div>
+        <label className="block font-medium text-gray-700">Rate <span className="text-red-500">*</span></label>
+        <input
+          type="number"
+        name="number"
+        value={JobData.rate}
+        onChange={handleChange}
+        className="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+          placeholder="Enter rate"
+        />
+          </div>   
+            </div>
+                <div>
+              <label htmlFor="timezone" className="block font-medium  text-gray-700">
+                Timezone <span className="text-red-500">*</span>
+              </label>
 
 
   <select value={JobData.timezone} name="timezone" className={`w-full rounded-md border px-4 py-2`} onChange={handleChange}>
@@ -704,8 +704,8 @@ onChange={handleChange}
     <option value="(UTC+5:30)IST Indian Standard Time">
     (UTC+5:30)IST Indian Standard Time</option>
 
-  </select>
-  </div>
+      </select>
+      </div>
  
        
 
@@ -733,7 +733,7 @@ onChange={handleChange}
     </div>
 
 
-  <div className="max-w-4xl mx-auto mt-8">
+    <div className="max-w-4xl mx-auto mt-8">
       <label className="block mb-2 font-semibold">Key Responsibilities <span className="text-red-500">*</span></label>
       <Editor
         editorState={KeyState}
@@ -774,23 +774,23 @@ onChange={handleChange}
         toolbarClassName="p-2"
         placeholder="Write the Required Skills here..."
       />
+        </div>
     </div>
-</div>
-)}
+    )}
 
-<div className="flex justify-between mt-6">
-{Step > 1 && (
-   <button
+    <div className="flex justify-between mt-6">
+    {Step > 1 && (
+      <button
               type="button"
               onClick={handlePrev}
               className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
             >
               Previous
             </button>
-)}
+      )}
 
-{Step < 2  ?(
-  <button
+    {Step < 2  ?(
+      <button
               type="button"
               onClick={handleNext}
               className="px-4 py-2 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 ml-auto"
@@ -802,12 +802,12 @@ onChange={handleChange}
               type="submit"
               className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 ml-auto"
             >
-              Post Job
+              Update Job
             </button>
-)}
-</div>
-
-    </form>
+      )}
       </div>
-  );
-}
+
+      </form>
+        </div>
+        );
+      }
