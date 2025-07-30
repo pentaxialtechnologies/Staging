@@ -205,27 +205,24 @@ const removeSkill = (index: number) => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+const handleChange = (
+  e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+) => {
   const { name, value } = e.target;
-  // const keys = name.split(".");
 
-setJobData((prev)=> ({...prev,[name]: value}))
-
-//   if (keys.length === 2) {
-//     setForm(prev => ({
-//       ...prev,
-//       [keys[0]]: {
-//         ...prev[keys[0] as keyof typeof prev],
-//         [keys[1]]: keys[1] === "plannedStartDate" ? new Date(value) : value
-//       }
-//     }));
-//   } else {
-//     setForm(prev => ({
-//       ...prev,
-//       [name]: name === "plannedStartDate" ? new Date(value) : value
-//     }));
-//   }
+  if (name === "minyears" || name === "maxyears") {
+    setJobData((prev) => ({
+      ...prev,
+      experience: {
+        ...prev.experience,
+        [name]: value,
+      },
+    }));
+  } else {
+    setJobData((prev) => ({ ...prev, [name]: value }));
+  }
 };
+
 
 
 
@@ -340,7 +337,7 @@ const handleSubmit = async (e:React.FormEvent) => {
           <input 
             type="text"  
             name='title'
-            value={JobData.title}
+            value={JobData.title || ''}
             onChange={handleChange}
             className={`w-full rounded-md border px-4 py-2`}
             />
@@ -373,7 +370,7 @@ const handleSubmit = async (e:React.FormEvent) => {
         <input
           type="text"
           value={input}
-          onChange={e => setInput(e.target.value)}
+          onChange={handleChange}
           onKeyDown={handleKeyDown}
           placeholder="Type and press enter"
           className="flex-1 border-none focus:outline-none"
@@ -393,8 +390,10 @@ const handleSubmit = async (e:React.FormEvent) => {
       </label>
 
 
-  <select
+  <select 
    value={JobData.availability}
+   name="avalibility"
+   onChange={handleChange}
   className={`w-full rounded-md border px-4 py-2`}
 >
  <option value=''>Select Avalibility</option>
@@ -412,6 +411,8 @@ const handleSubmit = async (e:React.FormEvent) => {
 
   <select 
 value={JobData.workmode}
+name="workmode"
+onChange={handleChange}
   className={`w-full rounded-md border px-4 py-2 `}
   >
   <option value=''>Select WorkMode</option>
@@ -450,10 +451,11 @@ value={JobData.workmode}
     <label className="font-medium mb-1 text-gray-700">
       Experience (From)
     </label>
-    
         <input
           type="number"
-          value={JobData.experience.minyears}
+          name="experience.minyears"
+          onChange={handleChange}
+          value={JobData.experience.minyears || ''} 
           className={`w-full rounded-md border px-4 py-2 `}
           placeholder="e.g. 2"
         />
@@ -466,10 +468,10 @@ value={JobData.workmode}
     <label className="font-medium mb-1 text-gray-700">
       Experience (To)
     </label>
-
         <input
           value={JobData.experience.maxyears}
           type="number"
+          onChange={handleChange}
           className={`w-full rounded-md border px-4 py-2`}
           placeholder="e.g. 5"
         />
@@ -485,6 +487,7 @@ value={JobData.workmode}
   <input
   type="number"
   value={JobData.staff_count}
+  onChange={handleChange}
   placeholder="Enter number of resources"
   className={`w-full rounded-md border px-4 py-2 `}
   />
@@ -497,15 +500,14 @@ value={JobData.workmode}
 
   <input 
   type="text"
-  value={JobData.budget}
+  value={JobData.budget || ''}
   onChange={handleChange}
-
   className={`w-full rounded-md border px-4 py-2 `}
   />
 
-
-
         </div>
+
+
  <label htmlFor="budget" className="block font-medium text-gray-700">
     Is there a planned start date for this job? 
           </label>
@@ -576,12 +578,13 @@ value={JobData.workmode}
 <div className="flex flex-row  mt-4">
   
     <div className="w-full">
-  <label htmlFor="duration" className="block font-medium mb-1 text-gray-700 w-full">
+  <label htmlFor="duration"  className="block font-medium mb-1 text-gray-700 w-full">
     Contract Duration <span className="text-red-500">*</span>
   </label>
 
   <select
-  value={JobData.duration}
+  value={JobData.duration} name="duration"
+  onChange={handleChange}
     className={`w-full rounded-md border px-4 py-2 `}
   >
   <option value="">-- Select Duration --</option>
@@ -601,6 +604,8 @@ value={JobData.workmode}
 
   <select
   value={JobData.engagement_type}
+  name="engagement_type"
+  onChange={handleChange}
    className={`w-full rounded-md border px-4 py-2 `}
    >
   <option>Select engagement type</option>
@@ -624,10 +629,10 @@ value={JobData.workmode}
   Payment schedule <span className="text-red-500">*</span>
   </label>
 
-
-
           <select
            value={JobData.payment_schedule}
+           onChange={handleChange}
+           name="payment_schedule"
             className={`w-full rounded-md border px-4 py-2 `}
           >
             <option value="Daily">Daily</option>
@@ -647,9 +652,7 @@ value={JobData.workmode}
           </label>
 
       <select 
-    value={JobData.currency_type}
-      className={`w-full rounded-md border px-4 py-2 `}
-      >
+    value={JobData.currency_type}  name="currency_type" onChange={handleChange} className={`w-full rounded-md border px-4 py-2 `}>
             <option value="INR">INR</option>
             <option value="USD">USD</option>
             <option value="NZD">NZD</option>
@@ -664,17 +667,15 @@ value={JobData.workmode}
             <option value="KWD">KWD</option>  
 
       </select>
-          
-        </div>
+</div>
            
-
-
 <div>
   <label className="block font-medium text-gray-700">Rate <span className="text-red-500">*</span></label>
   <input
     type="number"
    name="number"
    value={JobData.rate}
+   onChange={handleChange}
    className="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
     placeholder="Enter rate"
   />
@@ -686,7 +687,7 @@ value={JobData.workmode}
           </label>
 
 
-  <select value={JobData.timezone}  className={`w-full rounded-md border px-4 py-2`}>
+  <select value={JobData.timezone} name="timezone" className={`w-full rounded-md border px-4 py-2`} onChange={handleChange}>
   <option >Select time zone</option>
              <option value="(UTC+00:00) Africa/Abidjan">
          (UTC+00:00) Africa/Abidjan</option>  
