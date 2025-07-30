@@ -11,6 +11,7 @@ const Editor = dynamic(() => import('react-draft-wysiwyg').then(mod => mod.Edito
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import {  useSession } from "next-auth/react";
 import {useForm,Controller} from 'react-hook-form'
+import { useParams } from "next/navigation";
 
 
   interface JobForm {
@@ -69,7 +70,7 @@ import {useForm,Controller} from 'react-hook-form'
 export default function CreateJobForm() {
     const [form, setForm] = useState<JobForm>(initialFormState);
     const [SkillError,setSkillError] = useState('');
-    const {register,control,handleSubmit,setValue,getValues,reset,trigger,formState:{errors}} = useForm({defaultValues:initialFormState});
+    // const {register,control,handleSubmit,setValue,getValues,reset,trigger,formState:{errors}} = useForm({defaultValues:initialFormState});
     const [KeyState, setKeyState] = useState(() => EditorState.createEmpty());
  
     const [SkillState, setSkillState] = useState(() => EditorState.createEmpty());
@@ -77,14 +78,37 @@ export default function CreateJobForm() {
     const [Step,setStep] = useState(1)
     const isMountedRef = useRef(true);
 
-
+const {id} = useParams()
+  console.log(id,'get from job');
   
+const [JobData,setJobData] = useState<JobForm>(initialFormState)
+
+useEffect(() => {
+  const FetchData = async () => {
+    try {
+      const res = await fetch(`/api/auth/contractjobs/getjob/${id}`);
+      if (!res.ok) throw new Error("Failed to fetch job data");
+      const data = await res.json();
+      if (!data || !data.job._id) throw new Error("Job not found");
+      setJobData(data.job); 
+      console.log(JobData,'JOB Data from API');
+      
+    } catch (error) {
+      console.error("Error fetching job data:", error);
+    }
+  };
+
+  FetchData();
+}, [id]);
+
+
 
     const handleNext = async()=>{
      
-      const isStep1Valid = await trigger(Step ===1 ? ['title','skills','availability','workmode','staff_count','budget','duration','engagement_type','experience.minyears','experience.maxyears']: ['job_description','key_responsibilities','technical_skills']);
+      // const isStep1Valid = await trigger(Step ===1 ? ['title','skills','availability','workmode','staff_count','budget','duration','engagement_type','experience.minyears','experience.maxyears']: ['job_description','key_responsibilities','technical_skills']);
 
-      if (isStep1Valid)setStep((prevStep) => prevStep+1)
+      // if (isStep1Valid)
+        setStep((prevStep) => prevStep+1)
     }
 
     const handlePrev = ()=>{
@@ -100,15 +124,10 @@ const updateEditor = (state: EditorState, key: keyof JobForm) => {
   const stringified = JSON.stringify(raw);
 
   setForm(prev => ({ ...prev, [key]: stringified }));
-  setValue(key, stringified, { shouldValidate: true }); // sync with react-hook-form
 };
 
 
-useEffect(() => {
-  register("job_description", { required: "Job Description is required" });
-  register("key_responsibilities", { required: "Key Responsibilities are required" });
-  register("technical_skills", { required: "Technical Skills are required" });
-}, [register]);
+
 
 
 const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
@@ -188,22 +207,24 @@ const removeSkill = (index: number) => {
 
 const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
   const { name, value } = e.target;
-  const keys = name.split(".");
+  // const keys = name.split(".");
 
-  if (keys.length === 2) {
-    setForm(prev => ({
-      ...prev,
-      [keys[0]]: {
-        ...prev[keys[0] as keyof typeof prev],
-        [keys[1]]: keys[1] === "plannedStartDate" ? new Date(value) : value
-      }
-    }));
-  } else {
-    setForm(prev => ({
-      ...prev,
-      [name]: name === "plannedStartDate" ? new Date(value) : value
-    }));
-  }
+setJobData((prev)=> ({...prev,[name]: value}))
+
+//   if (keys.length === 2) {
+//     setForm(prev => ({
+//       ...prev,
+//       [keys[0]]: {
+//         ...prev[keys[0] as keyof typeof prev],
+//         [keys[1]]: keys[1] === "plannedStartDate" ? new Date(value) : value
+//       }
+//     }));
+//   } else {
+//     setForm(prev => ({
+//       ...prev,
+//       [name]: name === "plannedStartDate" ? new Date(value) : value
+//     }));
+//   }
 };
 
 
@@ -224,67 +245,60 @@ function extractTextsFromRawString(rawString: string): string[] {
 }
 
 
-const onSubmit = async (FormData: any) => {
+const handleSubmit = async (e:React.FormEvent) => {
   setLoading(true);
   setError(null);
   setSuccess(false);
 
-  const isValid = await trigger([
-    "job_description",
-    "key_responsibilities",
-    "technical_skills",
-  ]);
+  // Optional: Validation (uncomment if using react-hook-form)
+  // const isValid = await trigger([
+  //   "job_description",
+  //   "key_responsibilities",
+  //   "technical_skills",
+  // ]);
+  // if (!isValid) {
+  //   setLoading(false);
+  //   return;
+  // }
 
-  if (!isValid) {
-    setLoading(false);
-    return;
-  } 
- 
+  const payload = {
+    ...FormData,
+    currency_type: JobData.currency_type ?? "USD",
+    timezone: JobData.timezone ?? "Asia/Kolkata",
 
+    experience: {
+      minyears: parseInt(JobData.experience?.minyears || "0"),
+      maxyears: parseInt(JobData.experience?.maxyears || "0"),
+    },
 
-const payload = {
-  ...FormData,
-  currency_type: FormData.currency_type ?? "USD",
-  timezone: FormData.timezone ?? "Asia/Kolkata",
+    plannedStartDate: JobData.plannedStartDate
+      ? new Date(JobData.plannedStartDate)
+      : null,
 
-  experience: {
-    minyears: parseInt(FormData.experience?.minyears || "0"),
-    maxyears: parseInt(FormData.experience?.maxyears || "0"),
-  },
+    skills: (JobData.skills || []).map((skill: string) =>
+      skill.trim().toLowerCase()
+    ),
 
-  plannedStartDate: FormData.plannedStartDate
-    ? new Date(FormData.plannedStartDate)
-    : null,
-
-  skills: FormData.skills.map((skill: string) => skill.trim().toLowerCase()),
-  job_description: extractTextsFromRawString(FormData.job_description || "").join("\n"),
-  key_responsibilities: extractTextsFromRawString(FormData.key_responsibilities || "").join("\n"),
-  technical_skills: extractTextsFromRawString(FormData.technical_skills || "").join("\n"),
-  
-};
-
+    job_description: extractTextsFromRawString(JobData.job_description || "").join("\n"),
+    key_responsibilities: extractTextsFromRawString(JobData.key_responsibilities || "").join("\n"),
+    technical_skills: extractTextsFromRawString(JobData.technical_skills || "").join("\n"),
+  };
 
   try {
-    const res = await fetch("/api/auth/contractjobs/post", {
-      method: "POST",
+    const res = await fetch(`/api/auth/contractjobs/update/${id}`, {
+      method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ payload,postedBy: session?.user?.id}),
+      body: JSON.stringify(payload),
     });
 
     if (!res.ok) {
       const errorData = await res.json();
-      throw new Error(errorData.error || "Failed to create job");
+      throw new Error(errorData.error || "Failed to update job");
     }
 
-    setSuccess(true); 
-    setForm(initialFormState); 
-    setEditorState(EditorState.createEmpty());
-    setKeyState(EditorState.createEmpty());
-    setSkillState(EditorState.createEmpty());
-    setInput("");
-    setSkillError('');
-    setStep(1)
-    reset();
+    setSuccess(true);
+    setStep(1); // Or navigate to another step/view
+    // reset(); // if using react-hook-form
   } catch (err: any) {
     setError(err.message);
   } finally {
@@ -292,10 +306,11 @@ const payload = {
   }
 };
 
+
   return (
     <div>
     <form
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit}
       className="max-w-7xl mx-auto p-8 bg-white rounded-lg shadow-md space-y-6"
     > 
       <h2 className="text-2xl font-semibold text-gray-800 mb-4 text-center">
@@ -321,23 +336,16 @@ const payload = {
           <label htmlFor="title" className="block font-medium mb-1 text-gray-700">
             Contract job title <span className="text-red-500">*</span>
           </label>
-          <Controller 
-          name="title"
-          control={control}
-          rules={ { required: "Job title is required" }}
-          render={({field})=> (
-         <input
-                {...field}
-                placeholder="e.g. Senior React Developer"
-                className={`w-full rounded-md border px-4 py-2 ${
-                  errors.title ? "border-red-500" : "border-gray-300"
-                }`}
-              />
-          )} 
-          />
-          {errors.title && (
-            <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
-          )}
+
+          <input 
+            type="text"  
+            name='title'
+            value={JobData.title}
+            onChange={handleChange}
+            className={`w-full rounded-md border px-4 py-2`}
+            />
+         
+      
        </div>     
         <div>
       <label className="block font-medium mb-1 text-gray-700">
@@ -348,6 +356,7 @@ const payload = {
         {form.skills.map((skill, idx) => (
           <span
             key={idx}
+            // value={JobData.skills}
             className="bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full flex items-center text-sm"
           >
             {skill}
@@ -383,14 +392,10 @@ const payload = {
        Availability <span className="text-red-500">*</span>
       </label>
 
-<Controller 
-name="availability"
-control={control}
-rules={ {required:'Avalibility is required'}}
-render ={ ({field})=> (
+
   <select
-  {...field}
-  className={`w-full rounded-md border px-4 py-2 ${errors.availability ? 'border-red-500' : 'border-gray-300'}`}
+   value={JobData.availability}
+  className={`w-full rounded-md border px-4 py-2`}
 >
  <option value=''>Select Avalibility</option>
       <option value='Immediately'>Immediately</option>
@@ -398,23 +403,16 @@ render ={ ({field})=> (
       <option value="In 1 or 2 months from now">In 1 or 2 months from now</option>
       <option value="I am not sure at this point">I am not sure at this point</option>
     </select>
-)}
-/>
-{errors.availability && (
-  <p className="text-red-500 text-sm mt-1">{errors.availability.message}</p>
-)}
+
+
         </div>
   <div className="w-full">
   <label htmlFor="workmode" className="block font-medium mb-1 text-gray-700 w-95">
     Work Mode <span className="text-red-500">*</span>
-<Controller
-name="workmode"
-control={control}
-rules ={ { required: 'Work mode is required' }}
-render = { ({field})=> (
+
   <select 
-  {...field}
-  className={`w-full rounded-md border px-4 py-2 ${errors.workmode ? 'border-red-500' : 'border-gray-300'}`}
+value={JobData.workmode}
+  className={`w-full rounded-md border px-4 py-2 `}
   >
   <option value=''>Select WorkMode</option>
     <option value="Remote">Remote</option>
@@ -422,12 +420,9 @@ render = { ({field})=> (
     <option value="On-site">On-site</option>
     <option value="Service Provider Agency Location">Service Provider Agency Location</option>
   </select>
-)}
-/>
+
   </label>
-{errors.workmode && (
-  <p className="text-red-500 text-sm mt-1">{errors.workmode.message}</p>
-)}
+
 </div>
 {(form.workmode === 'Hybrid' || form.workmode === 'On-site') && (
   <div className="mt-4 w-full">
@@ -455,26 +450,15 @@ render = { ({field})=> (
     <label className="font-medium mb-1 text-gray-700">
       Experience (From)
     </label>
-    <Controller
-      name="experience.minyears"
-      control={control}
-      rules={{ required: 'Minimum years of experience is required' }}
-      render={({ field }) => (
+    
         <input
-          {...field}
           type="number"
-          className={`w-full rounded-md border px-4 py-2 ${
-            errors.experience?.minyears ? 'border-red-500' : 'border-gray-300'
-          }`}
+          value={JobData.experience.minyears}
+          className={`w-full rounded-md border px-4 py-2 `}
           placeholder="e.g. 2"
         />
-      )}
-    />
-    {errors.experience?.minyears && (
-      <p className="text-red-500 text-sm mt-1">
-        {errors.experience.minyears.message}
-      </p>
-    )}
+
+   
   </div>
 
   {/* Max Years */}
@@ -482,26 +466,14 @@ render = { ({field})=> (
     <label className="font-medium mb-1 text-gray-700">
       Experience (To)
     </label>
-    <Controller
-      name="experience.maxyears"
-      control={control}
-      rules={{ required: 'Maximum years of experience is required' }}
-      render={({ field }) => (
+
         <input
-          {...field}
+          value={JobData.experience.maxyears}
           type="number"
-          className={`w-full rounded-md border px-4 py-2 ${
-            errors.experience?.maxyears ? 'border-red-500' : 'border-gray-300'
-          }`}
+          className={`w-full rounded-md border px-4 py-2`}
           placeholder="e.g. 5"
         />
-      )}
-    />
-    {errors.experience?.maxyears && (
-      <p className="text-red-500 text-sm mt-1">
-        {errors.experience.maxyears.message}
-      </p>
-    )}
+
   </div>
 </div>
 <div>
@@ -509,43 +481,30 @@ render = { ({field})=> (
 <label htmlFor="title" className="block font-medium mb-1 text-gray-700">
   Number of people you wish to hire for this job <span className="text-red-500">*</span>
     </label>
-<Controller
-name="staff_count"
-control={control}
-rules ={ {required:'Number of resources is required'}}
-render = { ({field})=> (
-  <input
-  {...field}
-  placeholder="Enter number of resources"
-  className={`w-full rounded-md border px-4 py-2 ${errors.staff_count ? 'border-red-500' : 'border-gray-300'}`}
-  />
-)}
-/>
 
-{errors.staff_count && (  
-  <p className="text-red-500 text-sm mt-1">{errors.staff_count.message}</p>
-)}
+  <input
+  type="number"
+  value={JobData.staff_count}
+  placeholder="Enter number of resources"
+  className={`w-full rounded-md border px-4 py-2 `}
+  />
         </div>
         </div>
         <div>
           <label htmlFor="budget" className="block font-medium mb-1 text-gray-700">
             Budget <span className="text-red-500">*</span>
           </label>
-<Controller
-name="budget"
-control={control}
-rules={{ required:'Budget is required' }}
-render = { ({field})=> (
-  <input 
-  {...field}
-  className={`w-full rounded-md border px-4 py-2 ${errors.budget ? 'border-red-500' : 'border-gray-300'}`}
-  />
-)}
-/>
 
-{errors.budget && ( 
-  <p className="text-red-500 text-sm mt-1">{errors.budget.message}</p>
-)}
+  <input 
+  type="text"
+  value={JobData.budget}
+  onChange={handleChange}
+
+  className={`w-full rounded-md border px-4 py-2 `}
+  />
+
+
+
         </div>
  <label htmlFor="budget" className="block font-medium text-gray-700">
     Is there a planned start date for this job? 
@@ -621,14 +580,9 @@ render = { ({field})=> (
     Contract Duration <span className="text-red-500">*</span>
   </label>
 
-<Controller 
-name="duration"
-control={control}
-rules= {{required:'Duration is required'}}
-render = { ({field})=> (
   <select
-  {...field}
-    className={`w-full rounded-md border px-4 py-2 ${errors.duration ? 'border-red-500' : 'border-gray-300'}`}
+  value={JobData.duration}
+    className={`w-full rounded-md border px-4 py-2 `}
   >
   <option value="">-- Select Duration --</option>
     <option value="1 to 3 months">1 to 3 months</option>
@@ -636,36 +590,26 @@ render = { ({field})=> (
     <option value="more than 6 months">More than 6 months</option>
     <option value="not sure at this time">Not sure at this time</option>
   </select>
-)}
-/>
-{errors.duration && (
-  <p className="text-red-500 text-sm mt-1">{errors.duration.message}</p>
-)}
+
+
 </div>
 <div className="w-full">
       <label htmlFor="engagement_type" className="block font-medium mb-1 text-gray-700 w-full">
       Engagement type  <span className="text-red-500">*</span>
       </label>
 
-<Controller 
-name="engagement_type"
-control={control}
-rules={{ required: 'Engagement type is required' }}
-render = { ({field})=> (
+
   <select
-   {...field}
-   className={`w-full rounded-md border px-4 py-2 ${errors.engagement_type ? 'border-red-500' : 'border-gray-300'}`}
+  value={JobData.engagement_type}
+   className={`w-full rounded-md border px-4 py-2 `}
    >
   <option>Select engagement type</option>
       <option>Full time</option>
       <option>Part time</option>
 </select>
 
-)}
-/>
-{errors.engagement_type && (  
-  <p className="text-red-500 text-sm mt-1">{errors.engagement_type.message}</p>
-)}
+
+
   </div>
 </div>
       
@@ -679,14 +623,12 @@ render = { ({field})=> (
 <label htmlFor="payment_schedule" className="block font-medium mb-1 text-gray-700">
   Payment schedule <span className="text-red-500">*</span>
   </label>
-<Controller 
-name="payment_schedule"
-control={control}
-rules={{ required: 'Payment schedule is required' }}
-render = { ({field})=> (
+
+
+
           <select
-            {...field}
-            className={`w-full rounded-md border px-4 py-2 ${errors.payment_schedule ? 'border-red-500' : 'border-gray-300'}`}
+           value={JobData.payment_schedule}
+            className={`w-full rounded-md border px-4 py-2 `}
           >
             <option value="Daily">Daily</option>
             <option value="Hourly">Hourly</option>
@@ -695,25 +637,18 @@ render = { ({field})=> (
             <option value="Monthly">Monthly</option>
             <option value="Quarterly">Quarterly</option>
           </select>
-)}
-/>
-{errors.payment_schedule && (
-            <p className="text-red-500 text-sm mt-1">{errors.payment_schedule.message}</p>
-          )}
+
+
   </div>
       
           <div>
           <label htmlFor="currency_type" className="block font-medium mb-1 text-gray-700">
            Currency <span className="text-red-500">*</span>
           </label>
-<Controller
-name="currency_type"
-control={control}
-rules={{ required: 'Currency type is required' }}
-render = { ({field})=> (
+
       <select 
-      {...field}
-      className={`w-full rounded-md border px-4 py-2 ${errors.currency_type ? 'border-red-500' : 'border-gray-300'}`}
+    value={JobData.currency_type}
+      className={`w-full rounded-md border px-4 py-2 `}
       >
             <option value="INR">INR</option>
             <option value="USD">USD</option>
@@ -730,12 +665,6 @@ render = { ({field})=> (
 
       </select>
           
-)}
-          
-/>
-{errors.currency_type && (
-            <p className="text-red-500 text-sm mt-1">{errors.currency_type.message}</p>
-          )}
         </div>
            
 
@@ -744,11 +673,11 @@ render = { ({field})=> (
   <label className="block font-medium text-gray-700">Rate <span className="text-red-500">*</span></label>
   <input
     type="number"
-    {...register("rate", { required: "Rate is required" })}
+   name="number"
+   value={JobData.rate}
    className="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
     placeholder="Enter rate"
   />
-  {errors.rate && <p className="text-red-500 text-sm">{errors.rate.message}</p>}
 </div>   
         </div>
              <div>
@@ -756,12 +685,8 @@ render = { ({field})=> (
             Timezone <span className="text-red-500">*</span>
           </label>
 
-  <Controller
-  name="timezone"
-  control={control}
-  rules={{ required: "Timezone is required" }}
-  render={({ field }) => 
-  <select {...field} className={`w-full rounded-md border px-4 py-2 ${errors.timezone ? 'border-red-500' : 'border-gray-300'}`}>
+
+  <select value={JobData.timezone}  className={`w-full rounded-md border px-4 py-2`}>
   <option >Select time zone</option>
              <option value="(UTC+00:00) Africa/Abidjan">
          (UTC+00:00) Africa/Abidjan</option>  
@@ -778,8 +703,7 @@ render = { ({field})=> (
     <option value="(UTC+5:30)IST Indian Standard Time">
     (UTC+5:30)IST Indian Standard Time</option>
 
-  </select>}
- />
+  </select>
   </div>
  
        
