@@ -137,9 +137,8 @@ console.log();
             <Image src={Formdata.userprofile} alt="Preview" width={300} height={100} className="mt-2 w-30 h-30 rounded-full" />
           )}
         </div>
-       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-
-  <div className="flex flex-col">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+     <div className="flex flex-col">
     <label htmlFor="userprofile" className="mb-1 font-medium text-gray-700">
       User Profile
     </label>
