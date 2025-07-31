@@ -39,7 +39,7 @@ const userId = session?.user.id;
 
 useEffect(() => {
   const fetchdata = async () => {
-    const res = await fetch('/api/auth/user/session');
+    const res = await fetch('/api/auth/session');
     const data = await res.json();
     setUserdata(data.user);
   };

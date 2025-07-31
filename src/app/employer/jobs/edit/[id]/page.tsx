@@ -10,7 +10,7 @@ const Editor = dynamic(() => import('react-draft-wysiwyg').then(mod => mod.Edito
 });
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import {  useSession } from "next-auth/react";
-import {useForm,Controller} from 'react-hook-form'
+import {useForm,Controller, Form} from 'react-hook-form'
 import { useParams } from "next/navigation";
 
 
@@ -82,7 +82,11 @@ const {id} = useParams()
   console.log(id,'get from job');
   
 const [JobData,setJobData] = useState<JobForm>(initialFormState)
-
+const [existingData, setExistingData] = useState({
+  job_description:'',
+  key_responsibilities:'',
+  technical_skills:''
+});
 useEffect(() => {
   const FetchData = async () => {
     try {
@@ -91,6 +95,11 @@ useEffect(() => {
       const data = await res.json();
       if (!data || !data.job._id) throw new Error("Job not found");
       setJobData(data.job); 
+      setExistingData({
+        job_description: data.job.job_description,
+        key_responsibilities: data.job.key_responsibilities,
+        technical_skills: data.job.technical_skills
+      })
       console.log(JobData,'JOB Data from API');
       
     } catch (error) {
@@ -100,6 +109,33 @@ useEffect(() => {
 
   FetchData();
 }, [id]);
+
+
+useEffect(() => {
+  const isValidJSON = (str: string) => {
+    try {
+      const parsed = JSON.parse(str);
+      return parsed && typeof parsed === 'object';
+    } catch {
+      return false;
+    }
+  };
+
+  if (isValidJSON(existingData.job_description)) {
+    const raw = JSON.parse(existingData.job_description);
+    setEditorState(EditorState.createWithContent(convertFromRaw(raw)));
+  }
+
+  if (isValidJSON(existingData.key_responsibilities)) {
+    const raw = JSON.parse(existingData.key_responsibilities);
+    setKeyState(EditorState.createWithContent(convertFromRaw(raw)));
+  }
+
+  if (isValidJSON(existingData.technical_skills)) {
+    const raw = JSON.parse(existingData.technical_skills);
+    setSkillState(EditorState.createWithContent(convertFromRaw(raw)));
+  }
+}, [existingData]);
 
 
 
@@ -120,9 +156,10 @@ useEffect(() => {
 const updateEditor = (state: EditorState, key: keyof JobForm) => {
   const raw = convertToRaw(state.getCurrentContent());
   const stringified = JSON.stringify(raw);
-
-  setForm(prev => ({ ...prev, [key]: stringified }));
+  setJobData(prev => ({ ...prev, [key]: stringified }));
 };
+
+
 
 
 
@@ -152,26 +189,26 @@ useEffect(() => {
   };
 }, []);
 
-const hydratedRef = useRef(false);
+// const hydratedRef = useRef(false);
 
-useEffect(() => {
-  if (hydratedRef.current) return;
+// useEffect(() => {
+//   if (hydratedRef.current) return;
 
-  try {
-    if (form.job_description) {
-      setEditorState(EditorState.createWithContent(convertFromRaw(JSON.parse(form.job_description))));
-    }
-    if (form.key_responsibilities) {
-      setKeyState(EditorState.createWithContent(convertFromRaw(JSON.parse(form.key_responsibilities))));
-    }
-    if (form.technical_skills) {
-      setSkillState(EditorState.createWithContent(convertFromRaw(JSON.parse(form.technical_skills))));
-    }
-    hydratedRef.current = true;
-  } catch (error) {
-    console.error("Error parsing editor content:", error);
-  }
-}, []);
+//   try {
+//     if (JobData.job_description) {
+//       setEditorState(EditorState.createWithContent(convertFromRaw(JSON.parse(form.job_description))));
+//     }
+//     if (JobData.key_responsibilities) {
+//       setKeyState(EditorState.createWithContent(convertFromRaw(JSON.parse(form.key_responsibilities))));
+//     }
+//     if (JobData.technical_skills) {
+//       setSkillState(EditorState.createWithContent(convertFromRaw(JSON.parse(form.technical_skills))));
+//     }
+//     hydratedRef.current = true;
+//   } catch (error) {
+//     console.error("Error parsing editor content:", error);
+//   }
+// }, []);
 
 
 
@@ -181,7 +218,7 @@ const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
   if ((e.key === 'Enter' || e.key === ',') && input.trim()) {
     e.preventDefault();
     const newSkill = input.trim().toLowerCase();
-    if (!form.skills.some(skill => skill.toLowerCase() === newSkill)) {
+    if (!JobData.skills.some(skill => skill.toLowerCase() === newSkill)) {
       setForm(prev => ({ ...prev, skills: [...prev.skills, newSkill] }));
       setSkillError('');
     }
@@ -191,7 +228,7 @@ const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
 
 
 const removeSkill = (index: number) => {
-  const updated = [...form.skills];
+  const updated = [...JobData.skills];
   updated.splice(index, 1);
   setForm(prev => ({ ...prev, skills: updated }));
   if (updated.length === 0) {
@@ -212,6 +249,9 @@ const handleChange = (
   if (name.startsWith("experience.")) {
     const key = name.split(".")[1];
     setJobData((prev) => ({
+
+
+
       ...prev,
       experience: {
         ...prev.experience,
@@ -267,18 +307,20 @@ const handleSubmit = async (e:React.FormEvent) => {
   ...JobData,
   currency_type: JobData.currency_type ?? "USD",
   timezone: JobData.timezone ?? "Asia/Kolkata",
-  workmodes: JobData?.workmode || "", // "Yes" or "No"
+  workmodes: JobData?.workmode || "", 
+  rate:JobData?.rate || '',
   experience: {
     minyears: parseInt(JobData.experience?.minyears || "0"),
     maxyears: parseInt(JobData.experience?.maxyears || "0"),
   },
-  plannedStartDate: JobData?.plannedStartDate || "", // e.g., "2025-08-05"
+  plannedStartDate: JobData?.plannedStartDate || "", 
   skills: (JobData.skills || []).map((skill: string) =>
     skill.trim().toLowerCase()
   ),
-  job_description: JSON.stringify(convertToRaw(editorState.getCurrentContent())),
-  key_responsibilities: JSON.stringify(convertToRaw(KeyState.getCurrentContent())),
-  technical_skills: JSON.stringify(convertToRaw(SkillState.getCurrentContent())),
+job_description: editorState.getCurrentContent().getPlainText().trim(),
+key_responsibilities: KeyState.getCurrentContent().getPlainText().trim(),
+technical_skills: SkillState.getCurrentContent().getPlainText().trim(),
+
 };
 
 
@@ -393,7 +435,7 @@ const handleSubmit = async (e:React.FormEvent) => {
         onChange={handleChange}
         className={`w-full rounded-md border px-4 py-2`}
       >
-    <option value=''>Select Avalibility</option>
+          <option value=''>Select Avalibility</option>
           <option value='Immediately'>Immediately</option>
           <option value="In 1 or 2 weeks from now">In 1 or 2 weeks from now</option>
           <option value="In 1 or 2 months from now">In 1 or 2 months from now</option>
@@ -433,7 +475,6 @@ const handleSubmit = async (e:React.FormEvent) => {
           </label>
           <input
             type="text"
-            id="jobLocation"
             name="jobLocation"
             value={JobData.jobLocation || ""}
             onChange={handleChange}
@@ -467,8 +508,9 @@ const handleSubmit = async (e:React.FormEvent) => {
           Experience (To)
         </label>
         <input
-          value={JobData.experience.maxyears}
           type="number"
+          name="experience.maxyears"
+          value={JobData.experience.maxyears}
           onChange={handleChange}
           className={`w-full rounded-md border px-4 py-2`}
           placeholder="e.g. 5"
@@ -496,12 +538,13 @@ const handleSubmit = async (e:React.FormEvent) => {
             Budget <span className="text-red-500">*</span>
           </label>
 
-  <input 
-  type="text"
-  value={JobData.budget || ''}
-  onChange={handleChange}
-  className={`w-full rounded-md border px-4 py-2 `}
-  />
+          <input 
+          type="text"
+          name ='budget'
+          value={JobData.budget || ''}
+          onChange={handleChange}
+          className={`w-full rounded-md border px-4 py-2 `}
+          />
 
         </div>
 
@@ -560,12 +603,11 @@ const handleSubmit = async (e:React.FormEvent) => {
           type="date"
           id="plannedStartDate"
           name="plannedStartDate"
-    value={
-  JobData.plannedStartDate && !isNaN(new Date(JobData.plannedStartDate).getTime())
-    ? new Date(JobData.plannedStartDate).toISOString().split('T')[0]
-    : ""
-}
-
+            value={
+          JobData.plannedStartDate && !isNaN(new Date(JobData.plannedStartDate).getTime())
+            ? new Date(JobData.plannedStartDate).toISOString().split('T')[0]
+            : ""
+        }
           onChange={handleChange}
           required
           className="w-full rounded-md border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
@@ -582,9 +624,10 @@ const handleSubmit = async (e:React.FormEvent) => {
       </label>
 
       <select
-      value={JobData.duration} name="duration"
+      value={JobData.duration} 
+      name="duration"
       onChange={handleChange}
-        className={`w-full rounded-md border px-4 py-2 `}
+      className={`w-full rounded-md border px-4 py-2 `}
       >
       <option value="">-- Select Duration --</option>
         <option value="1 to 3 months">1 to 3 months</option>
@@ -667,8 +710,8 @@ const handleSubmit = async (e:React.FormEvent) => {
           <div>
         <label className="block font-medium text-gray-700">Rate <span className="text-red-500">*</span></label>
         <input
-          type="number"
-        name="number"
+        type="number"
+        name="rate"
         value={JobData.rate}
         onChange={handleChange}
         className="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
@@ -705,7 +748,7 @@ const handleSubmit = async (e:React.FormEvent) => {
        
 
 
-  <div className="max-w-4xl mx-auto mt-8">
+  <div className="max-w-8xl mx-auto mt-8">
       <label className="block mb-2 font-semibold">Job Description <span className="text-red-500">*</span></label>
       <Editor
         editorState={editorState}
@@ -728,7 +771,7 @@ const handleSubmit = async (e:React.FormEvent) => {
     </div>
 
 
-    <div className="max-w-4xl mx-auto mt-8">
+    <div className="max-w-8xl mx-auto mt-8">
       <label className="block mb-2 font-semibold">Key Responsibilities <span className="text-red-500">*</span></label>
       <Editor
         editorState={KeyState}
@@ -749,7 +792,7 @@ const handleSubmit = async (e:React.FormEvent) => {
         placeholder="Write the Key Responsibilities here..."
       />
     </div>
-      <div className="max-w-4xl mx-auto mt-8">
+      <div className="max-w-8xl mx-auto mt-8">
       <label className="block mb-2 font-semibold">Required Skills:<span className="text-red-500">*</span></label>
       <Editor
         editorState={SkillState}

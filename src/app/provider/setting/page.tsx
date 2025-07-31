@@ -26,7 +26,7 @@ const [user,setUser] = useState<User | null>(null)
     const router = useRouter()
 useEffect(()=>{
     const fetchdata = async()=>{
-        const res = await fetch('/api/auth/user/session')
+        const res = await fetch('/api/auth/session')
         const data = await res.json()
         console.log(data.user,"datas");
         setuserdata(data.user) 

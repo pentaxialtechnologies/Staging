@@ -30,7 +30,6 @@
         type: String,
         required: [true, "Company name required"],
         trim: true,
-        minlength: 2,
         maxlength: 100,
         
       },
@@ -38,7 +37,6 @@
         type: String,
         required: [true, "Company name required"],
         trim: true,
-        minlength: 2,
         maxlength: 100,
         
       },
@@ -74,7 +72,7 @@
       },
       createdBy: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "employer",
+        ref: "Employers",
         required: true,
       },
     },

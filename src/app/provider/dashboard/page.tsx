@@ -24,7 +24,7 @@ const CompanyDashboardPage = () => {
 const router = useRouter()
   useEffect(() => {
     const fetchUser = async () => {
-      const res = await fetch('/api/auth/user/session', { cache: 'no-store' });
+      const res = await fetch('/api/auth/session', { cache: 'no-store' });
       const data = await res.json();
       if (res.ok) {
         setUserData(data.user);

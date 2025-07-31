@@ -229,7 +229,7 @@ export default function CompanyForm() {
         </div>
 
         {/* Email */}
-  <div className="w-full max-w-md mx-auto">
+  <div className="w-full mx-auto">
   <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
     Email
   </label>
@@ -237,7 +237,7 @@ export default function CompanyForm() {
     type="email"
     id="email"
     name="email"
-    className="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+    className="block w-full px-4 py-2 border border-gray-900 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
     value={useremail || ''}
     onChange={handleChange}
     placeholder="Enter email"
@@ -281,7 +281,7 @@ export default function CompanyForm() {
           
         />
         </div>
-<div className="w-full max-w-md mx-auto">
+<div className="w-full mx-auto">
   <label htmlFor="strength" className="block text-sm font-medium text-gray-700 mb-1">
     How many people are in your company?
   </label>
@@ -290,7 +290,7 @@ export default function CompanyForm() {
     id="strength"
     value={form.strength}
     onChange={handleChange}
-    className="block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+    className="block w-full px-4 py-2 border border-gray-900 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
   >
     <option value="" disabled>Select company-size</option>
     <option value="It's just me">It&apos;s just me</option>
@@ -301,9 +301,9 @@ export default function CompanyForm() {
   </select>
 </div>
 
-<div className="w-full max-w-md mx-auto">
-      <label htmlFor="industry" className="block text-sm font-medium text-gray-700 mb-1">Company Industry</label>
-      <select name="industry" id="industry" value={form.industry}  onChange={handleChange} className="block w-full px-4 py-2  border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" >
+<div className="w-full mx-auto">
+      <label htmlFor="industry" className="block text-sm font-medium text-gray-900 mb-1 ">Company Industry</label>
+      <select name="industry" id="industry" value={form.industry}  onChange={handleChange} className="block w-full px-4 py-2  border border-gray-900 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm" >
     <option value="" disabled>
      Select Industry
     </option>
