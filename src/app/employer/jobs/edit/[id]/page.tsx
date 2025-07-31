@@ -105,9 +105,7 @@ useEffect(() => {
 
     const handleNext = async()=>{
      
-      // const isStep1Valid = await trigger(Step ===1 ? ['title','skills','availability','workmode','staff_count','budget','duration','engagement_type','experience.minyears','experience.maxyears']: ['job_description','key_responsibilities','technical_skills']);
 
-      // if (isStep1Valid)
         setStep((prevStep) => prevStep+1)
     }
 
@@ -206,22 +204,28 @@ const removeSkill = (index: number) => {
   const [success, setSuccess] = useState(false);
 
 const handleChange = (
-  e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
 ) => {
   const { name, value } = e.target;
 
-  if (name === "minyears" || name === "maxyears") {
+  // Handle nested experience
+  if (name.startsWith("experience.")) {
+    const key = name.split(".")[1];
     setJobData((prev) => ({
       ...prev,
       experience: {
         ...prev.experience,
-        [name]: value,
+        [key]: value,
       },
     }));
-  } else {
-    setJobData((prev) => ({ ...prev, [name]: value }));
+    return;
   }
+
+  // General fields
+  setJobData((prev) => ({ ...prev, [name]: value }));
+  setForm((prev) => ({ ...prev, [name]: value }));
 };
+
 
 
 
@@ -243,6 +247,7 @@ function extractTextsFromRawString(rawString: string): string[] {
 
 
 const handleSubmit = async (e:React.FormEvent) => {
+  e.preventDefault(); 
   setLoading(true);
   setError(null);
   setSuccess(false);
@@ -258,28 +263,24 @@ const handleSubmit = async (e:React.FormEvent) => {
   //   return;
   // }
 
-  const payload = {
-    ...FormData,
-    currency_type: JobData.currency_type ?? "USD",
-    timezone: JobData.timezone ?? "Asia/Kolkata",
+ const payload = {
+  ...JobData,
+  currency_type: JobData.currency_type ?? "USD",
+  timezone: JobData.timezone ?? "Asia/Kolkata",
+  workmodes: JobData?.workmode || "", // "Yes" or "No"
+  experience: {
+    minyears: parseInt(JobData.experience?.minyears || "0"),
+    maxyears: parseInt(JobData.experience?.maxyears || "0"),
+  },
+  plannedStartDate: JobData?.plannedStartDate || "", // e.g., "2025-08-05"
+  skills: (JobData.skills || []).map((skill: string) =>
+    skill.trim().toLowerCase()
+  ),
+  job_description: JSON.stringify(convertToRaw(editorState.getCurrentContent())),
+  key_responsibilities: JSON.stringify(convertToRaw(KeyState.getCurrentContent())),
+  technical_skills: JSON.stringify(convertToRaw(SkillState.getCurrentContent())),
+};
 
-    experience: {
-      minyears: parseInt(JobData.experience?.minyears || "0"),
-      maxyears: parseInt(JobData.experience?.maxyears || "0"),
-    },
-
-    plannedStartDate: JobData.plannedStartDate
-      ? new Date(JobData.plannedStartDate)
-      : null,
-
-    skills: (JobData.skills || []).map((skill: string) =>
-      skill.trim().toLowerCase()
-    ),
-
-    job_description: extractTextsFromRawString(JobData.job_description || "").join("\n"),
-    key_responsibilities: extractTextsFromRawString(JobData.key_responsibilities || "").join("\n"),
-    technical_skills: extractTextsFromRawString(JobData.technical_skills || "").join("\n"),
-  };
 
   try {
     const res = await fetch(`/api/auth/contractjobs/update/${id}`, {
@@ -311,7 +312,7 @@ const handleSubmit = async (e:React.FormEvent) => {
         className="max-w-7xl mx-auto p-8 bg-white rounded-lg shadow-md space-y-6"
       > 
         <h2 className="text-2xl font-semibold text-gray-800 mb-4 text-center">
-        Post a Job to Hire Talent on Contract
+        Edit Job
         </h2>
 
       <p className="flex items-end">{Step} of {Step}</p>
@@ -322,7 +323,7 @@ const handleSubmit = async (e:React.FormEvent) => {
       )}
       {success && (
         <p className="text-green-700 bg-green-100 border border-green-400 p-3 rounded">
-          Job posted successfully!
+          Updated successfully!
         </p>
       )}
    
@@ -341,16 +342,14 @@ const handleSubmit = async (e:React.FormEvent) => {
             onChange={handleChange}
             className={`w-full rounded-md border px-4 py-2`}
             />
-         
-      
        </div>     
-        <div>
+        <div> 
       <label className="block font-medium mb-1 text-gray-700">
         Skills <span className="text-red-500">*</span>
       </label>
 
       <div className="w-full border border-gray-300 rounded-md px-2 py-2 flex flex-wrap gap-2 focus-within:ring-2 focus-within:ring-indigo-500 transition">
-        {form.skills.map((skill, idx) => (
+        {JobData.skills.map((skill, idx) => (
           <span
             key={idx}
             // value={JobData.skills}
@@ -388,8 +387,6 @@ const handleSubmit = async (e:React.FormEvent) => {
         <label htmlFor="availability" className="block font-medium mb-1 text-gray-700 w-95">
        Availability <span className="text-red-500">*</span>
       </label>
-
-
         <select 
         value={JobData.availability}
         name="avalibility"
@@ -413,8 +410,7 @@ const handleSubmit = async (e:React.FormEvent) => {
       value={JobData.workmode}
       name="workmode"
       onChange={handleChange}
-        className={`w-full rounded-md border px-4 py-2 `}
-        >
+        className={`w-full rounded-md border px-4 py-2 `}>
         <option value=''>Select WorkMode</option>
           <option value="Remote">Remote</option>
           <option value="Hybrid">Hybrid</option>
@@ -425,7 +421,12 @@ const handleSubmit = async (e:React.FormEvent) => {
         </label>
 
       </div>
-      {(form.workmode === 'Hybrid' || form.workmode === 'On-site') && (
+
+
+            </div>
+
+                  <div className="flex flex-row">
+      {(JobData.workmode === 'Hybrid' || JobData.workmode === 'On-site') && (
         <div className="mt-4 w-full">
           <label htmlFor="jobLocation" className="block font-medium mb-1 text-gray-700">
             Job Location <span className="text-red-500">*</span>
@@ -434,7 +435,7 @@ const handleSubmit = async (e:React.FormEvent) => {
             type="text"
             id="jobLocation"
             name="jobLocation"
-            value={form.jobLocation || ""}
+            value={JobData.jobLocation || ""}
             onChange={handleChange}
             placeholder="Enter Job Location"
             required
@@ -442,8 +443,7 @@ const handleSubmit = async (e:React.FormEvent) => {
           />
       </div>
     )}
-
-            </div>
+      </div>
 
     <div className="flex flex-row gap-6">
       {/* Min Years */}
@@ -458,9 +458,7 @@ const handleSubmit = async (e:React.FormEvent) => {
           value={JobData.experience.minyears || ''} 
           className={`w-full rounded-md border px-4 py-2 `}
           placeholder="e.g. 2"
-        />
-
-      
+        />      
       </div>
 
   {/* Max Years */}
@@ -508,73 +506,74 @@ const handleSubmit = async (e:React.FormEvent) => {
         </div>
 
 
- <label htmlFor="budget" className="block font-medium text-gray-700">
-    Is there a planned start date for this job? 
-          </label>
-    <div className="flex gap-6">
-  {/* Yes Radio */}
-  
-      <label className="flex items-center gap-2 cursor-pointer">
-        <input
-          type="radio"
-          name="workmode"
-          value="Yes"
-          checked={form.workmodes === 'Yes'}
-          onChange={(e) =>
-            setForm((prev) => ({
-              ...prev,
-              workmodes: e.target.value,
-            }))
-      }
-      className="h-5 w-5 text-green-500 focus:ring-green-500 border-gray-300"
-    />
-    <span className="text-gray-700">Yes</span>
-  </label>
+  <label htmlFor="budget" className="block font-medium text-gray-700">
+      Is there a planned start date for this job? 
+            </label>
+      <div className="flex gap-6">
+    {/* Yes Radio */}
+    
+        <label className="flex items-center gap-2 cursor-pointer">
+          <input
+            type="radio"
+            name="workmode"
+            value="Yes"
+            checked={JobData.workmodes === 'Yes'}
+            onChange={(e) =>
+              setForm((prev) => ({
+                ...prev,
+                workmodes: e.target.value,
+              }))
+        }
+        className="h-5 w-5 text-green-500 focus:ring-green-500 border-gray-300"
+      />
+      <span className="text-gray-700">Yes</span>
+    </label>
 
-  {/* No Radio */}
-  <label className="flex items-center gap-2 cursor-pointer">
-    <input
-      type="radio"
-      name="workmode"
-      value="No"
-      checked={form.workmodes === 'No'}
-      onChange={(e) =>
-        setForm((prev) => ({
-          ...prev,
-          workmodes: e.target.value,
-        }))
-      }
-      className="h-5 w-5 text-red-500 focus:ring-red-500 border-gray-300"
-    />
-        <span className="text-gray-700">No</span>
-      </label>
-    </div>
-
-
-    {form.workmodes === 'Yes' && (
-      <div className="mt-4 space-y-4">
-
-    <div>
-      <label htmlFor="plannedStartDate" className="block font-medium mb-1 text-gray-700">
-        Planned Start Date
-      </label>
+    {/* No Radio */}
+    <label className="flex items-center gap-2 cursor-pointer">
       <input
-        type="date"
-        id="plannedStartDate"
-         name="plannedStartDate"
-    value={
-    form.plannedStartDate && !isNaN(new Date(form.plannedStartDate).getTime())
-    ? new Date(form.plannedStartDate).toISOString().split('T')[0]
-    : ""
-    }
-        onChange={handleChange}
-        required
-        className="w-full rounded-md border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
-            />
-          </div>
-        </div>
-      )}
+        type="radio"
+        name="workmode"
+        value="No"
+        checked={JobData.workmodes === 'No'}
+        onChange={(e) =>
+          setJobData((prev) => ({
+            ...prev,
+            workmodes: e.target.value,
+          }))
+        }
+        className="h-5 w-5 text-red-500 focus:ring-red-500 border-gray-300"
+      />
+          <span className="text-gray-700">No</span>
+        </label>
       </div>
+
+
+      {JobData.workmodes === 'Yes' && (
+        <div className="mt-4 space-y-4">
+
+      <div>
+        <label htmlFor="plannedStartDate" className="block font-medium mb-1 text-gray-700">
+          Planned Start Date
+        </label>
+        <input
+          type="date"
+          id="plannedStartDate"
+          name="plannedStartDate"
+    value={
+  JobData.plannedStartDate && !isNaN(new Date(JobData.plannedStartDate).getTime())
+    ? new Date(JobData.plannedStartDate).toISOString().split('T')[0]
+    : ""
+}
+
+          onChange={handleChange}
+          required
+          className="w-full rounded-md border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+              />
+            </div>
+          </div>
+        )}
+        </div>
       <div className="flex flex-row  mt-4">
   
         <div className="w-full">
@@ -612,9 +611,6 @@ const handleSubmit = async (e:React.FormEvent) => {
             <option>Full time</option>
             <option>Part time</option>
       </select>
-
-
-
         </div>
       </div>
             
@@ -628,7 +624,6 @@ const handleSubmit = async (e:React.FormEvent) => {
     <label htmlFor="payment_schedule" className="block font-medium mb-1 text-gray-700">
       Payment schedule <span className="text-red-500">*</span>
       </label>
-
           <select
            value={JobData.payment_schedule}
            onChange={handleChange}
@@ -687,8 +682,8 @@ const handleSubmit = async (e:React.FormEvent) => {
               </label>
 
 
-  <select value={JobData.timezone} name="timezone" className={`w-full rounded-md border px-4 py-2`} onChange={handleChange}>
-  <option >Select time zone</option>
+        <select value={JobData.timezone} name="timezone" className={`w-full rounded-md border px-4 py-2`} onChange={handleChange}>
+        <option >Select time zone</option>
              <option value="(UTC+00:00) Africa/Abidjan">
          (UTC+00:00) Africa/Abidjan</option>  
       <option value="(UTC+00:00) Africa/Accra">
@@ -789,7 +784,7 @@ const handleSubmit = async (e:React.FormEvent) => {
             </button>
       )}
 
-    {Step < 2  ?(
+    {Step <= 2  ?(
       <button
               type="button"
               onClick={handleNext}
