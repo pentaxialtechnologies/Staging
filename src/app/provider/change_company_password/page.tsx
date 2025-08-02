@@ -28,33 +28,33 @@ const {name,value} = e.target;
 setformData((prev)=> ({...prev,[name]: value}))
 }
 
-const handleChangePassword = async(e:React.FormEvent)=>{
-    e.preventDefault()
-    if(formData.newpassword !== formData.confirmpassword){
-    alert('New password and confirm password do not match.');
-    return;
+    const handleChangePassword = async(e:React.FormEvent)=>{
+        e.preventDefault()
+        if(formData.newpassword !== formData.confirmpassword){
+        alert('New password and confirm password do not match.');
+        return;
+        }
+        try{
+        const res = await fetch('/api/auth/provider/change-password',{
+        method:'POST',
+        headers:{
+            'content-Type': 'application/json'
+        },
+        body:JSON.stringify({userId:userId,oldpassword: formData.oldpassword,newpassword:formData.newpassword})
+    })
+        const data = await res.json()
+    if(res.ok){
+        alert('password changed Successfully!')
+        router.push('/provider/dashboard');
     }
-    try{
-const res = await fetch('/api/auth/provider/change-password',{
-    method:'POST',
-    headers:{
-        'content-Type': 'application/json'
-    },
-    body:JSON.stringify({userId:userId,oldpassword: formData.oldpassword,newpassword:formData.newpassword})
-})
-    const data = await res.json()
-if(res.ok){
-    alert('password changed Successfully!')
-    router.push('/provider/dashboard');
-}
-else {
-        alert(data.message);
-      }
+    else {
+            alert(data.message);
+        }
+        }
+        catch(error){
+            console.error(error);
+        }
     }
-    catch(error){
-        console.error(error);
-    }
-}
 
 return (
     <div>

@@ -29,7 +29,7 @@ const [user,setUser] = useState<User | null>(null)
             const res = await fetch('/api/auth/session')
             const data = await res.json()
             console.log(data.user,"datas");
-            setuserdata(data.user) 
+            setuserdata(data.user)   
         }
 
     const fetchUser = async()=>{

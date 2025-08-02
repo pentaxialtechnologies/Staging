@@ -17,7 +17,6 @@ const CompanyDashboardPage = () => {
   const [ completion,setCompletion] = useState<number>(0);
   const [userData, setUserData] = useState<UserType | null>(null);
   const [ showmodel,setShowModal] = useState(false);
-  const searchparams = useSearchParams()
 
   const { data: session, status } = useSession();
   const searchParams = useSearchParams();
@@ -85,7 +84,7 @@ const router = useRouter()
      
            <div className='mt-10 grid grid-cols-1 sm:grid-cols-2 gap-6'>
             {/* Pricing card  */}
-            <div onClick={()=> router.push('/company/pricing')} className='flex items-center bg-gradient-to-r from-green-100 to-green-50 p-6 rounded-xl shadow hover:shadow-md transition cursor-pointer'>
+            <div onClick={()=> router.push('/provider/dashboard')} className='flex items-center bg-gradient-to-r from-green-100 to-green-50 p-6 rounded-xl shadow hover:shadow-md transition cursor-pointer'>
                 <div className='bg-green-200 p-3 rounded-full mr-4'>
             <DollarSign className="w-6 h-6 text-green-700" />
                 </div>
@@ -96,7 +95,7 @@ const router = useRouter()
             </div>
 
             {/* Deploy Bench  */}
-            <div onClick={()=> router.push('/company/staff')} className='flex items-center bg-gradient-to-r from-blue-100 to-blue-50 p-6 rounded-xl shadow hover:shadow-md transition  cursor-pointer'>
+            <div onClick={()=> router.push('/provider/list-staffs')} className='flex items-center bg-gradient-to-r from-blue-100 to-blue-50 p-6 rounded-xl shadow hover:shadow-md transition  cursor-pointer'>
         <div className='bg-blue-200 rounded-full mr-4'>
             <User className='w-6 h-6 text-gray-700' />
         </div>

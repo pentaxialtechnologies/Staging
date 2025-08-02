@@ -11,9 +11,9 @@ export async function PUT(
 ) {
   try {
     await dbConnect();
-    // No additional code needed here; dbConnect already establishes the connection
-    const { id } = await context.params; // ✅ Directly accessing the dynamic route param
-    const { isApproved } = await req.json(); // ✅ Receiving the request body
+   
+    const { id } = await context.params; 
+    const { isApproved } = await req.json(); 
     // Validate input
     if (typeof isApproved !== 'boolean') {
       return NextResponse.json({ message: 'Invalid isApproved value' }, { status: 400 });
@@ -21,7 +21,7 @@ export async function PUT(
     const updated = await BenchStaff.findByIdAndUpdate(
       id,
       { isApproved },
-      { new: true } // ✅ Return the updated document
+      { new: true } 
     );
 
     return NextResponse.json({ message: 'Updated', updated }, { status: 200 });
