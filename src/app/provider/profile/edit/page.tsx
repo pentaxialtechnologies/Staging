@@ -633,7 +633,6 @@ return(
   <option value="$100000">$100,000</option>
   <option value="$125000">$125,000</option>
 </select>
-
    </div>
 
      <div className='flex flex-col'>
@@ -837,7 +836,6 @@ return(
   <div className='flex flex-col'>
     <h1 className='text-center py-5 text-3xl font-bold text-gray-700'>Goods and Services Tax (GST)</h1>
 
-    {!formdata.gst_status && <p className="text-red-500 text-sm">GST status is required</p>}
 
     <div className='flex items-center gap-6 mb-5'>
       <label className='flex items-center gap-2'>

@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 const MONGODB_URI = process.env.NEXT_PUBLIC_DATABASE_URL
 
 // const MONGODB_URI = 'mongodb+srv://pentaxialtechnologies:Dev%402k26@staging.krqh47y.mongodb.net/?retryWrites=true&w=majority&appName=staging'
-console.log('MONGODB_URI:', MONGODB_URI);
+// console.log('MONGODB_URI:', MONGODB_URI);
 
 
  if (!MONGODB_URI) {

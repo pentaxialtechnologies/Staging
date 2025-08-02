@@ -24,13 +24,13 @@ const [user,setUser] = useState<User | null>(null)
     const {data:session} = useSession()
     const userId = session?.user.id
     const router = useRouter()
-useEffect(()=>{
-    const fetchdata = async()=>{
-        const res = await fetch('/api/auth/session')
-        const data = await res.json()
-        console.log(data.user,"datas");
-        setuserdata(data.user) 
-    }
+    useEffect(()=>{
+        const fetchdata = async()=>{
+            const res = await fetch('/api/auth/session')
+            const data = await res.json()
+            console.log(data.user,"datas");
+            setuserdata(data.user) 
+        }
 
     const fetchUser = async()=>{
      const res = await fetch(`/api/auth/provider/userprofile/update/${userId}`)   
