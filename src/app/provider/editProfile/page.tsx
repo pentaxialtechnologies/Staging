@@ -91,11 +91,12 @@ console.log();
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     try {
-      const method = Editmode ? 'PUT' : 'POST'
+      const method = Editmode ? 'POST' : 'PUT'
       const url = Editmode
-        ? `/api/auth/provider/userprofile/update/${userId}`
-        : `/api/auth/provider/userprofile/create`
+        ? `/api/auth/provider/userprofile/create`
+        : `/api/auth/provider/userprofile/update/${userId}`
 
+        
       const res = await fetch(url, {
         method,
         headers: {
@@ -106,7 +107,7 @@ console.log();
 
       if (res.ok) {
         const result = await res.json()
-        alert(Editmode ? 'Profile Updated' : 'Profile Created')
+        alert(Editmode ? 'Profile Created': 'Profile Updated')
         console.log('Success', result)
       } else {
         console.error('Failed to submit form')
@@ -151,7 +152,6 @@ console.log();
     />
   </div>
 
-  {/* Username Input */}
   <div className="flex flex-col">
     <label htmlFor="username" className="mb-1 font-medium text-gray-700">
       User Name
@@ -209,12 +209,8 @@ console.log();
         />
 </div>
        
-
-        {/* File upload for userprofile */}
-      
-
         <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
-          {Editmode ? 'Update Profile' : 'Create Profile'}
+          {Editmode ? 'Create Profile' : 'Update Profile'  }
         </button>
       </form>
          </div>

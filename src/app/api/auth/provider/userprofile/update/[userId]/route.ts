@@ -16,8 +16,8 @@ export async function GET(
       return NextResponse.json({ message: "ID is required" }, { status: 400 });
     }
 
-    const user = await UserProfile.findOne({ userId }).populate("userId");
-
+    const user = await UserProfile.findOne({ userId })
+    
     if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
@@ -31,7 +31,6 @@ export async function GET(
   }
 }
 
-// --------------------- PUT update by userId ---------------------
 type RouteContexts = { params: Promise<{ userId: string }> };
 
 export async function PUT(
