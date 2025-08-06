@@ -84,6 +84,8 @@ const Page = () => {
                 <Image
                   src={Staff.OrgId.companylogo || '/placeholder.png'}
                   alt='Company Logo'
+                  width={200}
+                  height={100}
                   className='w-56 h-32 rounded object-cover border border-gray-100 shadow-md'
                 /> 
                 <div className='text-center sm:text-left'>

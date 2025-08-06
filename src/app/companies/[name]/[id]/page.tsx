@@ -29,7 +29,7 @@ industry_focus:{
 company_founded:string
 company_location:string
 skills:string[]
-portfolio:{
+portfolio:[{
     description:string
     project_category:string
     project_link:string[]
@@ -37,6 +37,7 @@ portfolio:{
     thumbnail:string
     title:string
 }
+]
 };
 
 const CompanyDetailPage = () => {
@@ -136,26 +137,26 @@ const CompanyDetailPage = () => {
 <div>
   <h1 className="text-xl font-semibold mb-4 text-gray-800">Portfolios</h1>
 
-  {company.portfolio?.project_link?.length > 0 ? (
+  {company.portfolio?.length > 0 ? (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-      {company.portfolio.project_link.map((link: string, index: number) => (
-        <a
+      {company.portfolio.map((items, index: number) => (
+        <div
           key={index}
-          href={link}
-          target="_blank"
-          rel="noopener noreferrer"
           className="block hover:shadow-lg transition duration-200 border rounded-lg overflow-hidden"
         >
+          <a href={items.project_link[0] || ''} ></a>
           <Image
-            src={company.portfolio.thumbnail || '/fallback-image.jpg'}
+            src={items.thumbnail || '/fallback-image.jpg'}
             alt={`Project ${index + 1}`}
+            width={200}
+            height={100}
             className="w-full h-48 object-cover"
           />
-          <p className='text-sm sm:text-lg '>{company.portfolio.title}</p>
-          <div className="p-2 flex items-center justify-between text-sm text-blue-600">
-            View Project <ExternalLink className="w-4 h-4" />
-          </div>
-        </a>
+          <p className='text-xl sm:text-lg text-center'>{items.title}</p>
+            {/* <div className="p-2 flex items-center justify-between text-sm text-blue-600">
+              View Project <ExternalLink className="w-4 h-4" />
+            </div> */}
+        </div>
       ))}
     </div>
   ) : (

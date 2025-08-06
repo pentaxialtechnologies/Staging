@@ -3,7 +3,6 @@ import dbConnect from "@/lib/Mongodb";
 import { NextRequest, NextResponse } from "next/server";
 
 type RouteContext = { params: Promise<{ userId: string }> };
-// --------------------- GET by userId ---------------------
 export async function GET(
   req: NextRequest,
   context: RouteContext
