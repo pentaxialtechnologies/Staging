@@ -10,10 +10,11 @@ import {
 import type {Metadata} from 'next'
 import { GetJob } from '@/lib/Job.utils';
 
+ type RouteContext = { params: Promise<{ id: string }> }
 
-export async function generateMetadata({params}: {params: {id:string}}): Promise<Metadata>{
+export async function generateMetadata({params}: RouteContext): Promise<Metadata>{
   
-  const job = await GetJob(params.id)
+  const job = await GetJob((await params).id)
   if(!job){
     return {
       title:'Job Not Found',
@@ -25,12 +26,12 @@ export async function generateMetadata({params}: {params: {id:string}}): Promise
     description:job.description?.slice(0.150),
     keywords:['job', 'recruitment', job.title,],
      alternates: {
-  canonical: `https://s3-staffing-website-ivory.vercel.app/jobs/${params.id}`,
+  canonical: `https://s3-staffing-website-ivory.vercel.app/jobs/${(await params).id}`,
     },
     openGraph:{
       title:`${job.title}`,
       description:job.description?.slice(0.150),
-      url: `https://s3-staffing-website-ivory.vercel.app/jobs/${params.id}`,
+      url: `https://s3-staffing-website-ivory.vercel.app/jobs/${(await params).id}`,
       siteName:'company',
       type:'website'
     },
@@ -45,9 +46,9 @@ export async function generateMetadata({params}: {params: {id:string}}): Promise
 
 
 
-export default async function Page({params}: {params: {id:string}}){
+export default async function Page({params}: RouteContext){
 
-const job = await GetJob(params.id)
+const job = await GetJob((await params).id)
 
 console.log(job,'job');
 
