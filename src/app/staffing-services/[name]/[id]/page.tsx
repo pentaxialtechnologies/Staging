@@ -44,6 +44,7 @@ const Page = () => {
     if (id) fetchData()
   }, [id])
 
+  
   return (
     <div className='w-full min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-10'>
       <h1 className='text-4xl font-bold text-center text-gray-700 mt-4 mb-2'>
@@ -53,7 +54,6 @@ const Page = () => {
         Hire Ready-To-Deploy Technology Talents From Thousands Of Pre-Vetted Service Providers Worldwide.
       </p>
 
-      {/* Search bar */}
       <div className='w-full max-w-2xl mx-auto mb-10'>
         <form>
           <div className='relative'>
@@ -79,7 +79,6 @@ const Page = () => {
         <div className='flex flex-col gap-10'>
           {StaffData.map((Staff) => (
             <div key={Staff._id} className='w-full bg-white p-6 rounded-md shadow border border-gray-200'>
-              {/* Company Info */}
               <div className='flex flex-col sm:flex-row items-center gap-6 mb-6'>
                 <Image
                   src={Staff.OrgId.companylogo || '/placeholder.png'}
@@ -94,7 +93,6 @@ const Page = () => {
                 </div>
               </div>
 
-              {/* Staff Details */}
               <div className='grid grid-cols-1 sm:grid-cols-2 gap-6 text-gray-700 text-base'>
                 <div>
                   <p><strong>Primary Skills:</strong> {Staff.primarySkills}</p>

@@ -41,6 +41,12 @@ import {
   FaCogs,
 } from "react-icons/fa";
 
+
+  export const Homemetadata ={
+    title:'Home',
+    description:'This is Home page'
+  }
+
 export const Homepage = () => {
   type Providers = { img: StaticImageData }
   type Company = { title: string; desc: string }
@@ -76,6 +82,8 @@ export const Homepage = () => {
     { name: "Laravel", icon: <SiLaravel size={30} /> },
     { name: "Software Development", icon: <FaCogs size={30} /> },
   ];
+
+
 
   const services = [
     {

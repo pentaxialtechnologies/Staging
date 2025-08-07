@@ -8,7 +8,7 @@ import Header from "@/Components/Header";
 import Footer from "@/Components/Footer";
 
 export const metadata: Metadata = {
-  title: "TrueFirms - World's #1 B2B Staff Augmentation Marketplace",
+  title: "Staffing-website",
   description: "Hire or get hired by trusted firms.",
 };
 

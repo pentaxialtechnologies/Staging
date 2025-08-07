@@ -91,10 +91,11 @@ console.log();
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     try {
-      const method = Editmode ? 'POST' : 'PUT'
+      const method = Editmode ? 'PUT' : 'POST'
       const url = Editmode
-        ? `/api/auth/provider/userprofile/create`
-        : `/api/auth/provider/userprofile/update/${userId}`
+        ?`/api/auth/provider/userprofile/update/${userId}`
+        : `/api/auth/provider/userprofile/create`
+        
 
         
       const res = await fetch(url, {

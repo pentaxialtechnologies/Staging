@@ -1,6 +1,4 @@
-'use client'
-import { useParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
   LucideShare,
   IdCard,
@@ -9,42 +7,78 @@ import {
   User,
   CheckCircle,
 } from 'lucide-react';
+import type {Metadata} from 'next'
 
-const Page = () => {
-  const params = useParams();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [datas, setDatas] = useState<any[]>([]);
+export async function GetJob(id:string){
+try{
+const res = await fetch(`http://localhost:3000/api/auth/jobs/${id}`,
+  {
+    headers:{
+      'Content-Type' : 'application/json'
+    },
+     cache:'no-store'
+  }
+)
+if(!res.ok){
+  return null
+}
+return  res.json()
+}
+catch(error){
+console.error('Fetch error:', error);
+    return null;
+}}
 
-  useEffect(() => {
-    const fetchDatas = async () => {
-      try{
-const res = await fetch(`/api/auth/jobs/${params.id}`, {
-        method: 'GET',
-        headers: { 'content-Type': 'application/json' },
-      });
-
-      if (!res.ok) throw new Error('Failed to fetch Job');
-      const job = await res.json();
-      setDatas([job]);
+export async function generateMetadata({params}: {params: {id:string}}): Promise<Metadata>{
+  
+  const job = await GetJob(params.id)
+  if(!job){
+    return {
+      title:'Job Not Found',
+      description:'This Job list could not be found'
     }
-      catch(error){
-        console.error(error);
-      }
-    }
-    fetchDatas();
-  }, [params.id]);
-
-  const formatDate = (datestring: string) => {
-    const date = new Date(datestring);
-    return `${date.getDate().toString().padStart(2, '0')}-${(date.getMonth() + 1)
-      .toString()
-      .padStart(2, '0')}-${date.getFullYear()}`;
+  }
+  return {
+    title:`${job.title}`,
+    description:job.description?.slice(0.150),
+    keywords:['job', 'recruitment', job.title,],
+     alternates: {
+  canonical: `https://s3-staffing-website-ivory.vercel.app/jobs/${params.id}`,
+    },
+    openGraph:{
+      title:`${job.title}`,
+      description:job.description?.slice(0.150),
+      url: `https://s3-staffing-website-ivory.vercel.app/jobs/${params.id}`,
+      siteName:'company',
+      type:'website'
+    },
+    twitter:{
+       title: `${job.title} | Job Details`,
+      description: job.job_description?.slice(0, 150),
+    },
+   
+   
   };
+}
+
+
+
+export default async function Page({params}: {params: {id:string}}){
+
+const job = await GetJob(params.id)
+
+console.log(job,'job');
+
+
+  if (!job) {
+    return <div className="p-8">Job not found.</div>;
+  }
+
 
   return (
     <div className="p-4 sm:p-8 bg-gray-50 min-h-screen">
-      {datas.map((job, index) => (
-        <div key={index} className="bg-white shadow-lg rounded-xl p-6 space-y-6">
+      {job && (
+        <div className="bg-white shadow-lg rounded-xl p-6 space-y-6">
           {/* Header */}
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 items-center">
             <div className="sm:col-span-2">
@@ -158,9 +192,8 @@ const res = await fetch(`/api/auth/jobs/${params.id}`, {
             </ul>
           </div>
         </div>
-      ))}
+      )}
     </div>
   );
 };
 
-export default Page;

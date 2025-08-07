@@ -1,5 +1,11 @@
 import { ProviderSideBar } from "@/Components/Provider/ProviderSideBar";
 import { EmployerHeader } from "@/Components/Provider/ProviderHeader";
+import type { Metadata } from "next";
+
+
+export const metadata : Metadata ={
+  title:'Employer'
+}
 
 export default function DashboardLayout({
   children,
