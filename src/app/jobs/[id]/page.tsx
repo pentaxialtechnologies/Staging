@@ -8,26 +8,8 @@ import {
   CheckCircle,
 } from 'lucide-react';
 import type {Metadata} from 'next'
+import { GetJob } from '@/lib/Job.utils';
 
-export async function GetJob(id:string){
-try{
-const res = await fetch(`http://localhost:3000/api/auth/jobs/${id}`,
-  {
-    headers:{
-      'Content-Type' : 'application/json'
-    },
-     cache:'no-store'
-  }
-)
-if(!res.ok){
-  return null
-}
-return  res.json()
-}
-catch(error){
-console.error('Fetch error:', error);
-    return null;
-}}
 
 export async function generateMetadata({params}: {params: {id:string}}): Promise<Metadata>{
   
