@@ -9,12 +9,11 @@ export async function GET(req:Request,context:RouteContexts){
     try{
       const {id} = await context.params; 
       await dbConnect()
-    const job = await Jobs.findById(id).lean().populate('postedBy', 'firstname email id');
-
+    const job = await Jobs.findById(id).lean().populate('postedBy', 'firstname email id lastActiveAt');
     if (!job) {
       return NextResponse.json({ message: "Job not found" }, { status: 404 });
     }
-    return NextResponse.json(job);
+    return NextResponse.json({data:job});
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     catch (error: any) {

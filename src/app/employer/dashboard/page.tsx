@@ -33,8 +33,10 @@ const Page = () => {
       }
     }
 
+   
     FetchData()
   }, [session?.user?.id])
+
 
   const handleDelete = async (id: string) => {
     try {

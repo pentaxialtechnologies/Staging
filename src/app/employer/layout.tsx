@@ -1,6 +1,8 @@
 import { ProviderSideBar } from "@/Components/Provider/ProviderSideBar";
 import { EmployerHeader } from "@/Components/Provider/ProviderHeader";
 import type { Metadata } from "next";
+import ActiveTracker from "@/Components/ActiveTracker";
+
 
 
 export const metadata : Metadata ={
@@ -12,8 +14,11 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+
+
   return (
     <div className="flex flex-col min-h-screen">
+      <ActiveTracker/>
         <EmployerHeader />
   <div className="flex flex-1 overflow-hidden">
       <aside className="w-64 bg-white border-r overflow-y-auto hidden lg:block">

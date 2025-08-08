@@ -12,6 +12,7 @@ interface EmployerDocument extends Document {
   emailTokenExpiresAt?: Date | null;
   resetToken?: string;
   resetTokenExpiry?: Date;
+  lastActiveAt: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -63,6 +64,9 @@ const EmployerSchema: Schema<EmployerDocument> = new Schema(
     resetTokenExpiry: {
       type: Date,
       default: null
+    },
+    lastActiveAt:{
+      type:Date
     }
   },
   { timestamps: true }

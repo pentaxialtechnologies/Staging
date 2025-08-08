@@ -9,12 +9,14 @@ import {
 } from 'lucide-react';
 import type {Metadata} from 'next'
 import { GetJob } from '@/lib/Job.utils';
-
+import {formatDistanceToNow} from 'date-fns'
  type RouteContext = { params: Promise<{ id: string }> }
 
 export async function generateMetadata({params}: RouteContext): Promise<Metadata>{
   
-  const job = await GetJob((await params).id)
+const {id} = await params;
+
+  const job = await GetJob(id)
   if(!job){
     return {
       title:'Job Not Found',
@@ -26,12 +28,12 @@ export async function generateMetadata({params}: RouteContext): Promise<Metadata
     description:job.description?.slice(0.150),
     keywords:['job', 'recruitment', job.title,],
      alternates: {
-  canonical: `https://s3-staffing-website-ivory.vercel.app/jobs/${(await params).id}`,
+  canonical: `https://s3-staffing-website-ivory.vercel.app/jobs/${job.id}`,
     },
     openGraph:{
       title:`${job.title}`,
       description:job.description?.slice(0.150),
-      url: `https://s3-staffing-website-ivory.vercel.app/jobs/${(await params).id}`,
+      url: `https://s3-staffing-website-ivory.vercel.app/jobs/${job.id}`,
       siteName:'company',
       type:'website'
     },
@@ -47,8 +49,10 @@ export async function generateMetadata({params}: RouteContext): Promise<Metadata
 
 
 export default async function Page({params}: RouteContext){
+const {id } = await params
+console.log(id,'id from job');
 
-const job = await GetJob((await params).id)
+const job = await GetJob(id)
 
 console.log(job,'job');
 
@@ -132,7 +136,7 @@ console.log(job,'job');
               <p className="mt-2">Interviewing: 0</p>
               <p>Timezone: {job.timezone}</p>
               <p>Total Jobs Posted: 11</p>
-              <p>Last viewed by client: 47 minutes ago</p>
+              <p>Last viewed by client:  {formatDistanceToNow(new Date(job.postedBy.lastActiveAt))}</p>
             </div>
           </div>
 
