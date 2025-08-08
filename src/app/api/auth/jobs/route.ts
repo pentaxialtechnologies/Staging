@@ -19,7 +19,6 @@
 
 import { NextResponse } from "next/server";
 import { Jobs } from '@/models/ContractJob';
-import { Employers } from "@/models/Employer/Employer";
 import dbConnect from "@/lib/Mongodb";
 
 export async function GET() {
