@@ -26,6 +26,7 @@ interface ContractJob extends Document {
   postedBy: mongoose.Types.ObjectId;
   status: "under review" | "approved" | "rejected";
   isDeleted : boolean;
+  jobPostCount: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -58,6 +59,7 @@ const JobSchema  = new Schema<ContractJob>(
       ref: "Employers",
       required: true,
     },
+    jobPostCount: { type: Number, default: 0 },
     status: {
       type: String,
       enum: ["under review", "approved", "rejected"],

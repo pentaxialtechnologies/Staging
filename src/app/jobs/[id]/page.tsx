@@ -10,7 +10,7 @@ import {
 import type {Metadata} from 'next'
 import { GetJob } from '@/lib/Job.utils';
 import {formatDistanceToNow} from 'date-fns'
-import {GetEmployerJobCount} from '@/lib/GetEmployerJobCount'
+
 
 
  type RouteContext = { params: Promise<{ id: string }> }
@@ -53,7 +53,6 @@ const {id} = await params;
 
 export default async function Page({params}: RouteContext){
 const {id } = await params
-const count = await GetEmployerJobCount()
 
 const job = await GetJob(id)
 
@@ -137,8 +136,8 @@ const job = await GetJob(id)
               </ul>
               <p className="mt-2">Interviewing: 0</p>
               <p>Timezone: {job.timezone}</p>
-              <p>Total Jobs Posted: {count}</p>
-              <p>Last viewed by client:  {formatDistanceToNow(new Date(job.postedBy.lastActiveAt))}</p>
+              <p>Total Jobs Posted: {job.employerJobCount}</p>
+              {/* <p>Last viewed by client:  {formatDistanceToNow(new Date(job.postedBy.lastActiveAt))}</p> */}
             </div>
           </div>
 

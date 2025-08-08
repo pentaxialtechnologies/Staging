@@ -140,9 +140,9 @@
                 {banner.map((logos, index) => (
                   <Image key={index} src={logos.img} alt="logo" width={200} height={100} />
                 ))}
-                <p className="mt-2 text-gray-700 font-semibold">
+                {/* <p className="mt-2 text-gray-700 font-semibold">
                   World&apos;s #1 B2B Staff Augmentation Marketplace
-                </p>
+                </p> */}
               </div>
               <h1 className="text-lg font-extrabold text-center text-blue-700 mb-6 dark:text-blue-400">
                 Join TrueFirms to be found by millions of potential prospects seeking business partnerships.

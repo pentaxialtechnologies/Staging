@@ -16,7 +16,7 @@ if(!res.ok){
   return null
 }
 const response = await res.json()
-// console.log('Fetching job from:',response.data );
+console.log('Fetching job from:',response.data );
 
 return  response.data
 }

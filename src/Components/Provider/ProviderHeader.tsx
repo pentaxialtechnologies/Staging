@@ -96,7 +96,7 @@ await signOut({callbackUrl: '/users/login'})
         <button className="lg:hidden">
           <Menu className="w-6 h-6" />
         </button>
-        <Image src={logo} alt="Logo" width={140} height={30} />
+         <Image src={logo} alt="logo" width={220} height={100} />
       </div>
 
 

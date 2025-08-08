@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { Menu, X, ChevronDown } from "lucide-react";
-import logo from "../../public/logo (1).png";
+import logo from "../../public/logos.jpeg";
 
 type SubMenu = {
   title: string;
@@ -341,10 +341,10 @@ const fetchDatas = async()=>{
         <div className="flex items-center justify-between h-20">
           <div className="flex-shrink-0">
             <Link href="/">
-              <Image src={logo} alt="logo" width={180} height={60} />
-              <p className="hidden sm:block text-xs">
+              <Image src={logo} alt="logo" width={220} height={100} />
+              {/* <p className="hidden sm:block text-xs">
                 World&apos;s #1 B2B Staff Augmentation Marketplace
-              </p>
+              </p> */}
             </Link>
           </div>
 
