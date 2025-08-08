@@ -3,7 +3,8 @@
 
 export async function GetJob(id:string){
 try{
-const res = await fetch(`http://localhost:3000/api/auth/jobs/${id}`,
+  const baseURL = process.env.NEXT_PUBLIC_BASE_URL
+const res = await fetch(`https://s3-staffing-website-ivory.vercel.app/api/auth/jobs/${id}`,
   {
     headers:{
       'Content-Type' : 'application/json'
