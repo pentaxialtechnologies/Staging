@@ -9,9 +9,9 @@ const res = await fetch(`https://s3-staffing-website-ivory.vercel.app/api/auth/j
     headers:{
       'Content-Type' : 'application/json'
     },
-     cache:'no-store'
-  }
-)
+     cache:'no-store',
+    next: { revalidate: 0 }
+  })
 
 if(!res.ok){
   return null
