@@ -53,14 +53,9 @@ const {id} = await params;
 
 export default async function Page({params}: RouteContext){
 const {id } = await params
-console.log(id,'id from job');
 const count = await GetEmployerJobCount()
-console.log(count,'count the job from employer');
 
 const job = await GetJob(id)
-
-console.log(job,'job');
-
 
   if (!job) {
     return <div className="p-8">Job not found.</div>;

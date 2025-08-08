@@ -1,6 +1,5 @@
 
 
-
 export async function GetJob(id:string){
 try{
   const baseURL = process.env.NEXT_PUBLIC_BASE_URL
@@ -17,7 +16,7 @@ if(!res.ok){
   return null
 }
 const response = await res.json()
-console.log('Fetching job from:',response.data );
+// console.log('Fetching job from:',response.data );
 
 return  response.data
 }
