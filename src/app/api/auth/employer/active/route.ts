@@ -26,8 +26,6 @@ export async function POST() {
   },
   { new: true, upsert: true, setDefaultsOnInsert: true }
 )
-
-
     return NextResponse.json({ message: 'Last Active Updated' });
   } catch (error) {
     console.error("Update error:", error);

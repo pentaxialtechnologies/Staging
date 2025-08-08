@@ -137,7 +137,7 @@ const job = await GetJob(id)
               <p className="mt-2">Interviewing: 0</p>
               <p>Timezone: {job.timezone}</p>
               <p>Total Jobs Posted: {job.employerJobCount}</p>
-              {/* <p>Last viewed by client:  {formatDistanceToNow(new Date(job.postedBy.lastActiveAt))}</p> */}
+              <p>Last viewed by client:  {formatDistanceToNow(new Date(job.postedBy.lastActiveAt))}</p>
             </div>
           </div>
 
