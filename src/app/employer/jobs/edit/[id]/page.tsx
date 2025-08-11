@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import React, { useEffect, useRef, useState } from "react"
 
-import { convertFromRaw, convertToRaw, EditorState, } from 'draft-js';
+import { convertFromRaw, convertToRaw,ContentState, EditorState,convertFromHTML, } from 'draft-js';
 
 const Editor = dynamic(() => import('react-draft-wysiwyg').then(mod => mod.Editor), {
   ssr: false,
@@ -15,7 +15,7 @@ import { useParams } from "next/navigation";
 
 
   interface JobForm {
-    technical_skills: any
+    technical_skills: string
     title: string
     skills: string[]
     budget: string;
@@ -30,7 +30,7 @@ import { useParams } from "next/navigation";
     currency_type: string
     payment_schedule:string
     key_responsibilities: string
-    jobLocation:string
+    joblocation:string
     plannedStartDate:Date
     workmodes :string
     experience: {
@@ -55,10 +55,10 @@ import { useParams } from "next/navigation";
     key_responsibilities: "",
     payment_schedule: "",
     engagement_type: "",
-    jobLocation:'',
+    joblocation:'',
     workmodes: '',
     plannedStartDate: new Date(),
-    technical_skills: undefined,
+    technical_skills: '',
     experience: {
       minyears: "",
       maxyears: "",
@@ -95,6 +95,10 @@ useEffect(() => {
       const data = await res.json();
       if (!data || !data.job._id) throw new Error("Job not found");
       setJobData(data.job); 
+      console.log(data.job.key_responsibilities,'responsibility');
+      console.log(data.job.technical_skills,'technical_skills');
+
+      
       setExistingData({
         job_description: data.job.job_description,
         key_responsibilities: data.job.key_responsibilities,
@@ -111,43 +115,85 @@ useEffect(() => {
 }, [id]);
 
 
-useEffect(() => {
-  const isValidJSON = (str: string) => {
-    try {
-      const parsed = JSON.parse(str);
-      return parsed && typeof parsed === 'object';
-    } catch {
-      return false;
+
+// useEffect(() => {
+//   const isValidJSON = (str: string) => {
+//     try {
+//       const parsed = JSON.parse(str);
+//       return parsed && typeof parsed === 'object';
+//     } catch {
+//       return false;
+//     }
+//   };
+
+//   if (isValidJSON(existingData.job_description)) {
+//     const raw = JSON.parse(existingData.job_description);
+//     setEditorState(EditorState.createWithContent(convertFromRaw(raw)));
+//   }
+
+//   if (isValidJSON(existingData.key_responsibilities)) {
+//     const raw = JSON.parse(existingData.key_responsibilities);
+//     setKeyState(EditorState.createWithContent(convertFromRaw(raw)));
+//   }
+
+//   if (isValidJSON(existingData.technical_skills)) {
+//     const raw = JSON.parse(existingData.technical_skills);
+//     setSkillState(EditorState.createWithContent(convertFromRaw(raw)));
+//   }
+// }, [existingData]);
+
+const createEditorState = (input: unknown) => {
+  if (!input || typeof input !== "string") {
+    return EditorState.createEmpty();
+  }
+
+  // Try raw Draft.js JSON
+  try {
+    const parsed = JSON.parse(input);
+    if (parsed && typeof parsed === "object" && parsed.blocks) {
+      return EditorState.createWithContent(convertFromRaw(parsed));
     }
-  };
-
-  if (isValidJSON(existingData.job_description)) {
-    const raw = JSON.parse(existingData.job_description);
-    setEditorState(EditorState.createWithContent(convertFromRaw(raw)));
+  } catch {
+    // Not JSON, try HTML
+    if (typeof input === "string") {
+      const blocksFromHTML = convertFromHTML(input);
+      const content = ContentState.createFromBlockArray(
+        blocksFromHTML.contentBlocks,
+        blocksFromHTML.entityMap
+      );
+      return EditorState.createWithContent(content);
+    }
   }
 
-  if (isValidJSON(existingData.key_responsibilities)) {
-    const raw = JSON.parse(existingData.key_responsibilities);
-    setKeyState(EditorState.createWithContent(convertFromRaw(raw)));
-  }
+  return EditorState.createEmpty();
+};
 
-  if (isValidJSON(existingData.technical_skills)) {
-    const raw = JSON.parse(existingData.technical_skills);
-    setSkillState(EditorState.createWithContent(convertFromRaw(raw)));
-  }
+
+useEffect(() => {
+  setEditorState(createEditorState(existingData.job_description));
+  setKeyState(createEditorState(existingData.key_responsibilities));
+  setSkillState(createEditorState(existingData.technical_skills));
 }, [existingData]);
 
-
-
     const handleNext = async()=>{
-     
-
+      window.scrollTo({top:0, behavior:'smooth'})
         setStep((prevStep) => prevStep+1)
     }
-
-    const handlePrev = ()=>{
-      setStep((prevStep)=> prevStep-1)
+const handlePrev = () => {
+  setStep((prevStep) => {
+    if (prevStep > 0) {
+      // scroll AFTER updating the step
+      setTimeout(() => {
+        if (typeof window !== "undefined") {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      }, 0);
+      return prevStep - 1;
     }
+    return prevStep;
+  });
+};
+
 
     
 
@@ -308,6 +354,8 @@ const handleSubmit = async (e:React.FormEvent) => {
   currency_type: JobData.currency_type ?? "USD",
   timezone: JobData.timezone ?? "Asia/Kolkata",
   workmodes: JobData?.workmode || "", 
+  joblocation: JobData?.joblocation || "", 
+
   rate:JobData?.rate || '',
   experience: {
     minyears: parseInt(JobData.experience?.minyears || "0"),
@@ -470,13 +518,13 @@ technical_skills: SkillState.getCurrentContent().getPlainText().trim(),
                   <div className="flex flex-row">
       {(JobData.workmode === 'Hybrid' || JobData.workmode === 'On-site') && (
         <div className="mt-4 w-full">
-          <label htmlFor="jobLocation" className="block font-medium mb-1 text-gray-700">
+          <label htmlFor="joblocation" className="block font-medium mb-1 text-gray-700">
             Job Location <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
-            name="jobLocation"
-            value={JobData.jobLocation || ""}
+            name="joblocation"
+            value={JobData.joblocation}
             onChange={handleChange}
             placeholder="Enter Job Location"
             required

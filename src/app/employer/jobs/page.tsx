@@ -11,6 +11,7 @@ const Editor = dynamic(() => import('react-draft-wysiwyg').then(mod => mod.Edito
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import {  useSession } from "next-auth/react";
 import {useForm,Controller} from 'react-hook-form'
+import toast,{Toaster} from "react-hot-toast";
 
 
   interface JobForm {
@@ -29,7 +30,7 @@ import {useForm,Controller} from 'react-hook-form'
     currency_type: string
     payment_schedule:string
     key_responsibilities: string
-    jobLocation:string
+    joblocation:string
     plannedStartDate:Date
     workmodes :string
     experience: {
@@ -54,8 +55,8 @@ import {useForm,Controller} from 'react-hook-form'
     key_responsibilities: "",
     payment_schedule: "",
     engagement_type: "",
-    jobLocation:'',
-    workmodes: '',
+    joblocation:'',
+    workmodes: 'No',
     plannedStartDate: new Date(),
     technical_skills: undefined,
     experience: {
@@ -69,7 +70,7 @@ import {useForm,Controller} from 'react-hook-form'
 export default function CreateJobForm() {
     const [form, setForm] = useState<JobForm>(initialFormState);
     const [SkillError,setSkillError] = useState('');
-    const {register,control,handleSubmit,setValue,getValues,reset,trigger,formState:{errors}} = useForm({defaultValues:initialFormState});
+    const {register,control,handleSubmit,watch,setValue,getValues,reset,trigger,formState:{errors}} = useForm({defaultValues:initialFormState});
     const [KeyState, setKeyState] = useState(() => EditorState.createEmpty());
  
     const [SkillState, setSkillState] = useState(() => EditorState.createEmpty());
@@ -78,22 +79,24 @@ export default function CreateJobForm() {
     const isMountedRef = useRef(true);
 
 
-  
 
-    const handleNext = async()=>{
+  const handleNext = async()=>{
      
       const isStep1Valid = await trigger(Step ===1 ? ['title','skills','availability','workmode','staff_count','budget','duration','engagement_type','experience.minyears','experience.maxyears']: ['job_description','key_responsibilities','technical_skills']);
 
-      if (isStep1Valid)setStep((prevStep) => prevStep+1)
+      if (isStep1Valid)
+        {
+          setStep((prevStep) => prevStep+1)
+          window.scrollTo({top:0,behavior:'smooth'})
+        }
     }
 
     const handlePrev = ()=>{
       setStep((prevStep)=> prevStep-1)
+      window.scrollTo({top:0,behavior:'smooth'})
     }
 
     
-
-
 
 const updateEditor = (state: EditorState, key: keyof JobForm) => {
   const raw = convertToRaw(state.getCurrentContent());
@@ -135,6 +138,9 @@ useEffect(() => {
   };
 }, []);
 
+
+
+
 const hydratedRef = useRef(false);
 
 useEffect(() => {
@@ -158,33 +164,35 @@ useEffect(() => {
 
 
 
+
+
 const [input, setInput] = useState("");
 
 const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-  if ((e.key === 'Enter' || e.key === ',') && input.trim()) {
+  if (e.key === "Enter" || e.key === ",") {
     e.preventDefault();
-    const newSkill = input.trim().toLowerCase();
-    if (!form.skills.some(skill => skill.toLowerCase() === newSkill)) {
-      setForm(prev => ({ ...prev, skills: [...prev.skills, newSkill] }));
-      setSkillError('');
+    const trimmed = input.trim();
+    const currentSkills = getValues("skills") || [];
+
+    if (trimmed && !currentSkills.includes(trimmed)) {
+      const updatedSkills = [...currentSkills, trimmed];
+      setValue("skills", updatedSkills, { shouldValidate: true });
     }
-    setInput('');
+    setInput("");
   }
 };
 
-
-const removeSkill = (index: number) => {
-  const updated = [...form.skills];
-  updated.splice(index, 1);
-  setForm(prev => ({ ...prev, skills: updated }));
-  if (updated.length === 0) {
-    setSkillError('Please enter at least one skill');
-  }
+const removeSkill = (idx: number) => {
+  const currentSkills = getValues("skills") || [];
+  const updatedSkills = currentSkills.filter((_, i) => i !== idx);
+  setValue("skills", updatedSkills, { shouldValidate: true });
 };
 
-  const [, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
+
+
+const [, setLoading] = useState(false);
+const [error, setError] = useState<string | null>(null);
+const [success, setSuccess] = useState(false);
 
 const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
   const { name, value } = e.target;
@@ -210,7 +218,6 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
 
 const {data: session} = useSession();
 const userId = session?.user.id
-console.log(userId,"userId");
 
 function extractTextsFromRawString(rawString: string): string[] {
   try {
@@ -227,8 +234,9 @@ function extractTextsFromRawString(rawString: string): string[] {
 const onSubmit = async (FormData: any) => {
   setLoading(true);
   setError(null);
-  setSuccess(false);
+  // setSuccess(false);
 
+  // ✅ Trigger validation for key fields
   const isValid = await trigger([
     "job_description",
     "key_responsibilities",
@@ -238,37 +246,45 @@ const onSubmit = async (FormData: any) => {
   if (!isValid) {
     setLoading(false);
     return;
-  } 
- 
+  }
+
+  // ✅ Format payload
+  const payload = {
+    ...FormData,
+    currency_type: FormData.currency_type ?? "USD",
+    timezone: FormData.timezone ?? "Asia/Kolkata",
+
+    experience: {
+      minyears: parseInt(FormData.experience?.minyears || "0"),
+      maxyears: parseInt(FormData.experience?.maxyears || "0"),
+    },
+
+    plannedStartDate: FormData.plannedStartDate
+      ? new Date(FormData.plannedStartDate)
+      : null,
+
+   skills: (FormData.skills || []).map((skill: string) =>
+  skill.trim().toLowerCase()
+),
+    job_description: extractTextsFromRawString(FormData.job_description || "").join("\n"),
+    key_responsibilities: extractTextsFromRawString(FormData.key_responsibilities || "").join("\n"),
+    technical_skills: extractTextsFromRawString(FormData.technical_skills || "").join("\n"),
+  };
 
 
-const payload = {
-  ...FormData,
-  currency_type: FormData.currency_type ?? "USD",
-  timezone: FormData.timezone ?? "Asia/Kolkata",
+  console.log("Submitting Skills payload:", FormData.skills);
 
-  experience: {
-    minyears: parseInt(FormData.experience?.minyears || "0"),
-    maxyears: parseInt(FormData.experience?.maxyears || "0"),
-  },
-
-  plannedStartDate: FormData.plannedStartDate
-    ? new Date(FormData.plannedStartDate)
-    : null,
-
-  skills: FormData.skills.map((skill: string) => skill.trim().toLowerCase()),
-  job_description: extractTextsFromRawString(FormData.job_description || "").join("\n"),
-  key_responsibilities: extractTextsFromRawString(FormData.key_responsibilities || "").join("\n"),
-  technical_skills: extractTextsFromRawString(FormData.technical_skills || "").join("\n"),
-  
-};
-
+  console.log("Submitting job payload:", payload);
 
   try {
+    // ✅ Make API call
     const res = await fetch("/api/auth/contractjobs/post", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ payload,postedBy: session?.user?.id}),
+      body: JSON.stringify({
+        payload,
+        postedBy: session?.user?.id,
+      }),
     });
 
     if (!res.ok) {
@@ -276,15 +292,18 @@ const payload = {
       throw new Error(errorData.error || "Failed to create job");
     }
 
-    setSuccess(true); 
-    setForm(initialFormState); 
+    // ✅ Success - reset form
+    // setSuccess(true);
+    toast.success("Job posted successfully!");
+    setForm(initialFormState);
     setEditorState(EditorState.createEmpty());
     setKeyState(EditorState.createEmpty());
     setSkillState(EditorState.createEmpty());
     setInput("");
-    setSkillError('');
-    setStep(1)
+    setSkillError("");
+    setStep(1);
     reset();
+    window.scrollTo({top:0,behavior:'smooth'})
   } catch (err: any) {
     setError(err.message);
   } finally {
@@ -292,8 +311,10 @@ const payload = {
   }
 };
 
+
   return (
     <div>
+      <Toaster/>
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="max-w-7xl mx-auto p-8 bg-white rounded-lg shadow-md space-y-6"
@@ -308,11 +329,11 @@ const payload = {
           {error}
         </p>
       )}
-      {success && (
+      {/* {success && (
         <p className="text-green-700 bg-green-100 border border-green-400 p-3 rounded">
           Job posted successfully!
         </p>
-      )}
+      )} */}
    
    {Step ===1 && (
  <div>
@@ -339,43 +360,45 @@ const payload = {
             <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
           )}
        </div>     
-        <div>
-      <label className="block font-medium mb-1 text-gray-700">
-        Skills <span className="text-red-500">*</span>
-      </label>
+      <div className="w-full">
+  <label className="block font-medium mb-1 text-gray-700">
+    Skills <span className="text-red-500">*</span>
+  </label>
 
-      <div className="w-full border border-gray-300 rounded-md px-2 py-2 flex flex-wrap gap-2 focus-within:ring-2 focus-within:ring-indigo-500 transition">
-        {form.skills.map((skill, idx) => (
-          <span
-            key={idx}
-            className="bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full flex items-center text-sm"
-          >
-            {skill}
-            <button
-              onClick={() => removeSkill(idx)}
-              className="ml-2 text-indigo-500 hover:text-red-500"
-              type="button"
-            >
-              ×
-            </button>
-          </span>
-        ))}
+  <div className="w-full border border-gray-300 rounded-md px-2 py-2 flex flex-wrap gap-2 focus-within:ring-2 focus-within:ring-indigo-500 transition">
+    {(watch("skills") || []).map((skill: string, idx: number) => (
+      <span
+        key={idx}
+        className="bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full flex items-center text-sm"
+      >
+        {skill}
+        <button
+          onClick={() => removeSkill(idx)}
+          className="ml-2 text-indigo-500 hover:text-red-500"
+          type="button"
+        >
+          ×
+        </button>
+      </span>
+    ))}
 
-        <input
-          type="text"
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Type and press enter"
-          className="flex-1 border-none focus:outline-none"
-        />
-      </div>
+    <input
+      type="text"
+      value={input}
+      onChange={(e) => setInput(e.target.value)}
+      onKeyDown={handleKeyDown}
+      placeholder="Type and press enter"
+      className="flex-1 border-none focus:outline-none"
+    />
+  </div>
 
-      <p className="text-sm text-gray-500 mt-1">Press Enter or comma to add skill</p>
-      {SkillError && (
-        <p className="text-red-500 text-sm mt-1">{SkillError}</p>
-      )}
-    </div>
+  <p className="text-sm text-gray-500 mt-1">Press Enter or comma to add skill</p>
+
+  {errors.skills && (
+    <p className="text-red-500 text-sm mt-1">{errors.skills.message}</p>
+  )}
+</div>
+
 
           <div className="flex  flex-row gap-6">
       <div className="w-full">
@@ -404,50 +427,71 @@ render ={ ({field})=> (
   <p className="text-red-500 text-sm mt-1">{errors.availability.message}</p>
 )}
         </div>
-  <div className="w-full">
-  <label htmlFor="workmode" className="block font-medium mb-1 text-gray-700 w-95">
+<div className="w-full">
+  <label htmlFor="workmode" className="block font-medium mb-1 text-gray-700">
     Work Mode <span className="text-red-500">*</span>
-<Controller
-name="workmode"
-control={control}
-rules ={ { required: 'Work mode is required' }}
-render = { ({field})=> (
-  <select 
-  {...field}
-  className={`w-full rounded-md border px-4 py-2 ${errors.workmode ? 'border-red-500' : 'border-gray-300'}`}
-  >
-  <option value=''>Select WorkMode</option>
-    <option value="Remote">Remote</option>
-     <option value="Hybrid">Hybrid</option>
-    <option value="On-site">On-site</option>
-    <option value="Service Provider Agency Location">Service Provider Agency Location</option>
-  </select>
-)}
-/>
   </label>
-{errors.workmode && (
-  <p className="text-red-500 text-sm mt-1">{errors.workmode.message}</p>
-)}
+  
+  <Controller
+    name="workmode"
+    control={control}
+    rules={{ required: 'Work mode is required' }}
+    render={({ field }) => (
+      <select
+        {...field}
+        className={`w-full rounded-md border px-4 py-2 ${
+          errors.workmode ? 'border-red-500' : 'border-gray-300'
+        }`}
+      >
+        <option value="">Select Work Mode</option>
+        <option value="Remote">Remote</option>
+        <option value="Hybrid">Hybrid</option>
+        <option value="On-site">On-site</option>
+        <option value="Service Provider Agency Location">
+          Service Provider Agency Location
+        </option>
+      </select>
+    )}
+  />
+  {errors.workmode && (
+    <p className="text-red-500 text-sm mt-1">{errors.workmode.message}</p>
+  )}
 </div>
-{(form.workmode === 'Hybrid' || form.workmode === 'On-site') && (
+      </div>
+      {/* Conditional Field with react-hook-form */}
+<div className="">
+{(watch('workmode') === 'Hybrid' || watch('workmode') === 'On-site') && (
   <div className="mt-4 w-full">
-    <label htmlFor="jobLocation" className="block font-medium mb-1 text-gray-700">
+    <label
+      htmlFor="joblocation"
+      className="block font-medium mb-1 text-gray-700"
+    >
       Job Location <span className="text-red-500">*</span>
     </label>
-    <input
-      type="text"
-      id="jobLocation"
-      name="jobLocation"
-      value={form.jobLocation || ""}
-      onChange={handleChange}
-      placeholder="Enter Job Location"
-      required
-      className="w-full rounded-md border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+    <Controller
+      name="joblocation"
+      control={control}
+      rules={{
+        required: 'Job Location is required for this work mode',
+      }}
+      render={({ field }) => (
+        <input
+          {...field}
+          placeholder="Enter Job Location"
+          className={`w-full rounded-md border px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition ${
+            errors.joblocation ? 'border-red-500' : 'border-gray-300'
+          }`}
+        />
+      )}
     />
+    {errors.joblocation && (
+      <p className="text-red-500 text-sm mt-1">
+        {errors.joblocation.message}
+      </p>
+    )}
   </div>
 )}
-
-        </div>
+</div>
 
 <div className="flex flex-row gap-6">
   {/* Min Years */}
@@ -593,24 +637,42 @@ render = { ({field})=> (
 {form.workmodes === 'Yes' && (
   <div className="mt-4 space-y-4">
 
-    <div>
-      <label htmlFor="plannedStartDate" className="block font-medium mb-1 text-gray-700">
-        Planned Start Date
-      </label>
+  <div className="w-full">
+  <label
+    htmlFor="plannedStartDate"
+    className="block font-medium mb-1 text-gray-700"
+  >
+    Planned Start Date
+  </label>
+
+  <Controller
+    name="plannedStartDate"
+    control={control}
+    render={({ field }) => (
       <input
         type="date"
         id="plannedStartDate"
-         name="plannedStartDate"
-    value={
-    form.plannedStartDate && !isNaN(new Date(form.plannedStartDate).getTime())
-    ? new Date(form.plannedStartDate).toISOString().split('T')[0]
-    : ""
-    }
-        onChange={handleChange}
-        required
-        className="w-full rounded-md border border-gray-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
+        {...field}
+        value={
+          field.value && !isNaN(new Date(field.value).getTime())
+            ? new Date(field.value).toISOString().split('T')[0]
+            : ''
+        }
+        onChange={(e) => field.onChange(e.target.value)}
+        className={`w-full rounded-md border px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition ${
+          errors.plannedStartDate ? 'border-red-500' : 'border-gray-300'
+        }`}
       />
-    </div>
+    )}
+  />
+
+  {errors.plannedStartDate && (
+    <p className="text-red-500 text-sm mt-1">
+      {errors.plannedStartDate.message}
+    </p>
+  )}
+</div>
+
   </div>
 )}
 </div>
@@ -675,15 +737,15 @@ render = { ({field})=> (
 {Step ===2 && (
 <div>
      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-      <div>
-<label htmlFor="payment_schedule" className="block font-medium mb-1 text-gray-700">
-  Payment schedule <span className="text-red-500">*</span>
-  </label>
-<Controller 
-name="payment_schedule"
-control={control}
-rules={{ required: 'Payment schedule is required' }}
-render = { ({field})=> (
+            <div>
+      <label htmlFor="payment_schedule" className="block font-medium mb-1 text-gray-700">
+        Payment schedule <span className="text-red-500">*</span>
+        </label>
+        <Controller 
+        name="payment_schedule"
+        control={control}
+        rules={{ required: 'Payment schedule is required' }}
+        render = { ({field})=> (
           <select
             {...field}
             className={`w-full rounded-md border px-4 py-2 ${errors.payment_schedule ? 'border-red-500' : 'border-gray-300'}`}
@@ -695,59 +757,69 @@ render = { ({field})=> (
             <option value="Monthly">Monthly</option>
             <option value="Quarterly">Quarterly</option>
           </select>
-)}
-/>
-{errors.payment_schedule && (
-            <p className="text-red-500 text-sm mt-1">{errors.payment_schedule.message}</p>
           )}
-  </div>
+          />
+          {errors.payment_schedule && (
+                      <p className="text-red-500 text-sm mt-1">{errors.payment_schedule.message}</p>
+                    )}
+            </div>
       
           <div>
           <label htmlFor="currency_type" className="block font-medium mb-1 text-gray-700">
            Currency <span className="text-red-500">*</span>
           </label>
-<Controller
-name="currency_type"
-control={control}
-rules={{ required: 'Currency type is required' }}
-render = { ({field})=> (
-      <select 
-      {...field}
-      className={`w-full rounded-md border px-4 py-2 ${errors.currency_type ? 'border-red-500' : 'border-gray-300'}`}
-      >
-            <option value="INR">INR</option>
-            <option value="USD">USD</option>
-            <option value="NZD">NZD</option>
-            <option value="AUD">AUD</option>
-            <option value="GBP">GBP</option>
-            <option value="HKD">HKD</option>
-            <option value="SGD">SGD</option>
-            <option value="EUR">EUR</option>
-            <option value="CAD">CAD</option>
-            <option value="AED">AED</option>
-            <option value="QAR">QAR</option>
-            <option value="KWD">KWD</option>  
+          <Controller
+          name="currency_type"
+          control={control}
+          rules={{ required: 'Currency type is required' }}
+          render = { ({field})=> (
+                <select 
+                {...field}
+                className={`w-full rounded-md border px-4 py-2 ${errors.currency_type ? 'border-red-500' : 'border-gray-300'}`}
+                >
+                      <option value="INR">INR</option>
+                      <option value="USD">USD</option>
+                      <option value="NZD">NZD</option>
+                      <option value="AUD">AUD</option>
+                      <option value="GBP">GBP</option>
+                      <option value="HKD">HKD</option>
+                      <option value="SGD">SGD</option>
+                      <option value="EUR">EUR</option>
+                      <option value="CAD">CAD</option>
+                      <option value="AED">AED</option>
+                      <option value="QAR">QAR</option>
+                      <option value="KWD">KWD</option>  
 
-      </select>
-          
-)}
-          
-/>
-{errors.currency_type && (
-            <p className="text-red-500 text-sm mt-1">{errors.currency_type.message}</p>
+                </select>
+                    
           )}
-        </div>
-           
+                    
+          />
+            {errors.currency_type && (
+                        <p className="text-red-500 text-sm mt-1">{errors.currency_type.message}</p>
+                      )}
+          </div>
+            
 
 
 <div>
   <label className="block font-medium text-gray-700">Rate <span className="text-red-500">*</span></label>
+  <Controller
+  name="rate"
+  rules={{required:'Rate Required'}}
+  control={control}
+  render ={({field})=> (
   <input
-    type="number"
-    {...register("rate", { required: "Rate is required" })}
+    {...field}
+
+  type="number"
    className="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"
     placeholder="Enter rate"
   />
+  )
+}
+  />
+
   {errors.rate && <p className="text-red-500 text-sm">{errors.rate.message}</p>}
 </div>   
         </div>
@@ -756,31 +828,31 @@ render = { ({field})=> (
             Timezone <span className="text-red-500">*</span>
           </label>
 
-  <Controller
-  name="timezone"
-  control={control}
-  rules={{ required: "Timezone is required" }}
-  render={({ field }) => 
-  <select {...field} className={`w-full rounded-md border px-4 py-2 ${errors.timezone ? 'border-red-500' : 'border-gray-300'}`}>
-  <option >Select time zone</option>
-             <option value="(UTC+00:00) Africa/Abidjan">
-         (UTC+00:00) Africa/Abidjan</option>  
-      <option value="(UTC+00:00) Africa/Accra">
-      (UTC+00:00) Africa/Accra</option>
-                            <option value="(UTC+03:00) Africa/Addis_Ababa">
-      (UTC+03:00) Africa/Addis_Ababa</option>
-                            <option value="(UTC+01:00) Africa/Algiers">
-      (UTC+01:00) Africa/Algiers</option>
-                            <option value="(UTC+03:00) Africa/Asmara">
-      (UTC+03:00) Africa/Asmara</option>
-                            <option value="(UTC+00:00) Africa/Bamako">
-      (UTC+00:00) Africa/Bamako</option>
-    <option value="(UTC+5:30)IST Indian Standard Time">
-    (UTC+5:30)IST Indian Standard Time</option>
+        <Controller
+        name="timezone"
+        control={control}
+        rules={{ required: "Timezone is required" }}
+        render={({ field }) => 
+        <select {...field} className={`w-full rounded-md border px-4 py-2 ${errors.timezone ? 'border-red-500' : 'border-gray-300'}`}>
+        <option >Select time zone</option>
+                  <option value="(UTC+00:00) Africa/Abidjan">
+              (UTC+00:00) Africa/Abidjan</option>  
+            <option value="(UTC+00:00) Africa/Accra">
+            (UTC+00:00) Africa/Accra</option>
+                                  <option value="(UTC+03:00) Africa/Addis_Ababa">
+            (UTC+03:00) Africa/Addis_Ababa</option>
+                                  <option value="(UTC+01:00) Africa/Algiers">
+            (UTC+01:00) Africa/Algiers</option>
+                                  <option value="(UTC+03:00) Africa/Asmara">
+            (UTC+03:00) Africa/Asmara</option>
+                                  <option value="(UTC+00:00) Africa/Bamako">
+            (UTC+00:00) Africa/Bamako</option>
+          <option value="(UTC+5:30)IST Indian Standard Time">
+          (UTC+5:30)IST Indian Standard Time</option>
 
-  </select>}
- />
-  </div>
+        </select>}
+      />
+        </div>
  
        
 

@@ -11,9 +11,9 @@ export async function POST(req: Request) {
     const {
       keyword,
       workmode,
-      experience,
       country,
       timezone,
+      engagement_type
     } = await req.json();
     
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -43,37 +43,9 @@ export async function POST(req: Request) {
       query.timezone = new RegExp(timezone.trim(), 'i'); // Case-insensitive partial match
     }
 
-    // 📈 Experience Range (min <= actual_experience <= max)
-    // Assuming your job documents have 'minExperience' and 'maxExperience' fields
-    // and they are stored as numbers in the database.
-    // The frontend should send `experience.min` and `experience.max` as strings that can be converted to numbers.
-
-    const minExp = experience?.min ? parseInt(experience.min, 10) : undefined;
-    const maxExp = experience?.max ? parseInt(experience.max, 10) : undefined;
-
-    if (!isNaN(minExp!) || !isNaN(maxExp!)) { // Check if at least one is a valid number
-        // We're looking for jobs where the job's minExperience is less than or equal to the requested maxExperience,
-        // AND the job's maxExperience is greater than or equal to the requested minExperience.
-        // This means there's an overlap between the job's experience range and the filter's requested range.
-
-        if (!isNaN(minExp!) && !isNaN(maxExp!)) {
-            // Both min and max are provided: find jobs whose range overlaps with [minExp, maxExp]
-            query.$and = [
-                { "experience.minYears": { $lte: maxExp } }, // Job's min years <= requested max years
-                { "experience.maxYears": { $gte: minExp } }  // Job's max years >= requested min years
-            ];
-        } else if (!isNaN(minExp!)) {
-            // Only min is provided: find jobs whose maxExperience is at least the requested minExperience
-            query["experience.maxYears"] = { $gte: minExp };
-        } else if (!isNaN(maxExp!)) {
-            // Only max is provided: find jobs whose minExperience is at most the requested maxExperience
-            query["experience.minYears"] = { $lte: maxExp };
-        }
-    }
-
-
-    // Fetch jobs from the database
-    // Sort by creation date in descending order (newest first)
+  
+  
+  
     const jobs = await Jobs.find(query).sort({ createdAt: -1 });
 
     // Return the jobs in a structured JSON response

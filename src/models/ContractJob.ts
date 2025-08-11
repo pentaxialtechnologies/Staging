@@ -5,6 +5,7 @@ interface ContractJob extends Document {
   title: string;
   skills: string[];
   budget: string;
+  rate:string;
   duration: string;
   experience: {
     minyears: string;
@@ -17,9 +18,10 @@ interface ContractJob extends Document {
   engagement_type: string;
   payment_schedule: string;
   job_description: string;
-  key_responsibilities: string[];
-  technical_skills: string[];
+  key_responsibilities: string;
+  technical_skills: string;
   project_doc: string;
+  joblocation:string
   staff_count?: string; 
   plannedStartDate:Date
   keywords: string[];
@@ -36,6 +38,7 @@ const JobSchema  = new Schema<ContractJob>(
     title: { type: String, required: true },
     skills: { type: [String], required: true },
     budget: { type: String, required: true }, 
+    rate: { type: String, required: true }, 
     duration: { type: String, required: true },
     staff_count: { type: String, required: true },
     experience: {
@@ -45,12 +48,13 @@ const JobSchema  = new Schema<ContractJob>(
     availability: { type: String, required: true },
     timezone: { type: String, required: true },
     workmode: { type: String, required: true },
-    engagement_type: { type: String, required: true },
+    joblocation: { type: String ,default:''},
+    engagement_type: { type: String, required: true },  
     payment_schedule: { type: String, required: true },
     currency_type: { type: String, required: true },
     job_description: { type: String, required: true },
-    key_responsibilities: { type: [String], required: true },
-    technical_skills: { type: [String], required: true },
+    key_responsibilities: { type: String, required: true },
+    technical_skills: { type: String, required: true },
     project_doc: { type: String },
     plannedStartDate: { type: Date },
     keywords: { type: [String], index: true, default: [] },
@@ -74,10 +78,17 @@ JobSchema.index({
   title: "text",
   job_description: "text",
   skills: "text",
+  joblocation:'text',
   technical_skills: "text",
   key_responsibilities: "text",
   keywords: "text",
 });
+
+JobSchema.index({
+  skills:1,joblocation:1,employment_type:1,workmode: 1,
+  timezone: 1,engagement_type:1,duration:1,
+  currency_type: 1
+})
 
 
 JobSchema.pre("save", function (next) {
@@ -109,7 +120,8 @@ JobSchema.pre("save", function (next) {
   );
 
   next();
-});
+});   
+
 
 export const Jobs: Model<ContractJob> =
   mongoose.models.Jobs || mongoose.model<ContractJob>("Jobs", JobSchema);
