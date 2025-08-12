@@ -34,7 +34,7 @@ if(session?.user){
   router.push('/apply-now')
 }
 else{
-  toast.error("You must be logged in to apply.")
+  toast.error("You must be logged in to apply the job.")
   router.push('/users/login')
 }
 }
