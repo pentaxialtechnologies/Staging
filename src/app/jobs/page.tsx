@@ -1,7 +1,9 @@
 'use client'
 import { Search } from 'lucide-react'
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
+import toast,{Toaster} from 'react-hot-toast'
 
 
 const defaultFilters ={
@@ -19,9 +21,23 @@ const page = () => {
 const [jobs,setjobs] = useState<any[]>([])
 const [loading,setloading] = useState(false)
 const [filters,setfilter] = useState(defaultFilters)
-const router = useRouter()
 const [skillInput,setskillInput] = useState('')
+const [pages,setpages] = useState(1)
+const [TotalPages,setTotalpages] = useState(1)
+const router = useRouter()
+const [User,setUser] = useState(false)
+const {data:session} = useSession()
 
+
+const UserCheck = () =>{
+if(session?.user){
+  router.push('/apply-now')
+}
+else{
+  toast.error("You must be logged in to apply.")
+  router.push('/users/login')
+}
+}
 
 const addskill = ()=>{
   if(skillInput && !filters.skills.includes(skillInput)){
@@ -39,34 +55,69 @@ const updateFilter = (key:string,value:string)=>{
 }
 
 
-const OnfilterChange = async(filters: any)=>{
+const OnfilterChange = async()=>{
 setloading(true)
-const params = new URLSearchParams();
 
-Object.entries(filters).forEach(([key,value])=>{
-  if(Array.isArray(value) && value.length){
-    params.set(key,value.join(","))
-  }
-  else if(value){
-    params.set(key,value.toString())
-  }
+const params = new URLSearchParams(
+  {...Object.fromEntries(Object.entries(filters)
+  .filter(([, value] ) => (Array.isArray(value) ? value.length : value))),
+...(filters.skills.length && {skills: filters.skills.join(",")}),
+page:pages.toString(),
+limit:"4"
 })
+
+
+// const params = new URLSearchParams();
+
+// Object.entries(filters).forEach(([key,value])=>{
+//   if(Array.isArray(value) && value.length){
+//     params.set(key,value.join(","))
+//   }
+//   else if(value){
+//     params.set(key,value.toString())
+//   }
+// })
 
 const res = await fetch (`api/auth/jobs/filter?${params.toString()}`)
 const data = await res.json()
 setjobs(data.jobs || [])
+setTotalpages(data.totalPages || 1)
 console.log(data.jobs,'data jobs');
-setloading(false)
+console.log(data.totalPages,'data totalPages');
 
+setloading(false)
 }
 
+
+
 useEffect(()=>{
-OnfilterChange(filters)
-},[filters])
+OnfilterChange()
+},[filters, pages])
+
+
+const HandleNext =()=>{
+  window.scrollTo({top:0, behavior:'smooth'})
+  setpages((prev) => prev + 1)
+}
+
+const HandlePrev =()=>{
+  window.scrollTo({top:0, behavior:'smooth'})
+  setpages((prev) => prev - 1)
+}
+
+
+
+   
+const changePage = (direction : 'next' | 'prev') =>{
+window.scrollTo({top:0,behavior:'smooth'})
+setpages((prev) => prev + (direction === 'next'? 1 : -1))
+}
+
 
   return (
     <div>
- <div className="relative">
+      <Toaster/>
+   <div className="relative">
   <label className="block mb-2 mt-4 font-medium">Skills</label>
 
   <div className="flex gap-2">
@@ -113,7 +164,7 @@ OnfilterChange(filters)
 </div>
 
     
-           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10 mt-5">
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10 mt-5">
         <div>
         <label className='block mb-2'>Work From</label>
         <select
@@ -152,22 +203,22 @@ OnfilterChange(filters)
 <div>
   <label className='block mb-2'>Select Timezone</label>
   <select name='timezone'  value={filters.timezone}
-          onChange={(e) => updateFilter('timezone',e.target.value)} className='px-4 py-2 border border-gray-500 w-full shadow-md'>
-   <option value="">Select Timezone</option>
-      <option value="(UTC+00:00) Africa/Abidjan">
+        onChange={(e) => updateFilter('timezone',e.target.value)} className='px-4 py-2 border border-gray-500 w-full shadow-md'>
+        <option value="">Select Timezone</option>
+        <option value="(UTC+00:00) Africa/Abidjan">
         (UTC+00:00) Africa/Abidjan</option>  
-            <option value="(UTC+00:00) Africa/Accra">
-            (UTC+00:00) Africa/Accra</option>
-                                  <option value="(UTC+03:00) Africa/Addis_Ababa">
-            (UTC+03:00) Africa/Addis_Ababa</option>
-                                  <option value="(UTC+01:00) Africa/Algiers">
-            (UTC+01:00) Africa/Algiers</option>
-                                  <option value="(UTC+03:00) Africa/Asmara">
-            (UTC+03:00) Africa/Asmara</option>
-                                  <option value="(UTC+00:00) Africa/Bamako">
-            (UTC+00:00) Africa/Bamako</option>
-          <option value="(UTC+5:30)IST Indian Standard Time">
-          (UTC+5:30)IST Indian Standard Time</option>
+        <option value="(UTC+00:00) Africa/Accra">
+        (UTC+00:00) Africa/Accra</option>
+         <option value="(UTC+03:00) Africa/Addis_Ababa">
+        (UTC+03:00) Africa/Addis_Ababa</option>
+        <option value="(UTC+01:00) Africa/Algiers">
+        (UTC+01:00) Africa/Algiers</option>
+        <option value="(UTC+03:00) Africa/Asmara">
+        (UTC+03:00) Africa/Asmara</option>
+        <option value="(UTC+00:00) Africa/Bamako">
+        (UTC+00:00) Africa/Bamako</option>
+        <option value="(UTC+5:30)IST Indian Standard Time">
+        (UTC+5:30)IST Indian Standard Time</option>
 
   </select>
 </div>
@@ -192,7 +243,7 @@ OnfilterChange(filters)
         )}
         {!loading && jobs.length === 0 && (
           <div className="text-center text-gray-500">
-            No jobs found matching your criteria.
+           No jobs found.
           </div>
         )}
 
@@ -208,7 +259,7 @@ OnfilterChange(filters)
                   <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2">
                     {job.title}
                   </h2>
-                  <button className='bg-[#F27264] text-white px-4 py-2 rounded'>Apply Now</button>
+                  <button onClick={UserCheck} className='bg-[#F27264] text-white px-4 py-2 rounded'>Apply Now</button>
                   </div>
               <div className='border border-gray-100 mt-5 mb-5'></div>
 
@@ -220,16 +271,16 @@ OnfilterChange(filters)
                         {job.skills.map((skill: any, idx: any) => (
                           <span
                             key={`${job._id}-skill-${idx}`}
-                            className="bg-blue-400 text-white text-sm sm:text-lg font-medium px-2.5 mt-2 mb-3 rounded-full"
+                            className="bg-blue-400 text-white text-sm sm:text-lg font-medium md:px-2.5 px-4.5 mt-2 mb-3 rounded-full"
                           >
                             {skill}
                           </span>
                         ))}
                       </div>
                     </div>
-                  )}
+                  )}  
 
-                <div className='flex flex-row justify-between'>
+                <div className='flex md:flex-row flex-col justify-between'>
                  <div>
                   <p>₹ {job.currency_type} {job.budget} / {job.payment_schedule}</p>
                   </div>
@@ -243,16 +294,13 @@ OnfilterChange(filters)
                      <div>
                     <p>{job.workmode}</p>
                     </div>
-                </div>
-
-                
-                 
+                          </div>
                     <p className="text-gray-700 text-base line-clamp-3 mb-4 mt-5">
                       {job.job_description}
                     </p>
                 </div>
-                <div className="flex flex-row justify-between">
-                    <span className="text-sm text-gray-500 block mb-2">
+                <div className="flex flex-col md:flex-row  justify-between">
+                    <span className="text-sm text-gray-500 block ">
                       Posted: {new Date(job.updatedAt).toLocaleDateString()}
                     </span>
                   <button
@@ -266,7 +314,31 @@ OnfilterChange(filters)
             ))}
           </div>
         )}
+         {TotalPages > 1 && (
+        <div className="flex justify-center gap-4 mt-6">
+          <button
+            disabled={pages === 1}
+            onClick={()=>changePage('prev')}
+            className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+          >
+            Prev
+          </button>
+          <span>
+            Page {pages} of {TotalPages}
+          </span>
+          <button
+            disabled={pages === TotalPages}
+            onClick={()=> changePage('next')}
+            className="px-4 py-2 bg-gray-200 rounded disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
+      )}
       </div>
+
+{/* Pagination  */}
+  
     </div>
   )
 }
