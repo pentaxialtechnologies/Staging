@@ -54,6 +54,11 @@ export const CompanySideBar = () => {
       icon: User2,
     },
     {
+      name: "Offers & Proposals",
+      href: "/provider/offers",
+      icon: User2,
+    },
+    {
       name: "Setting",
       href: "/provider/setting",
       icon: Settings,

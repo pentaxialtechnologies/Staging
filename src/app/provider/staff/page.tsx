@@ -95,12 +95,13 @@ const RemoveSkill = (skill: string)=>{
         <h1 className='text-xl sm:text-2xl font-bold '>Listing - Add Staff details</h1>
         <button className='border border-orange-500 px-4 py-2 rounded-full p-2'>Back</button>
         </div>
+        <div className='border border-gray-300 mt-5 mb-5'></div>
 <div>
     <form onSubmit={handleSubmit}>
         <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6'>
             <div>
  <label className='block mb-2'>Primary Skills <span className='text-red-500'>*</span></label>
-            <input type='text' placeholder='Enter Primary Skill' className='px-4 py-2 border outline-none focus:outline-none rounded-lg'
+            <input type='text' placeholder='Enter Primary Skill' className=' w-full  px-4 py-2 border-gray-300 rounded-xl border  focus:outline-none focus:ring-2 focus:ring-blue-500 '
              name='primarySkills' value={Form.primarySkills} onChange={handleChange} required />
 </div>
 
@@ -116,34 +117,34 @@ const RemoveSkill = (skill: string)=>{
             ))}
            </div>
            <input type='text'   placeholder='Type Skill and press Enter'
-           className='flex-1 border border-gray-800 min-w-[250px] px-4 py-2 rounded-md  outline-none text-sm' value={skillInput}
+           className='w-full px-4 py-2 border-gray-300 rounded-xl border  focus:outline-none focus:ring-2 focus:ring-blue-500' value={skillInput}
            onChange={(e)=> setSkillInput(e.target.value)} onKeyDown={handleSkillKeyDown}
             />
 
         </div>
           <div>
             <label className='block mb-2'>Designation <span className='text-red-500'>*</span></label>
-            <input type='text' placeholder='Ex:Senior Software Developer' className='px-4 py-2 border outline-none focus:outline-none rounded-lg' 
+            <input type='text' placeholder='Ex:Senior Software Developer' className='w-full  px-4 py-2 border-gray-300 rounded-xl border  focus:outline-none focus:ring-2 focus:ring-blue-500' 
             name='designation' value={Form.designation}  onChange={handleChange} required />
         </div>
         <div>
             <label className='block mb-2'>Number Bench Staff <span className='text-red-500'>*</span></label>
-            <input type='text' placeholder='Ex:1,2,3,5,8' className='px-4 py-2 border outline-none focus:outline-none rounded-lg' 
+            <input type='text' placeholder='Ex:1,2,3,5,8' className='w-full  px-4 py-2 border-gray-300 rounded-xl border  focus:outline-none focus:ring-2 focus:ring-blue-500' 
             name='numberBenchStaff' value={Form.numberBenchStaff} onChange={handleChange} required />
         </div>
          <div>
             <label className='block mb-2'>Average Experience(Year) <span className='text-red-500'>*</span></label>
-            <input type='text' placeholder='Ex: 3 years' className='px-4 py-2 border outline-none focus:outline-none rounded-lg' 
+            <input type='text' placeholder='Ex: 3 years' className='w-full  px-4 py-2 border-gray-300 rounded-xl border  focus:outline-none focus:ring-2 focus:ring-blue-500' 
             name='averageExperience' value={Form.averageExperience} onChange={handleChange} required />
         </div>
         <div>
             <label className='block mb-2'>Rate <span className='text-red-500'>*</span></label>
-            <input type='text' placeholder='Ex: 15$' className='px-4 py-2 border outline-none focus:outline-none rounded-lg'
+            <input type='text' placeholder='Ex: 15$' className='w-full  px-4 py-2 border-gray-300 rounded-xl border  focus:outline-none focus:ring-2 focus:ring-blue-500'
              name='rate' value={Form.rate} onChange={handleChange} required/>
         </div>
         <div>
             <label className='block text-sm font-medium text-gray-700 mb-2'>Rate Type <span className='text-red-500'>*</span></label>
-            <select className='w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500' 
+            <select className='w-full  px-4 py-2 border-gray-300 rounded-xl border  focus:outline-none focus:ring-2 focus:ring-blue-500' 
             name='rateType' value={Form.rateType} onChange={handleChange} required> 
                 <option value='' defaultChecked>Select Rate Type</option>
                 <option value='Hourly'>Hourly</option>
@@ -154,7 +155,7 @@ const RemoveSkill = (skill: string)=>{
 
           <div>
             <label className='block text-sm font-medium text-gray-700 mb-2'>Availability  <span className='text-red-500'>*</span></label>
-            <select className='w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500'
+            <select className='w-full  px-4 py-2 border-gray-300 rounded-xl border  focus:outline-none focus:ring-2 focus:ring-blue-500'
              value={Form.availability} name='availability' onChange={handleChange} required> 
                 <option value='' defaultChecked>Select Avalibility</option>
                 <option value='Immeditely'>Immeditely</option>
@@ -165,7 +166,7 @@ const RemoveSkill = (skill: string)=>{
         </div>
                <div>
             <label className='block text-sm font-medium text-gray-700 mb-2'>Engagement Type <span className='text-red-500'>*</span></label>
-            <select className='w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500'
+            <select className='w-full  px-4 py-2 border-gray-300 rounded-xl border  focus:outline-none focus:ring-2 focus:ring-blue-500'
              value={Form.engagementType} name='engagementType' onChange={handleChange} required> 
                <option value='' defaultChecked>Select Type</option>
                 <option value='Part-Time'>Part-Time</option>
@@ -174,7 +175,7 @@ const RemoveSkill = (skill: string)=>{
         </div>
           <div>
             <label className='block text-sm font-medium text-gray-700 mb-2'>Work From <span className='text-red-500'>*</span></label>
-            <select className='w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500' 
+            <select className='w-full  px-4 py-2 border-gray-300 rounded-xl border  focus:outline-none focus:ring-2 focus:ring-blue-500' 
             value={Form.workFrom} name='workFrom' onChange={handleChange} required> 
                 <option value='' defaultChecked>Select Work Mode</option>
                 <option value='Remote'>Remote</option>
@@ -185,7 +186,7 @@ const RemoveSkill = (skill: string)=>{
 
           <div>
             <label className='block text-sm font-medium text-gray-700 mb-2'> Available at client&apos;s location <span className='text-red-500'>*</span></label>
-            <select className='w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500'
+            <select className='w-full  px-4 py-2 border-gray-300 rounded-xl border  focus:outline-none focus:ring-2 focus:ring-blue-500'
              value={Form.availableAtClientLocation} name='availableAtClientLocation' onChange={handleChange} required> 
                <option value='' defaultChecked>Select Avalible</option>
                 <option value='Yes'>Yes</option>
@@ -194,7 +195,7 @@ const RemoveSkill = (skill: string)=>{
             </select>
         </div>
                  </div>
-                 <button type='submit' className='bg-green-800 hover:bg-green-900 text-white mt-5 px-4 py-2 ' >Save Details</button>
+                 <button type='submit' className='bg-[#f27264] hover:bg-[#fc5a48] text-white mt-5 px-4 py-2 ' >Save Details</button>
     </form>
 </div>
         </div>

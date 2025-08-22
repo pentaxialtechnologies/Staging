@@ -10,7 +10,7 @@ import {
 import type {Metadata} from 'next'
 import { GetJob } from '@/lib/Job.utils';
 import {formatDistanceToNow} from 'date-fns'
-
+import JobApplyButton from '../JobApplyButton';
 
 
  type RouteContext = { params: Promise<{ id: string }> }
@@ -61,10 +61,10 @@ const job = await GetJob(id)
   }
 
 
-
-
   return (
     <div className="p-4 sm:p-8 bg-gray-50 min-h-screen">
+    {/* <Toaster/> */}
+
       {job && (
         <div className="bg-white shadow-lg rounded-xl p-6 space-y-6">
           {/* Header */}
@@ -79,11 +79,12 @@ const job = await GetJob(id)
               </button>
             </div>
             <div className="flex justify-start sm:justify-end">
-              <button className="bg-[#F27264] text-white px-5 py-2 rounded-lg hover:bg-[#e05c50] transition duration-200">
+              {/* <button onClick={CheckUser} className="bg-[#F27264] text-white px-5 py-2 rounded-lg hover:bg-[#e05c50] transition duration-200">
                 Apply Now
-              </button>
+              </button> */}
+              <JobApplyButton jobId={job._id.toString()}/>
             </div>
-          </div>
+          </div> 
 
           {/* Skills */}
           {job.skills && (
@@ -114,6 +115,8 @@ const job = await GetJob(id)
               <p><strong>Timezone:</strong> {job.timezone}</p>
               {/* <p><strong>Start Date:</strong> {formatDate(job.job_dates.start_date)}</p> */}
               <p><strong>Work Mode:</strong> {job.workmode}</p>
+              <p><strong>Job Location:</strong> {job.joblocation}</p>
+
               {/* <p><strong>Work Location:</strong> {job.location.city}, {job.location.state}</p> */}
             </div>
 

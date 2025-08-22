@@ -549,7 +549,7 @@ const prevstep = () => {
 const router = useRouter()
 
 return(
-  <div>
+  <div className=''>
 <div className='flex flex-row justify-between'>
       <h1 className='font-bold text-2xl mb-5'>Let&apos;s get some basic information</h1>
       <button onClick={()=> SwitchToListing()} className='mb-5 text-white bg-blue-800 px-4 py-2 rounded-lg'>Bact To Listing </button>
@@ -610,7 +610,7 @@ return(
 
 <div className='flex flex-col'>
   <label className='block mb-2'>Company Name</label>
-   <input type='text'  name="company_name" value={formdata.company_name ?? ''} onChange={handleChange} className='px-4 p-4 py-2 focus:outline-none border border-gray-500 rounded-lg' />
+   <input type='text'  name="company_name" value={formdata.company_name ?? ''} onChange={handleChange} className='w-full px-4 py-2 border-gray-300 rounded-xl border  focus:outline-none focus:ring-2 focus:ring-blue-500' />
 </div>
    
    <div className='flex flex-col'>
@@ -621,8 +621,7 @@ return(
   name="min_project_size"
   value={formdata.min_project_size || ''}
   onChange={handleChange}
-  className="w-full px-4 py-2 border border-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
->
+  className="w-full px-4 py-2 border-gray-300 rounded-xl border  focus:outline-none focus:ring-2 focus:ring-blue-500 transition">
   <option value="" disabled>Select a value</option>
   <option value="$1000">$1,000</option>
   <option value="$5000">$5,000</option>
@@ -643,7 +642,7 @@ return(
   name="hourly_rate"
   value={formdata.hourly_rate || ''}
   onChange={handleChange}
-  className="w-full px-4 py-2 border border-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition">
+  className="w-full px-4 py-2 border-gray-300 rounded-xl border  focus:outline-none focus:ring-2 focus:ring-blue-500">
   <option value="" disabled>Select a value</option>
   <option value="$25">$25</option>
   <option value="$25-$49">$25-$49</option>
@@ -656,14 +655,14 @@ return(
    </div>
 
         <div className='flex flex-col'>
-<label className="block text-sm font-medium text-gray-700 mb-1">
+<label className="block text-sm font-medium text-gray-700 mb-4">
   Size Of Company
 </label>
 <select
   name="size_of_company"
   value={formdata.size_of_company || ''}
   onChange={handleChange}
-  className="w-full px-4 py-2 border border-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+className="w-full px-4 py-2 border-gray-300 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
 >
   <option value="" disabled>Select a value</option>
   <option value="2-9">2-9</option>
@@ -677,14 +676,15 @@ return(
    
       
    
-         <div className='flex flex-col'>
+    <div className='flex flex-col'>
   <label className='block mb-2'>Company Founded</label> 
-    <input  name="company_founded" className='px-4 p-4 py-2 focus:outline-none border border-gray-500 rounded-lg'  value={formdata.company_founded || ''} onChange={handleChange} />
+    <input  name="company_founded" 
+    className="w-full px-4 py-2 border-gray-300 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition" value={formdata.company_founded || ''} onChange={handleChange} />
    </div>
          
           <div className='flex flex-col'>
   <label className='block mb-2'>Tagline</label>
-    <input  name="tagline" value={formdata.tagline || ''} className='px-4 p-4 py-2 focus:outline-none border border-gray-500 rounded-lg'  onChange={handleChange} />
+    <input  name="tagline" value={formdata.tagline || ''} className="w-full px-4 py-2 border-gray-300 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition"  onChange={handleChange} />
    </div>
           
           <div className='flex flex-col'>
@@ -694,7 +694,7 @@ return(
     value={formdata.summary || ''}
     onChange={handleChange}
     rows={4}
-    className='px-4 py-2 focus:outline-none border border-gray-500 rounded-lg resize-none'
+className="w-full px-4 py-2 border-gray-300 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
     placeholder="Enter project description"
   />
    </div>
@@ -710,7 +710,7 @@ return(
       <div className="flex flex-col">
         <label className="mb-2 font-medium text-gray-700">Country</label>
         <select
-          className="w-full border rounded px-3 py-2"
+          className="w-full px-4 py-2 border-gray-300 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
           name='location.country'
           value={formdata.location?.country || ''}
           onChange={(e) => {
@@ -738,7 +738,7 @@ return(
       <div className="flex flex-col">
         <label className="mb-2 font-medium text-gray-700">State</label>
         <select
-          className="w-full border rounded px-3 py-2"
+          className="w-full px-4 py-2 border-gray-300 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
           name='location.state'
 
           value={formdata.location?.state || ''}
@@ -767,7 +767,7 @@ return(
       <div className="flex flex-col">
         <label className="mb-2 font-medium text-gray-700">City</label>
         <select
-          className="w-full border rounded px-3 py-2"
+          className="w-full px-4 py-2 border-gray-300 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
           name='location.city'
           value={formdata.location?.city || ''}
           onChange={(e) => {
@@ -793,7 +793,7 @@ return(
   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-5">
      <div className='flex flex-col'>
   <label className='block mb-2'>Company Location</label>
-    <input type='text'   className='px-4 p-4 py-2 focus:outline-none border border-gray-500 rounded-lg' name="company_location" value={formdata.company_location || ''} onChange={handleChange} />
+    <input type='text'  className="w-full px-4 py-2 border-gray-300 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition" name="company_location" value={formdata.company_location || ''} onChange={handleChange} />
    </div>
 
     
@@ -801,7 +801,7 @@ return(
    
     <div className='flex flex-col'>
   <label className='block mb-2'>Phone Number</label>
-    <input type='text'   className='px-4 p-4 py-2 focus:outline-none border border-gray-500 rounded-lg'  name="phone_number" value={formdata.phone_number || ''} onChange={handleChange} />
+    <input type='text'   className="w-full px-4 py-2 border-gray-300 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition"  name="phone_number" value={formdata.phone_number || ''} onChange={handleChange} />
     </div>
 
             <div className='flex flex-col'>
@@ -812,7 +812,7 @@ return(
   name="employee_count"
   value={formdata.employee_count || ''}
   onChange={handleChange}
-  className="w-full px-4 py-2 border border-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+  className="w-full px-4 py-2 border-gray-300 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
 >
   <option value="" disabled>Select a value</option>
   <option value="1 Employee">1 Employee</option>
@@ -869,7 +869,7 @@ return(
           type='text'
           id='gstno'
           name='gstno'
-          className='w-full px-4 py-2 border border-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 '
+          className="w-full px-4 py-2 border-gray-300 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
           value={formdata.gstno || ''}
           onChange={handleChange}
         />
@@ -909,7 +909,7 @@ return(
               setFormData((prev) => ({ ...prev, service_lines: updated }));
             }}
             required
-            className="w-full border rounded px-3 py-2"
+          className="w-full px-4 py-2 border-gray-300 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
           >
             <option value="">Select Category</option>
             {categories.map((cat) => (
@@ -932,7 +932,7 @@ return(
             }}
             disabled={!line.category}
             required
-            className={`w-full border rounded px-3 py-2 ${
+            className={`w-full px-4 py-2 border-gray-300 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${
               !line.category ? 'bg-gray-100 text-gray-500 cursor-not-allowed' : ''
             }`}
           >
@@ -979,7 +979,7 @@ return(
             ],
           }))
         }
-        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        className="w-full px-4 py-2 border-gray-300 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
       >
         + Add More
       </button>
@@ -1012,13 +1012,13 @@ return(
             setFormData((prev)=> ({...prev,industry_focus: updated}))
           }}
           required
-          className="w-full border rounded px-3 py-2"
+          className="w-full px-4 py-2 border-gray-300 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
           >
             <option value="">Select Industry</option>
         {[
           "Advertising & marketing",
           "Arts & entertainment & music",
-          "Automotive",
+          "Automotive", 
           "Business services",
           "Consumer products & services",
           "Dental",
@@ -1091,7 +1091,7 @@ onClick={()=> {
           name="client_size.category"
           value={formdata.client_size?.category }
           onChange={handleChange}
-          className="w-full px-4 py-2 border border-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="w-full px-4 py-2 border-gray-300 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
         >
           <option value="">Select a value</option>
           <option value="Small Business">Small Business</option>
@@ -1107,7 +1107,7 @@ onClick={()=> {
           name="specilization"
           value={formdata.specilization}
           onChange={handleChange}
-          className="w-full px-4 py-2 border border-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+          className="w-full px-4 py-2 border-gray-300 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
         >
           <option value="">Select a value</option>
           <option value="Diversity & Inclusion">Diversity & Inclusion</option>
@@ -1132,7 +1132,7 @@ onClick={()=> {
           onChange={handleSkillInputChange}
           onKeyDown={handleSkillKeyDown}
           placeholder="Type a skill and press Enter"
-          className="px-4 py-3 rounded-lg border focus:ring-2 focus:ring-blue-300"
+          className="w-full px-4 py-2 border-gray-300 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
         />
       </div>
     </div>
@@ -1150,7 +1150,7 @@ onClick={()=> {
         <input
           type='text'
           name="portfolio[0].title"
-          className='px-4 p-4 py-2 focus:outline-none border border-gray-500 rounded-lg'
+          className='w-full px-4 py-2 border-gray-300 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition'
           value={formdata.portfolio[0]?.title || ''}
           onChange={handleChange}
         />
@@ -1161,7 +1161,7 @@ onClick={()=> {
         <input
           type="file"
           name='portfolio[0].thumbnail'
-          className='px-4 p-4 py-2 focus:outline-none border border-gray-500 rounded-lg'
+          className='w-full px-4 py-2 border-gray-300 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition'
           onChange={(e) => handleFileUpload(e, 0, 'thumbnail' )} 
         />
       </div>
@@ -1177,7 +1177,7 @@ onClick={()=> {
           <input
             type='text'
             placeholder={`Project Link ${index + 1}`}
-            className='flex-1 px-4 py-2 border border-gray-500 rounded-lg focus:outline-none'
+            className='w-full px-4 py-2 border-gray-300 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition'
             value={link || ''}
             onChange={(e) => handleProjectLinkChange(0, index, e.target.value)}
           />
@@ -1213,7 +1213,7 @@ onClick={()=> {
         <label className='block mb-2'>Project Category</label>
         <select
           name='portfolio[0].project_category'
-          className="w-full border rounded px-3 py-2"
+          className="w-full px-4 py-2 border-gray-300 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
           value={formdata?.portfolio[0]?.project_category || ''}
           onChange={handleChange}
         >
@@ -1231,7 +1231,7 @@ onClick={()=> {
         <select
           value={formdata.portfolio[0]?.timeline || ''}
           name='portfolio[0].timeline'
-          className="w-full border rounded px-3 py-2"
+          className="w-full px-4 py-2 border-gray-300 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
           onChange={handleChange}
         >
           <option>Select Weeks</option>
@@ -1248,7 +1248,7 @@ onClick={()=> {
         <select
           value={formdata.portfolio[0]?.project_cost || ''}
           name='portfolio[0].project_cost'
-          className="w-full border rounded px-3 py-2"
+          className="w-full px-4 py-2 border-gray-300 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
           onChange={handleChange}
         >
           <option>Select Cost</option>
@@ -1267,7 +1267,7 @@ onClick={()=> {
         <input
           type="file"
           name='portfolio[0].screenshot'
-          className='px-4 p-4 py-2 focus:outline-none border border-gray-500 rounded-lg'
+          className='w-full px-4 py-2 border-gray-300 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition'
           onChange={(e) => handleFileUpload(e, 0, 'screenshot')}
         />
       </div>
@@ -1280,7 +1280,7 @@ onClick={()=> {
           value={formdata.portfolio[0]?.description || ''}
           onChange={handleChange}
           rows={4}
-          className='px-4 py-2 focus:outline-none border border-gray-500 rounded-lg resize-none'
+          className='w-full px-4 py-2 border-gray-300 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition'
           placeholder="Enter project description"
         />
       </div>
@@ -1301,7 +1301,7 @@ onClick={()=> {
         name="admin.email"
         value={formdata.admin?.email || ''}
         onChange={handleChange}
-        className="px-4 py-2 focus:outline-none border border-gray-500 rounded-lg"
+        className="w-full px-4 py-2 border-gray-300 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
       />
     </div>
 
@@ -1313,7 +1313,7 @@ onClick={()=> {
         name="admin.admin_phone"
         value={formdata.admin?.admin_phone || ''}
         onChange={handleChange}
-        className="px-4 py-2 focus:outline-none border border-gray-500 rounded-lg"
+        className="w-full px-4 py-2 border-gray-300 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
       />
     </div>
 
@@ -1325,7 +1325,7 @@ onClick={()=> {
         name="admin.linkedin_url"
         value={formdata.admin?.linkedin_url || ''}
         onChange={handleChange}
-        className="px-4 py-2 focus:outline-none border border-gray-500 rounded-lg"
+        className="w-full px-4 py-2 border-gray-300 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
       />
     </div>
 
@@ -1337,7 +1337,7 @@ onClick={()=> {
         name="admin.facebook_url"
         value={formdata.admin?.facebook_url || ''}
         onChange={handleChange}
-        className="px-4 py-2 focus:outline-none border border-gray-500 rounded-lg"
+        className="w-full px-4 py-2 border-gray-300 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
       />
     </div>
 
@@ -1349,7 +1349,7 @@ onClick={()=> {
         name="admin.twitter_url"
         value={formdata.admin?.twitter_url || ''}
         onChange={handleChange}
-        className="px-4 py-2 focus:outline-none border border-gray-500 rounded-lg"
+        className="w-full px-4 py-2 border-gray-300 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
       />
     </div>
 
@@ -1361,7 +1361,7 @@ onClick={()=> {
         name="admin.google_analytics_id"
         value={formdata.admin?.google_analytics_id || ''}
         onChange={handleChange}
-        className="px-4 py-2 focus:outline-none border border-gray-500 rounded-lg"
+        className="w-full px-4 py-2 border-gray-300 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
       />
     </div>
 
@@ -1380,7 +1380,7 @@ onClick={()=> {
             name="website.website_link"
             value={formdata.website?.website_link || ''}
             onChange={handleChange}
-            className="px-4 py-2 focus:outline-none border border-gray-500 rounded-lg"
+            className="w-full px-4 py-2 border-gray-300 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
           />
         </div>
 
@@ -1392,7 +1392,7 @@ onClick={()=> {
             name="website.sales_email"
             value={formdata.website?.sales_email || ''}
             onChange={handleChange}
-            className="px-4 py-2 focus:outline-none border border-gray-500 rounded-lg"
+            className="w-full px-4 py-2 border-gray-300 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
           />
         </div>
       </div>

@@ -74,7 +74,7 @@ const publicMenuItems: MenuItem[] = [
      subItems: [
  {
     title: "View All Contract Jobs",
-    href: "/applications",
+    href: "/jobs",
   },
   {
     title: "Pricing & Plans",

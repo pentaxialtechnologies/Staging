@@ -123,7 +123,7 @@ const totalPages = Math.ceil(filteredCompanies.length / itemsPerPage);
         </div>
 
         {/* Company Cards */}
-        <div className="mt-10 flex flex-row gap-8 bg-white border border-gray-200 shadow-xl">
+        <div className="mt-10 flex flex-col gap-8 bg-white border border-gray-200 shadow-xl">
           {paginatedCompanies.map((company) => (
             <div key={company._id} className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-4">
               <div className="flex items-center space-x-4">

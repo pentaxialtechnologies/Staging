@@ -66,8 +66,9 @@ const CompanyHeader = () => {
   }, []);
 
   return (
+    <>
     <header className="w-full bg-white dark:bg-gray-900 shadow- z-50 flex justify-between items-center">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <div className="max-w-8xl mx-auto px-6 py-4 flex justify-between items-center">
         {/* Left - Mobile Menu Icon */}
         <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="md:hidden">
           {isMobileMenuOpen ? <X className="w-6 h-6 text-gray-700 dark:text-white" /> : <Menu className="w-6 h-6 text-gray-700 dark:text-white" />}
@@ -186,7 +187,10 @@ const CompanyHeader = () => {
           <Link href="/enterprise/gcc-services" className="block text-gray-700 dark:text-white">GCC Services</Link>
         </div>
       )}
-    </header>
+    </header> 
+    <div className='border border-gray-300 mb-5 w-full'></div>
+
+    </>
   );
 };
 

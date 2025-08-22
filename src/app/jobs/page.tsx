@@ -29,9 +29,9 @@ const [User,setUser] = useState(false)
 const {data:session} = useSession()
 
 
-const UserCheck = () =>{
+const UserCheck = (id : string) =>{
 if(session?.user){
-  router.push('/apply-now')
+  router.push(`/apply-now/${id}`)
 }
 else{
   toast.error("You must be logged in to apply the job.")
@@ -259,7 +259,7 @@ setpages((prev) => prev + (direction === 'next'? 1 : -1))
                   <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2">
                     {job.title}
                   </h2>
-                  <button onClick={UserCheck} className='bg-[#F27264] text-white px-4 py-2 rounded'>Apply Now</button>
+                  <button onClick={()=> UserCheck(job._id.toString())} className='bg-[#F27264] text-white px-4 py-2 rounded'>Apply Now</button>
                   </div>
               <div className='border border-gray-100 mt-5 mb-5'></div>
 

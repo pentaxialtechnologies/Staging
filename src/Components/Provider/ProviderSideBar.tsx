@@ -7,6 +7,7 @@ import {
   ChevronRight,
   LucideIcon,
   Settings,
+  Puzzle,
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -44,6 +45,11 @@ export const ProviderSideBar = () => {
       name: "Manage Jobs",
       href: "/employer/job-list",
       icon: Briefcase,
+    },
+    {
+      name: "Proposals",
+      href: "/employer/proposal/list",
+      icon: Puzzle,
     },
      {
       name: "Setting",
