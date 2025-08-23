@@ -15,7 +15,7 @@ export async function GET() {
 
         // Correct way to await and populate
         const proposals = await Proposals.find({ ProviderId: session.user.id })
-            .populate('JobId','title job_description updatedAt') // Populate JobId with title and description; 
+            .populate('JobId','title job_description updatedAt') 
 
         console.log('Proposals fetched for user:', session.user.id, proposals);
 

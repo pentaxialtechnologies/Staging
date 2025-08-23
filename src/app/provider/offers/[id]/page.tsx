@@ -65,8 +65,6 @@ return (
     <Link className='text-blue-500 mt-2 inline-block' href={`/provider/offers/${proposal.JobId._id}`}>
       View Proposal
       </Link>
-
-
 </div>  
 ))}
 </div>
