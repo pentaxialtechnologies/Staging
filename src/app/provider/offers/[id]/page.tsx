@@ -87,8 +87,8 @@ const Page = () => {
               <div>
                 <p className='mt-2'>Posted By: {new Date(proposal.JobId.updatedAt).toLocaleDateString()}</p>
                 <p>{proposal.JobId.job_description}</p>
-                <p className='mt-2'>Provider: {proposal.provider}</p>
-                <p className='mt-2'>Email: {proposal.email}</p>
+                {/* <p className='mt-2'>Provider: {proposal.provider}</p>
+                <p className='mt-2'>Email: {proposal.email}</p> */}
               </div>
 
               <div>
@@ -112,7 +112,7 @@ const Page = () => {
 
             <Link
               className='text-white bg-[#F27264] rounded-xl mt-2 px-3 py-1.5 inline-block'
-              href={`/provider/offers/${proposal.JobId._id}`}
+              href={`/jobs/${proposal.JobId._id}`}
             >
               View Job Details
             </Link>
