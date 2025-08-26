@@ -10,6 +10,7 @@ import {
   User,
   Palette,
   Settings,
+  FileText,
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -56,7 +57,7 @@ export const CompanySideBar = () => {
     {
       name: "Offers & Proposals",
       href: "/provider/offers",
-      icon: User2,
+      icon: FileText,
     },
     {
       name: "Setting",

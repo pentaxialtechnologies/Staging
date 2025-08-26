@@ -14,8 +14,8 @@ export async function GET() {
         await dbConnect();
 
         // Correct way to await and populate
-        const proposals = await Proposals.find({ ProviderId: session.user.id })
-            .populate('JobId','title job_description updatedAt') 
+        const proposals = await Proposals.find({ ProviderId: session.user.id }) 
+            .populate('JobId','title job_description updatedAt experience.maxyears experience.minyears skills joblocation employment_type workmode timezone engagement_type duration budget availability payment_schedule') 
 
         console.log('Proposals fetched for user:', session.user.id, proposals);
 
