@@ -32,7 +32,7 @@ const ItemsPerpage = 10
 
 //fetching employers data
    useEffect(()=>{
-        fetch('http://localhost:3000/api/auth/employer/get')
+        fetch('/api/auth/employer/get')
         .then(res => res.json())
         .then(data => setDatas(data.employers))
     },[])
