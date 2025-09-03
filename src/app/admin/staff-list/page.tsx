@@ -96,7 +96,7 @@ const csvData = filteredEmployers.map(emp => ({
   const handleStatusChange = (id: string, newStatus: string) => {
     try{
     const updateStatus = async () => {
-      const response = await fetch(`http://localhost:3000/api/auth/admin/status/${id}`, {
+      const response = await fetch(`/api/auth/admin/status/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus }),
