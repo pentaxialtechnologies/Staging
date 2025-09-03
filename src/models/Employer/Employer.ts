@@ -12,6 +12,7 @@ interface EmployerDocument extends Document {
   emailTokenExpiresAt?: Date | null;
   resetToken?: string;
   resetTokenExpiry?: Date;
+  status:'Active' | 'InActive' | 'Suspended';
   lastActiveAt: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -67,6 +68,11 @@ const EmployerSchema: Schema<EmployerDocument> = new Schema(
     },
     lastActiveAt:{
       type:Date
+    },
+    status: {
+      type: String,
+      enum: ['Active', 'InActive', 'Suspended'],
+      default: 'Active'
     }
   },
   { timestamps: true }

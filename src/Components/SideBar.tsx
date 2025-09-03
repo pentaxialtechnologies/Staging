@@ -43,6 +43,11 @@ name:'Staffs',
 href:'/admin/staffs',
 icon:FileText
 },
+{
+name:'Staffs-List',
+href:'/admin/staff-list',
+icon:FileText
+},
 
 ]
 

@@ -87,8 +87,7 @@ const Page = () => {
               <div>
                 <p className='mt-2'>Posted By: {new Date(proposal.JobId.updatedAt).toLocaleDateString()}</p>
                 <p>{proposal.JobId.job_description}</p>
-                {/* <p className='mt-2'>Provider: {proposal.provider}</p>
-                <p className='mt-2'>Email: {proposal.email}</p> */}
+        
               </div>
 
               <div>
@@ -163,7 +162,7 @@ const Page = () => {
                       <th className='border border-gray-400 px-4 py-2'>Skills</th>
                       <th className='border border-gray-400 px-4 py-2'>Resume</th>
                     </tr>
-                  </thead>
+                  </thead>  
                   <tbody>
                     {proposal.Candidate_data.map((candidate) => (
                       <tr key={candidate._id}>

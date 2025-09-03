@@ -3,6 +3,7 @@ import 'dotenv/config'
 
 import dbConnect from "../lib/Mongodb";
 import { Jobs } from "../models/ContractJob";
+import { Employers } from '@/models/Employer/Employer';
 
 async function addJobLocationToJobs() {
   try {
@@ -27,5 +28,30 @@ async function addJobLocationToJobs() {
   }
 }
 
+
+const addStatusToEmployers = async () => {
+  try {
+    await dbConnect();
+
+    const result = await Employers.updateMany(
+      {
+        $or: [
+          { status: { $exists: false } },
+          { status: null },
+          { status: "" }
+        ]
+      },
+      { $set: { status: "Active" } } 
+    );
+
+    console.log(`✅ Updated ${result.modifiedCount} employers with status field.`);
+    process.exit(0);
+  } catch (error) {
+    console.error("❌ Error updating status:", error);
+    process.exit(1);
+  }
+}
+
 // Run the function
 addJobLocationToJobs();
+addStatusToEmployers();
