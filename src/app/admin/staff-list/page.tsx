@@ -14,6 +14,16 @@ interface Employer {
   status: string;
   profile:{
     strength:string
+    firstname:string;
+    lastname:string;
+    companyname:string;
+    websiteUrl:string;
+    country:string;
+    state:string;
+    city:string;
+    address:string;
+    postalcode:string;
+    about:string;
   }
 }
 
@@ -86,9 +96,14 @@ const totalpages = Math.ceil(filteredEmployers.length/ItemsPerpage)
 const StartIndex = (CurrentPage -1)*ItemsPerpage
 const paginatedEmployers  = employers.slice(StartIndex, StartIndex + ItemsPerpage)
 const csvData = filteredEmployers.map(emp => ({
-  Name: emp.fullname,
-  JobsCount: emp.jobsCount,
+  firstname: emp.profile?.firstname,
+  lastname: emp.profile?.lastname,
+  CompanyName: emp.profile?.companyname,
+  phone: emp.profile?.phone || '',
+  Email: emp.email,
+  Website:emp?.profile?.websiteUrl,
   Size: emp.profile?.strength || "",
+  Number_of_Jobs: emp.jobsCount,
   Status: emp.status
 }));
 
@@ -140,7 +155,7 @@ const csvData = filteredEmployers.map(emp => ({
         </div>
 
         <div>
- <label className='block mb-2 font-bold text-xl'>Job Count</label>
+ <label className='block mb-2 font-bold text-xl'>Company Size</label>
         <select onChange={(e) => setSizeFilter(e.target.value)} className="border px-2 py-1 rounded">
     <option value="">Select company-size</option>
     <option value="It's just me">It&apos;s just me</option>
@@ -155,12 +170,11 @@ const csvData = filteredEmployers.map(emp => ({
   <label className='block mb-2 font-bold text-xl'>Job Count</label>
 <select onChange={(e) => setJobsCountFilter(e.target.value)}  className="border px-2 py-1 rounded">
   <option value="">All</option>
-  <option value="1-3">1 - 3</option>
-  <option value="3-5">3 - 5</option>
-  <option value="5-10">5 - 10</option>
-  <option value="10-20">10 - 20</option>
-  <option value="20-50">20 - 50</option>
-  <option value="50+">50+</option>
+  <option value="0">No jobs</option>
+  <option value="1-9">1 - 9</option>
+  <option value="10-15">10 - 15</option>
+  <option value="15+">15+</option>
+
 </select>
 </div>
 
@@ -170,8 +184,8 @@ const csvData = filteredEmployers.map(emp => ({
         <select onChange={(e) => setStatusFilter(e.target.value)} className="border px-2 py-1 rounded">
           <option value="">Status</option>
           <option value="Active">Active</option>
-          <option value="Inactive">Inactive</option>
-          <option value="Suspend">Suspend</option>
+          <option value="InActive">Inactive</option>
+          <option value="Suspended">Suspend</option>
         </select>
 </div>
         <div>
