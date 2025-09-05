@@ -9,12 +9,13 @@ import { getSession, signIn } from 'next-auth/react';
 interface FormData {
   email: string;
   password: string;
+  role: string;
 }
 
 const Login = () => {
   const router = useRouter();
-
-  const [form, setForm] = useState<FormData>({ email: '', password: '' });
+  const [form, setForm] = useState<FormData>({ email: '', password: '', role: 'provider' });
+  // const [form, setForm] = useState<FormData>({ email: '', password: '' });
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -128,8 +129,18 @@ const handleSubmit = async (e: FormEvent) => {
           </div>
 
          
+<div className='flex justify-between items-center'>
+  <div>
+    <label className='font-bold text-xl gap-4'>Signin As</label>
+    <select className='border px-2 py-1 rounded ml-4' name='role' onChange={(e) => setForm({...form, role: e.target.value})} required>
+      <option value='provider'>Provider</option>
+      <option value='employer'>Employer</option>
 
+    </select>
+  </div>
     <p className='text-sm text-end text-blue-500'><a href='/users/forgot-password'>Forgot password ?</a></p>
+
+  </div>
           <button
             type="submit"
             disabled={loading}
