@@ -2,11 +2,10 @@ import dbConnect from "@/lib/Mongodb";
 import { NextResponse } from "next/server";
 import { Employer_Tickets } from "@/models/ticket/EmployersTickets";
 
-type ContextType ={params:{id:Promise<{id:string}>}}
 
-export async function GET(req:Request,context:ContextType){
+export async function GET(req:Request,params:{id:string}){
     try{
-    const {id} = await context.params
+    const {id} = params
     const ticket = await Employer_Tickets.findById(id).populate('userId')
     if(!ticket){
         return NextResponse.json({message:'Ticket Not found'},{status:404})
