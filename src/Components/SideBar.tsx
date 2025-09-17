@@ -6,6 +6,7 @@ import {
   FileText,
   LucideIcon,
   Building2,
+  Tickets,
 } from "lucide-react";
 import Link from 'next/link'
 export const Sidebar =()=>{
@@ -23,12 +24,16 @@ name:'Dashboard',
 href:'/admin/dashboard',
 icon:LayoutDashboard
 },
+// {
+// name:'Jobs',
+// href:'/admin/jobs',
+// icon:Briefcase
+// },
 {
-name:'Jobs',
-href:'/admin/jobs',
+name:'Manage Jobs',
+href:'/admin/manage-jobs',
 icon:Briefcase
 },
-
 {
 name:'Requests',
 href:'/admin/requests',
@@ -42,17 +47,22 @@ icon:FileText
  {
     name: "Staffs",
     href: "/admin/staffs",
-    icon: Users, // 👥 People icon
+    icon: Users, 
   },
   {
     name: "Employer List",
     href: "/admin/staff-list",
-    icon: Briefcase, // 💼 Business icon
+    icon: Briefcase, 
   },
   {
     name: "Provider List",
     href: "/admin/provider-list",
-    icon: Building2, // 🏢 Organization icon
+    icon: Building2, 
+  },
+  {
+    name: "Tickets",
+    href: "/admin/tickets-list",
+    icon: Tickets, 
   },
 
 ]

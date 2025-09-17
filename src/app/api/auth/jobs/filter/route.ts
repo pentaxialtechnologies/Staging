@@ -6,6 +6,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(req:Request){
     try{
+    await dbConnect()
     const {searchParams} = new URL(req.url)
     const skills = searchParams.get('skills')
     const workmode = searchParams.get('workmode')
@@ -53,6 +54,6 @@ export async function GET(req:Request){
 
     }
     catch(error){
-    return NextResponse.json({message:'failed to filter',error})
+    return NextResponse.json({message:'failed to filter',error},{status:500})
         }
 }

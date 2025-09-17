@@ -252,18 +252,18 @@ const [formdata,setFormData]= useState<Profile>({
 })
 
 
-useEffect(()=>{
+// useEffect(()=>{
 
-const fetchDatas = async()=>{
-  const res = await fetch('/api/auth/categories/get')
-  console.log(res);
-  const data = await res.json()
-  console.log(data.category);
-  setcategories(data.category)
-}
-fetchDatas()
+// const fetchDatas = async()=>{
+//   const res = await fetch('/api/auth/categories/get')
+//   console.log(res);
+//   const data = await res.json()
+//   console.log(data.category);
+//   setcategories(data.category)
+// }
+// fetchDatas()
 
-},[])
+// },[])
 
 
 const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {

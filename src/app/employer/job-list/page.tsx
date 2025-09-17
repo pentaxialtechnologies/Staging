@@ -127,6 +127,10 @@ const Page = () => {
                 <p>Posted At: {new Date(job.createdAt).toLocaleDateString()}</p>
               </div>
 
+<div className='flex items-center justify-center'>
+  <p className='bg-yellow-500 px-2 py-1 rounded-full'>{job.status}</p>
+  </div>
+
               <div>
                 <select>
                   <option>Paused</option>

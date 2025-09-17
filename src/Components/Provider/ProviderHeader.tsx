@@ -1,6 +1,6 @@
 'use client';
 import Image from "next/image";
-import logo from '../../../public/Logo.webp';
+import logo from "../../../public/logos.jpeg";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {

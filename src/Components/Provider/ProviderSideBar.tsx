@@ -8,6 +8,8 @@ import {
   LucideIcon,
   Settings,
   Puzzle,
+
+  Ticket,
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -50,6 +52,11 @@ export const ProviderSideBar = () => {
       name: "Proposals",
       href: "/employer/proposal/list",
       icon: Puzzle,
+    },
+     {
+      name: "Ticket",
+      href: "/employer/ticket-list",
+      icon: Ticket,
     },
      {
       name: "Setting",

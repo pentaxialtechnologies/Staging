@@ -160,20 +160,20 @@ const onSubmit = async(formdata : any) => {
     fetchCities();
   }, [selectedState,selectedCountry]);
 
-  useEffect(() => {
-    const fetchData = async () => { 
-      try {
-        const res = await fetch('/api/auth/categories/get');
-        if (res.ok) {
-          const data = await res.json();
-          setcategories(data.category);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   const fetchData = async () => { 
+  //     try {
+  //       const res = await fetch('/api/auth/categories/get');
+  //       if (res.ok) {
+  //         const data = await res.json();
+  //         setcategories(data.category);
+  //       }
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   };
+  //   fetchData();
+  // }, []);
 
 
 const handleNext = async() =>{

@@ -1,8 +1,8 @@
-import  { NextAuthOptions } from 'next-auth';
+import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import dbConnect from '@/lib/Mongodb';
 import { Employers } from '@/models/Employer/Employer';
-import {Provider} from '@/models/Provider/Organization';
+import { Provider } from '@/models/Provider/Organization';
 import { Admin } from '@/models/Admin';
 import bcrypt from 'bcryptjs';
 
@@ -15,83 +15,70 @@ interface IUser {
   email: string;
   password: string;
   role: 'admin' | 'employer' | 'provider';
-  hasCompletedPlanSelection:boolean
+  hasCompletedPlanSelection: boolean;
 }
 
 export const authOptions: NextAuthOptions = {
-  providers: [
+providers: [
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
       },
-     async authorize(credentials) {
-    try {
-    await dbConnect();
+      async authorize(credentials) {
+        await dbConnect();
 
-    if (!credentials?.email || !credentials?.password) {
-      throw new Error('Email and password are required.');
-    }
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error('Email and password are required.');
+        }
 
+        let user: IUser | null = null;
+        let role: IUser['role'] | null = null;
 
-    let user: IUser | null = null;
-    let role: IUser['role'] | null = null;
+        // Look up user in all collections
+        user = (await Employers.findOne({ email: credentials.email })) as IUser;
+        role = user ? 'employer' : null;
 
-    const employer = await Employers.findOne({ email: credentials.email });
-    if (employer) {
-      user = employer as unknown as IUser;
-      role = 'employer';
-    }
+        if (!user) {
+        user = await Provider.findOne({ email: credentials.email }).select('+password') as IUser;
 
-    if (!user) {
-      const provider = await Provider.findOne({ email: credentials.email });
-      if (provider) {
-        user = provider as unknown as IUser;
-        role = 'provider';
-      }
-    }
+          if (user) role = 'provider';
+        
+          
+        }
 
-    if (!user) {
-      const admin = await Admin.findOne({ email: credentials.email });
-      if (admin) {
-        user = admin as unknown as IUser;
-        role = 'admin';
-      }
-    }
+        if (!user) {
+          user = (await Admin.findOne({ email: credentials.email })) as IUser;
+          if (user) role = 'admin';
+        }
 
-    if (!user || !role) {
-      throw new Error('The Provided credentials does not match with our records.');
-    }
+        if (!user || !role) {
+          throw new Error('The provided credentials do not match our records.');
+        }
+        if (!user.password) {
+          throw new Error(`User ${user.email} has no stored password hash.`);
+        }
+        if (!user.emailVerified && role === 'provider') {
+          throw new Error('Please verify your email before logging in.');
+        }
 
-    if (!user.emailVerified && role === 'provider') {
-      // Only require verification for non-admins
-      throw new Error('Please verify your email before logging in.');
-    }
+        const isMatch = await bcrypt.compare(credentials.password, user.password);
+        if (!isMatch) {
+          throw new Error('Invalid email or password.');
+        }
 
-    const isMatch = await bcrypt.compare(credentials.password, user.password);
-    if (!isMatch) {
-      throw new Error('Invalid email or password.');
-    }
-
-   return {
-  id: user._id.toString(),
-  name: user.name || `${user.firstname ?? ''} ${user.lastname ?? ''}`.trim(),
-  email: user.email,
-  role,
-  emailVerified: user.emailVerified,
-  hasCompletedPlanSelection: user.hasCompletedPlanSelection,
-  firstname: user.firstname ?? '',
-  image: null
-};
-
-  } 
-  catch (err: any) {
-    console.error('💥 Auth error:', err.message);
-    throw new Error(err.message); 
-  }
-}
-
+        return {
+          id: user._id.toString(),
+          name: user.name || `${user.firstname ?? ''} ${user.lastname ?? ''}`.trim(),
+          email: user.email,
+          role,
+          emailVerified: user.emailVerified,
+          hasCompletedPlanSelection: user.hasCompletedPlanSelection,
+          firstname: user.firstname ?? '',
+          image: null,
+        };
+      },
     }),
   ],
   pages: {
@@ -100,7 +87,7 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt',
   },
-  secret: process.env.NEXT_PUBLIC_TOKEN_KEY,
+  secret: process.env.NEXTAUTH_SECRET,
 callbacks: {
   async jwt({ token, user }) {
     if (user) {
@@ -124,7 +111,3 @@ callbacks: {
 }
 
 };
-
-
-
- 

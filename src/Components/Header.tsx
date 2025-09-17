@@ -280,53 +280,53 @@ const Header = () => {
 
   const [, setMenuItems] = useState<MenuItem[]>([]);
 
-useEffect(()=>{
-const fetchDatas = async()=>{
-  try{
-  const res = await fetch('/api/auth/categories/get')
-  const data = await res.json()
-  const dynamicMenuItems :MenuItem[] = data.category.map((cat:ApiCategory)=> ({
-  title: cat.title,
-  href:'',
-  subCategories: cat.subcategory.map((sub:ApiSubcategory)=> ({
-    title:sub.title,
-    href:`/category/${cat._id}/subcategory/${sub._id}`,
+// useEffect(()=>{
+// const fetchDatas = async()=>{
+//   try{
+//   const res = await fetch('/api/auth/categories/get')
+//   const data = await res.json()
+//   const dynamicMenuItems :MenuItem[] = data.category.map((cat:ApiCategory)=> ({
+//   title: cat.title,
+//   href:'',
+//   subCategories: cat.subcategory.map((sub:ApiSubcategory)=> ({
+//     title:sub.title,
+//     href:`/category/${cat._id}/subcategory/${sub._id}`,
 
-  }))
- }))
-    const staticMenu: MenuItem[] = [
-          {
-            title: 'Provider Dashboard',
-            href: '/provider/dashboard',
-            subItems: [],
-          },
-          {
-            title: 'Provider Jobs',
-            href: '/provider/jobs',
-            subItems: [
-              { title: 'Post Job', href: '/provider/jobs' },
-              { title: 'Manage Jobs', href: '/provider/job-list' },
-            ],
-          },
-          {
-            title: 'Account',
-            href: '/provider/account',
-            subItems: [
-              { title: 'Profile', href: '/provider/account/profile' },
-              { title: 'Settings', href: '/provider/account/settings' },
-            ],
-          },
-        ];
+//   }))
+//  }))
+//     const staticMenu: MenuItem[] = [
+//           {
+//             title: 'Provider Dashboard',
+//             href: '/provider/dashboard',
+//             subItems: [],
+//           },
+//           {
+//             title: 'Provider Jobs',
+//             href: '/provider/jobs',
+//             subItems: [
+//               { title: 'Post Job', href: '/provider/jobs' },
+//               { title: 'Manage Jobs', href: '/provider/job-list' },
+//             ],
+//           },
+//           {
+//             title: 'Account',
+//             href: '/provider/account',
+//             subItems: [
+//               { title: 'Profile', href: '/provider/account/profile' },
+//               { title: 'Settings', href: '/provider/account/settings' },
+//             ],
+//           },
+//         ];
 
-        setMenuItems([...staticMenu, ...dynamicMenuItems]);
+//         setMenuItems([...staticMenu, ...dynamicMenuItems]);
 
-      }
-      catch (err) {
-        console.error('Failed to fetch menu:', err);
-      }
-    };
-    fetchDatas();
-  }, []);
+//       }
+//       catch (err) {
+//         console.error('Failed to fetch menu:', err);
+//       }
+//     };
+//     fetchDatas();
+//   }, []);
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openSubmenuIndex, setOpenSubmenuIndex] = useState<number | null>(null);

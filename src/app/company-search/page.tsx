@@ -128,7 +128,7 @@ const totalPages = Math.ceil(filteredCompanies.length / itemsPerPage);
             <div key={company._id} className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-4">
               <div className="flex items-center space-x-4">
                 <Image
-                  src={company.companylogo}
+                  src={company.companylogo || ""}
                   alt={`${company.company_name} logo`}
                   height={100}
                   width={200}

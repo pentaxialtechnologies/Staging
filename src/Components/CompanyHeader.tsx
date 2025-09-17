@@ -26,31 +26,31 @@ const CompanyHeader = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Fetch categories
-  useEffect(() => {
-    const fetchDatas = async () => {
-      try {
-        const res = await fetch('/api/auth/categories/get');
-        const data = await res.json();
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const dynamicCategory: ApiCategory[] = data.category.map((cat: any) => ({
-          _id: cat._id,
-          name: cat.name,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          subcategory: cat.subcategory.map((sub: any) => ({
-            _id: sub._id,
-            name: sub.name,
-            href: `/category/${cat._id}/subcategory/${sub._id}`,
-          })),
-        }));
+//   useEffect(() => {
+//     const fetchDatas = async () => {
+//       try {
+//         const res = await fetch('/api/auth/categories/get');
+//         const data = await res.json();
+// // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//         const dynamicCategory: ApiCategory[] = data.category.map((cat: any) => ({
+//           _id: cat._id,
+//           name: cat.name,
+//           // eslint-disable-next-line @typescript-eslint/no-explicit-any
+//           subcategory: cat.subcategory.map((sub: any) => ({
+//             _id: sub._id,
+//             name: sub.name,
+//             href: `/category/${cat._id}/subcategory/${sub._id}`,
+//           })),
+//         }));
 
-        setCategories(dynamicCategory);
-      } catch (error) {
-        console.error('Error fetching categories:', error);
-      }
-    };
+//         setCategories(dynamicCategory);
+//       } catch (error) {
+//         console.error('Error fetching categories:', error);
+//       }
+//     };
 
-    fetchDatas();
-  }, []);
+//     fetchDatas();
+//   }, []);
 
   // Close dropdown on outside click
   useEffect(() => {
