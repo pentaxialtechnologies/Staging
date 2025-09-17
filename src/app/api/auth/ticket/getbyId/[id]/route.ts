@@ -3,8 +3,9 @@ import { NextResponse } from "next/server";
 import { Employer_Tickets } from "@/models/ticket/EmployersTickets";
 
 
-export async function GET(req:Request,params:{id:string}){
+export async function GET(req:Request,{params}:{params:{id:string}}){
     try{
+        await dbConnect()
     const {id} = params
     const ticket = await Employer_Tickets.findById(id).populate('userId')
     if(!ticket){

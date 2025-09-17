@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 type ContextType = {params:Promise<{id:string}>}
 export async function GET(req:Request,context:ContextType){
 try{
+        await dbConnect()
 const {id} = await context.params;
 const ticket = await Employer_Tickets.find({userId:id})
 if(!ticket){

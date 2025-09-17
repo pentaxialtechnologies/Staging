@@ -6,6 +6,8 @@ type ContextType = {params: Promise<{id:string}>}
 
 export async function GET(req:Request){
     try{
+        await dbConnect()
+
         // const {id} = await context.params
         const Tickets = await Employer_Tickets.find().populate('userId').sort({createdAt: -1})
         if(!Tickets){

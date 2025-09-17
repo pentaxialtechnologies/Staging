@@ -62,6 +62,8 @@ catch(error){
 
 export async function PUT(req:Request,context:ContextType){
 try{
+        await dbConnect()
+
 const {id} = await context.params
 const {ticket_status} = await req.json()
 const ticket = await Employer_Tickets.findByIdAndUpdate(id,{ticket_status},{new:true})
