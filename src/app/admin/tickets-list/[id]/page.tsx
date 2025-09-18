@@ -74,19 +74,17 @@ const TotalPages = Math.ceil(flatReplies.length/ItemPerPage)
 const PaginatedReplies = useMemo(()=> {
 const start = (Currentpage -1) * ItemPerPage;
 const end = start + ItemPerPage
+
 return flatReplies.slice(start,end)
 },[flatReplies,Currentpage])
 
-console.log(PaginatedReplies,'flat data');
 
-
-  const fetchReplies = useCallback(async () => {
+const fetchReplies = useCallback(async () => {
   try {
     const res = await fetch(`/api/auth/ticket/reply/${id}`);
     if (!res.ok) throw new Error('Failed to fetch details');
     const response = await res.json();
     setReplies(response.data);
-    console.log(response.data,'response');
     
   } catch (err) {
     console.error(err);
@@ -229,12 +227,20 @@ console.log(data.ticket,'data');
         <p className="text-lg text-gray-800">
           {reply.content.replace(/<[^>]+>/g, '')}
         </p>
-        {/* <p>Status: {replies.ticketId.priority_status}</p> */}
+        <p>Status: {reply?.ticketStatus}</p>
         <p>Role:  {reply.authorRole}</p>
       </div>
     ))
     ))
   }
+  </div>
+
+  <div className='flex justify-center items-center gap-4 mt-4'>
+  <button onClick={()=> setCurrentpage((p)=> Math.max(p-1,1))} disabled={Currentpage === 1} className='border px-3 py-2 rounded disabled:opacity-50'>
+    Prev
+  </button>
+  <span>{Currentpage}/{TotalPages}</span>
+  <button onClick={()=> setCurrentpage((p)=> Math.min(p+1,TotalPages))} disabled={Currentpage === TotalPages} className='border px-3 py-2 rounded disabled:opacity-50'>Next</button>
   </div>
 </div>
 
