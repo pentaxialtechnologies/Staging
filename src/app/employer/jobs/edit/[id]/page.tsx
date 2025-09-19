@@ -8,6 +8,7 @@ import { convertFromRaw, convertToRaw,ContentState, EditorState,convertFromHTML,
 const Editor = dynamic(() => import('react-draft-wysiwyg').then(mod => mod.Editor), {
   ssr: false,
 });
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import {  useSession } from "next-auth/react";
 import {useForm,Controller, Form} from 'react-hook-form'
 import { useParams } from "next/navigation";

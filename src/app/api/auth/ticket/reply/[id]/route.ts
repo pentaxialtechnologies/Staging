@@ -47,7 +47,7 @@ try{
     await dbConnect();
 
 const {id} =await context.params
-const ticket = await employer_conversation.find({ticketId:id}).sort({createdAt:-1}).populate('ticketId')
+const ticket = await employer_conversation.find({ticketId:id}).sort({createdAt:1}).populate('ticketId')
 if(!ticket){
     return NextResponse.json({message:"Ticket Not found"},{status:400})
 }

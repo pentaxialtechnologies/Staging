@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import { useParams } from 'next/navigation'
-import Editor from '../../../../Components/Editor'
+import Editor from '@/Components/Editor'
 import { useSession } from 'next-auth/react'
 import toast,{Toaster} from 'react-hot-toast'
 interface Ticket{
@@ -74,39 +74,12 @@ const TicketPage = () => {
   useEffect(()=>{
     fetchReplies()
   },[fetchReplies])
-
-
 const {data:session} = useSession()
 
   // Memoize stripped description
   const plainDescription = useMemo(() => {
     return ticket?.ticket_description.replace(/<[^>]+>/g, '') || ''
   }, [ticket?.ticket_description])
-
-
-
-// Pagination
-const ItemPerpage = 10
-const flatReplies = useMemo(()=> {
-if(!Replies)  return []
-
-return Replies.map((conv)=> conv.messages.map((message)=> ({...message,Ticket_Status:conv.ticketId.priority_status})))
-},[Replies])
-
-
-
-const [Currentpage,setcurrentPage] = useState(1)
-const TotalPages = Math.ceil(flatReplies.length/ItemPerpage)
-
-const PaginatedReplies = useMemo(()=> {
-const start = (Currentpage -1) * ItemPerpage;
-const end = start + ItemPerpage
-
-return flatReplies.slice(start,end)
-
-},[flatReplies,Currentpage])
-
-  
 
 
 
@@ -143,9 +116,7 @@ return flatReplies.slice(start,end)
 
 const handleReply = useCallback(()=>{
        setDrawer(true) 
-},[])
-
-
+    },[])
   
 const handleStatusChange = useCallback(async(ticket_status:string) => {
   try{
@@ -161,6 +132,7 @@ if(!res.ok){
   throw new Error('Failed to Fetch tickets')
 }
 const data = await res.json()
+console.log(data.ticket,'data');
  setTicket(prev => prev ? { ...prev, ticket_status } : prev);
   toast.success('Status Updated Successfully!')
   }
@@ -222,8 +194,8 @@ const data = await res.json()
   <h1 className="text-lg font-bold mb-4">Replies</h1>
 
   <div className="space-y-4">
-  {Array.isArray(Replies) && PaginatedReplies?.map((replies) => 
-    replies.map((reply,idx)=> (
+  {Array.isArray(Replies) && Replies?.map((replies) => 
+    replies.messages.map((reply,idx)=> (
        <div
         key={idx}
         className="bg-gray-50 border border-gray-200 rounded-lg p-4 shadow-sm"
@@ -234,21 +206,12 @@ const data = await res.json()
         <p className="text-lg text-gray-800">
           {reply.content.replace(/<[^>]+>/g, '')}
         </p>
-        <p>Status: {reply.Ticket_Status}</p>
+        <p>Status: {replies.ticketId.priority_status}</p>
         <p>Role:  {reply.authorRole}</p>
       </div>
     ))
      
     )}
-  </div>
-  <div className='flex items-center justify-center gap-6 mt-4'>
-<button onClick={()=> setcurrentPage((p)=> Math.max(p-1,1))} className='px-3 py-1 rounded border disabled:opacity-50' disabled={Currentpage === 1}>
-  Prev
-</button>
-<span>{Currentpage}/{TotalPages}</span>
-<button onClick={()=> setcurrentPage((p)=> Math.min(p+1,TotalPages))} className='px-3 py-1 rounded border disabled:opacity-50' disabled={Currentpage === TotalPages}>
-  Next
-</button>
   </div>
 </div>
 

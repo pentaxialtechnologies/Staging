@@ -37,11 +37,18 @@ const handleSubmit = async (e: FormEvent) => {
       callbackUrl: '/',
     });
 
+    console.log('Login response:', response);
+    console.log('Login email:', form.email);
+    console.log('Login password:', form.password);
+
+
     if (response?.error) {
       if (response.error.includes('verify')) {
     alert("Please verify your email before logging in.");
   }
+
       setError(response.error);
+      
     }
     else if (response?.ok) {
       const session = await getSession(); 
@@ -57,10 +64,10 @@ const handleSubmit = async (e: FormEvent) => {
           break;
         case 'provider':
           if (!hasCompletedPlanSelection) {
-       await router.push('/providers/plans');
+        router.push('/providers/plans');
       } 
       else{
-        await   router.push('/provider/dashboard');
+          router.push('/provider/dashboard');
       }
           break;
         case 'employer':

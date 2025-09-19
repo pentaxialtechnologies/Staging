@@ -2,19 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
 export async function middleware(req: NextRequest) {
-
-
-  console.log('NEXTAUTH_SECRET from env:', process.env.NEXTAUTH_SECRET);
-  const token = await getToken({
-    req,
-  secret: process.env.NEXTAUTH_SECRET
-  });
-
-console.log('Middleware token:', token);
-
+  const token = await getToken({ req, secret:process.env.NEXTAUTH_SECRET});
+  console.log(token,"token");
+  
   const { pathname } = req.nextUrl;
 
-  const publicPaths = ["/","/users/login","jobs"];
+  const publicPaths = ["/", "/worker/login", "/worker/register","providers/login","providers/register"];
 
   // Allow public paths without auth
   if (publicPaths.includes(pathname)) {
@@ -51,7 +44,7 @@ console.log('Middleware token:', token);
     return NextResponse.next();
   } catch (error) {
     console.error("Invalid token:", error);
-    return NextResponse.redirect(new URL("/users/login", req.url));
+    return NextResponse.redirect(new URL("/worker/login", req.url));
   }
 }
 

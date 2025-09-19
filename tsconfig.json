@@ -15,7 +15,7 @@
     "incremental": true,
     "forceConsistentCasingInFileNames": true,
     "typeRoots": [
-      "./src/types",       
+      "./src/types",       // ✅ Add this line to include custom types
       "./node_modules/@types"
     ],
     "plugins": [

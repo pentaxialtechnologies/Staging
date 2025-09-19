@@ -39,30 +39,16 @@ const userId = session?.user.id;
 
 useEffect(() => {
   const fetchdata = async () => {
-    try{
     const res = await fetch('/api/auth/session');
     const data = await res.json();
-    // setUserdata(data.user);
-    setUserdata((prev) => JSON.stringify(prev) === JSON.stringify(data.user) ? prev : data.user)
-    }
-    catch(error){
-      console.error(error);
-      
-    }
-    
+    setUserdata(data.user);
   };
 
   const fetchUser = async () => {
-    try{
     const res = await fetch(`/api/auth/employer/userprofile/update/${userId}`);
     const data = await res.json();
-    setUser((prev)=> JSON.stringify(prev) === JSON.stringify(data?.user) ? prev: data.user );
-    }
-    catch(error){
-      console.error(error);
-      
-    }
-   
+    setUser(data.user);
+    console.log(data.user, 'user id for this user'); // ✅ use the correct user here
   };
 
   fetchdata();

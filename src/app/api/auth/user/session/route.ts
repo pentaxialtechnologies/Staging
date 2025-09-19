@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import dbConnect from "@/lib/Mongodb";
-import { authOptions } from "../../../../../lib/authOptions"; // fix relative path if needed
+import { authOptions } from "@/lib/authOptions"; // fix relative path if needed
 import { getServerSession } from "next-auth";
 import { Provider } from "@/models/Provider/Organization";
 
