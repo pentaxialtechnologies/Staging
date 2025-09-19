@@ -1,4 +1,4 @@
-import SwitchToggle from '@/Components/Home/Toggle'
+import SwitchToggle from '@/components/Home/Toggle'
 import React from 'react'
 import Homepage from './home/page'
 

@@ -1,11 +1,11 @@
-import SessionWrapper from "@/Components/SessionWraper";
+import SessionWrapper from "@/components/SessionWraper";
 import "./globals.css";
 
 
 
 import type { Metadata } from "next";
-import Header from "@/Components/Header";
-import Footer from "@/Components/Footer";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Staffing-website",

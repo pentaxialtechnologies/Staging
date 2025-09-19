@@ -1,7 +1,7 @@
-import { ProviderSideBar } from "@/Components/Provider/ProviderSideBar";
-import { EmployerHeader } from "@/Components/Provider/ProviderHeader";
+import { ProviderSideBar } from "@/components/Provider/ProviderSideBar";
+import { EmployerHeader } from "@/components/Provider/ProviderHeader";
 import type { Metadata } from "next";
-import ActiveTracker from "@/Components/ActiveTracker";
+import ActiveTracker from "@/components/ActiveTracker";
 
 
 

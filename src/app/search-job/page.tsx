@@ -1,4 +1,4 @@
-import SwitchToggle from '@/Components/Home/Toggle'
+import SwitchToggle from '@/components/Home/Toggle'
 import { Search } from 'lucide-react'
 import React from 'react'
 

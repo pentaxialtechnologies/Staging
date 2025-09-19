@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import { useParams } from 'next/navigation'
-import Editor from '@/Components/Editor'
+import Editor from '@/components/Editor'
 import toast,{Toaster} from 'react-hot-toast'
 interface ITicket {
     ticketname:string

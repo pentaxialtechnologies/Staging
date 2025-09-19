@@ -1,4 +1,4 @@
-import { NextAuthOptions } from 'next-auth';
+import {NextAuthOptions} from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import dbConnect from '@/lib/Mongodb';
 import { Employers } from '@/models/Employer/Employer';

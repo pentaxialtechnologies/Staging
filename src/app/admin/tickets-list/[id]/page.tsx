@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import { useParams } from 'next/navigation'
-import Editor from '@/Components/Editor'
+import Editor from '@/components/Editor'
 import { useSession } from 'next-auth/react'
 import toast,{Toaster} from 'react-hot-toast'
 interface Ticket{

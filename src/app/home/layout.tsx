@@ -1,5 +1,5 @@
 
-import SwitchToggle from '@/Components/Home/Toggle'
+import SwitchToggle from '@/components/Home/Toggle'
 import React from  'react'
 
 export default async function RootLayout({children}: {children: React.ReactNode}){

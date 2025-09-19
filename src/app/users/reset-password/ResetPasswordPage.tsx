@@ -1,5 +1,5 @@
 'use client'
-import CompanyHeader from '@/Components/CompanyHeader'
+import CompanyHeader from '@/components/CompanyHeader'
 import { useRouter, useSearchParams } from 'next/navigation'
 import React, { FormEvent, useState } from 'react'
 

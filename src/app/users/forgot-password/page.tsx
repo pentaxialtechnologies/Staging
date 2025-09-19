@@ -2,7 +2,7 @@
 
 import React, {  useState } from 'react';
 import banner from "../../../../public/forgot.webp";
-import CompanyHeader from '@/Components/CompanyHeader';
+import CompanyHeader from '@/components/CompanyHeader';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 

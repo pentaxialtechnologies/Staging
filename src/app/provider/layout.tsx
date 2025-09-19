@@ -1,6 +1,6 @@
 
-import { CompanyHeader } from '@/Components/company/CompanyHeader';
-import { CompanySideBar } from '@/Components/company/CompanySideBar';
+import { CompanyHeader } from '@/components/company/CompanyHeader';
+import { CompanySideBar } from '@/components/company/CompanySideBar';
 
 export default function CompanyLayout({ children }: { children: React.ReactNode }) {
   return (

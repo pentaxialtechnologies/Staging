@@ -1,5 +1,5 @@
 'use client';
-import CompanyHeader from '@/Components/CompanyHeader';
+import CompanyHeader from '@/components/CompanyHeader';
 import { Search } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';

@@ -1,5 +1,5 @@
   'use client'
-  import CompanyHeader from '@/Components/CompanyHeader'
+  import CompanyHeader from '@/components/CompanyHeader'
   import { formatDistanceToNow } from 'date-fns'
 import { useSession } from 'next-auth/react'
   import { useParams } from 'next/navigation'
