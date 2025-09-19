@@ -81,26 +81,26 @@ providers: [
       },
     }),
   ],
-  cookies: {
-    sessionToken: {
-      name: process.env.NODE_ENV === 'production'
-        ? '__Secure-next-auth.session-token'
-        : 'next-auth.session-token',
-      options: {
-        httpOnly: true,
-        sameSite: 'lax',
-        path: '/',
-        secure: process.env.NODE_ENV === 'production',
-      },
-    },
-  },
+  // cookies: {
+  //   sessionToken: {
+  //     name: process.env.NODE_ENV === 'production'
+  //       ? '__Secure-next-auth.session-token'
+  //       : 'next-auth.session-token',
+  //     options: {
+  //       httpOnly: true,
+  //       sameSite: 'lax',
+  //       path: '/',
+  //       secure: process.env.NODE_ENV === 'production',
+  //     },
+  //   },
+  // },
   pages: {
     signIn: '/users/login',
   },
   session: {
     strategy: 'jwt',
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: "fallback-secret-key",
 callbacks: {
   async jwt({ token, user }) {
     if (user) {
