@@ -2,9 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
 export async function middleware(req: NextRequest) {
+ if(!process.env.NEXTAUTH_SECRET) {
+  throw new Error('Token not found')
+ }
   const token = await getToken({ req, secret:process.env.NEXTAUTH_SECRET});
-  console.log(token,"token");
-  
+console.log('Middleware token:', token);
+
+
+
   const { pathname } = req.nextUrl;
 
   const publicPaths = ["/","/users/login","jobs"];

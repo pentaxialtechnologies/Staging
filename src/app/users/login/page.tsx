@@ -41,9 +41,7 @@ const handleSubmit = async (e: FormEvent) => {
       if (response.error.includes('verify')) {
     alert("Please verify your email before logging in.");
   }
-
       setError(response.error);
-      
     }
     else if (response?.ok) {
       const session = await getSession(); 
@@ -59,10 +57,10 @@ const handleSubmit = async (e: FormEvent) => {
           break;
         case 'provider':
           if (!hasCompletedPlanSelection) {
-        router.push('/providers/plans');
+       await router.push('/providers/plans');
       } 
       else{
-          router.push('/provider/dashboard');
+        await   router.push('/provider/dashboard');
       }
           break;
         case 'employer':
