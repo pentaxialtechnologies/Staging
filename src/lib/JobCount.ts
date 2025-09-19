@@ -7,7 +7,7 @@ try{
         return null
     }
 const response = await res.json()
-console.log(response.jobs,'count jobs');
+// console.log(response.jobs,'count jobs');
 
 return response.jobs
 }
