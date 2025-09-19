@@ -40,13 +40,48 @@ providers: [
         user = (await Employers.findOne({ email: credentials.email })) as IUser;
         role = user ? 'employer' : null;
 
-        if (!user) {
-        user = await Provider.findOne({ email: credentials.email }).select('+password') as IUser;
+        // if (!user) {
+        // user = await Provider.findOne({ email: credentials.email }).select('+password') as IUser;
 
-          if (user) role = 'provider';
+        //   if (user) role = 'provider';
         
           
-        }
+        // }
+           if (!user) {
+            try {
+              // Try different ways to get password field
+              user = await Provider.findOne({ email: credentials.email }).select('+password') as IUser;
+              
+              // If select('+password') doesn't work, try without select
+              if (!user || !user.password) {
+                user = await Provider.findOne({ email: credentials.email }) as IUser;
+              }
+
+              // If still no password, try with explicit field inclusion
+              if (!user || !user.password) {
+                user = await Provider.findOne(
+                  { email: credentials.email },
+                  { 
+                    _id: 1, 
+                    email: 1, 
+                    password: 1, 
+                    firstname: 1, 
+                    lastname: 1, 
+                    name: 1,
+                    emailVerified: 1,
+                    hasCompletedPlanSelection: 1 
+                  }
+                ) as IUser;
+              }
+
+              if (user) {
+                role = 'provider';
+                console.log('✅ Found provider:', user.email, 'Has password:', !!user.password);
+              }
+            } catch (error) {
+              console.error('❌ Error searching Providers:', error);
+            }
+          }
 
         if (!user) {
           user = (await Admin.findOne({ email: credentials.email })) as IUser;

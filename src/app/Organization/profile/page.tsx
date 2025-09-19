@@ -1,17 +1,18 @@
 
 'use client'
 import React, { useState } from 'react';
-import { Inputs } from '@/components/ui/Inputs';
-import { Buttons } from '@/components/ui/Buttons';
-import { Cards, CardContents } from '@/components/ui/Cards';
+import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/ui/Button';
+// import { Card, CardContent } from '@/components/ui/Card';
+import { Card,CardContent } from '@/components/ui/Card';
 import { motion } from 'framer-motion';
 import {
-  Dialogs,
+  Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogFooter
-} from '@/components/ui/Dialogs';
+    DialogFooter
+} from '@/components/ui/Dialog';
 
 const steps = ['Company Info', 'Company Specs', 'Portfolio & Website', 'Admin Info'];
 
@@ -95,13 +96,13 @@ const handleChange= (e:React.ChangeEvent<HTMLInputElement>)=>{
   };
 
   return (
-    <Dialogs open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="max-w-3xl">
         <DialogHeader>
           <DialogTitle>{steps[step]}</DialogTitle>
         </DialogHeader>
-        <Cards>
-          <CardContents className="space-y-4 p-4">
+        <Card>
+          <CardContent className="space-y-4 p-4">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -110,54 +111,54 @@ const handleChange= (e:React.ChangeEvent<HTMLInputElement>)=>{
             >
               {step === 0 && (
                 <>
-                  <Inputs name="company_name" onChange={handleChange} placeholder="Company Name" />
-                  <Inputs name="companylogo" onChange={handleChange} placeholder="Logo URL" />
-                  <Inputs name="tagline" onChange={handleChange} placeholder="Tagline" />
-                  <Inputs name="summary" onChange={handleChange} placeholder="Summary" />
+                  <Input name="company_name" onChange={handleChange} placeholder="Company Name" />
+                  <Input name="companylogo" onChange={handleChange} placeholder="Logo URL" />
+                  <Input name="tagline" onChange={handleChange} placeholder="Tagline" />
+                  <Input name="summary" onChange={handleChange} placeholder="Summary" />
                 </>
               )}
               {step === 1 && (
                 <>
-                  <Inputs name="phone_number" onChange={handleChange} placeholder="Phone Number" />
-                  <Inputs name="employee_count" onChange={handleChange} placeholder="Employee Count" />
-                  <Inputs name="gstno" onChange={handleChange} placeholder="GST Number" />
-                  <Inputs name="service_lines" onChange={handleChange} placeholder="Service Lines" />
-                  <Inputs name="industry_focus" onChange={handleChange} placeholder="Industry Focus" />
-                  <Inputs name="client_size" onChange={handleChange} placeholder="Client Size" />
-                  <Inputs name="specilization" onChange={handleChange} placeholder="Specialization" />
+                  <Input name="phone_number" onChange={handleChange} placeholder="Phone Number" />
+                  <Input name="employee_count" onChange={handleChange} placeholder="Employee Count" />
+                  <Input name="gstno" onChange={handleChange} placeholder="GST Number" />
+                  <Input name="service_lines" onChange={handleChange} placeholder="Service Lines" />
+                  <Input name="industry_focus" onChange={handleChange} placeholder="Industry Focus" />
+                  <Input name="client_size" onChange={handleChange} placeholder="Client Size" />
+                  <Input name="specilization" onChange={handleChange} placeholder="Specialization" />
                 </>
               )}
               {step === 2 && (
                 <>
-                  <Inputs name="portfolio.title" onChange={handleChange} placeholder="Project Title" />
-                  <Inputs name="portfolio.project_link" onChange={handleChange} placeholder="Project Link" />
-                  <Inputs name="portfolio.project_category" onChange={handleChange} placeholder="Project Category" />
-                  <Inputs name="portfolio.description" onChange={handleChange} placeholder="Project Description" />
-                  <Inputs name="website.website_link" onChange={handleChange} placeholder="Website Link" />
-                  <Inputs name="website.sales_email" onChange={handleChange} placeholder="Sales Email" />
+                  <Input name="portfolio.title" onChange={handleChange} placeholder="Project Title" />
+                  <Input name="portfolio.project_link" onChange={handleChange} placeholder="Project Link" />
+                  <Input name="portfolio.project_category" onChange={handleChange} placeholder="Project Category" />
+                  <Input name="portfolio.description" onChange={handleChange} placeholder="Project Description" />
+                  <Input name="website.website_link" onChange={handleChange} placeholder="Website Link" />
+                  <Input name="website.sales_email" onChange={handleChange} placeholder="Sales Email" />
                 </>
               )}
               {step === 3 && (
                 <>
-                  <Inputs name="admin.email" onChange={handleChange} placeholder="Admin Email" />
-                  <Inputs name="admin.admin_phone" onChange={handleChange} placeholder="Admin Phone" />
-                  <Inputs name="admin.linkedin_url" onChange={handleChange} placeholder="LinkedIn URL" />
-                  <Inputs name="admin.facebook_url" onChange={handleChange} placeholder="Facebook URL" />
+                  <Input name="admin.email" onChange={handleChange} placeholder="Admin Email" />
+                  <Input name="admin.admin_phone" onChange={handleChange} placeholder="Admin Phone" />
+                  <Input name="admin.linkedin_url" onChange={handleChange} placeholder="LinkedIn URL" />
+                  <Input name="admin.facebook_url" onChange={handleChange} placeholder="Facebook URL" />
                 </>
               )}
             </motion.div>
-          </CardContents>
-        </Cards>
+          </CardContent>
+        </Card>
         <DialogFooter className="flex justify-between pt-4">
-          {step > 0 && <Buttons variant="outline" onClick={prevStep}>Previous</Buttons>}
+          {step > 0 && <Button variant="outline" onClick={prevStep}>Previous</Button>}
           {step < steps.length - 1 ? (
-            <Buttons onClick={nextStep}>Next</Buttons>
+            <Button onClick={nextStep}>Next</Button>
           ) : (
-            <Buttons onClick={handleSubmit} className="bg-green-600 hover:bg-green-700 text-white">Submit</Buttons>
+            <Button onClick={handleSubmit} className="bg-green-600 hover:bg-green-700 text-white">Submit</Button>
           )}
         </DialogFooter>
       </DialogContent>
-    </Dialogs>
+    </Dialog>
   );
 };
 
