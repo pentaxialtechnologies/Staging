@@ -6,8 +6,7 @@ import PropTypes from 'prop-types';
 
 // Dynamically import ReactQuill to avoid SSR issues
 const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
-import 'react-quill/dist/quill.snow.css';
-import 'react-quill/dist/quill.bubble.css';
+
 
 
 interface EditorProps {
