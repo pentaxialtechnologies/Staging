@@ -2,13 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
 export async function middleware(req: NextRequest) {
- if(!process.env.NEXTAUTH_SECRET) {
-  throw new Error('Token not found')
- }
-   
+
+
+  console.log('NEXTAUTH_SECRET from env:', process.env.NEXTAUTH_SECRET);
   const token = await getToken({
     req,
-  secret: "jF8aUQ5l0K1w9V3j2Pq4x6bR0cH9sYzT"
+  secret: process.env.NEXTAUTH_SECRET
   });
 
 console.log('Middleware token:', token);
