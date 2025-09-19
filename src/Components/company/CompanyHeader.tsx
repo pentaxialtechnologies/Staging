@@ -48,7 +48,6 @@ useEffect(() => {
     const res = await fetch(`/api/auth/provider/userprofile/update/${userId}`);
     const data = await res.json();
     setUser(data.user);
-    console.log(data.user, 'user id for this user'); // ✅ use the correct user here
   };
 
   fetchdata();

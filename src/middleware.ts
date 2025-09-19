@@ -7,7 +7,7 @@ export async function middleware(req: NextRequest) {
   
   const { pathname } = req.nextUrl;
 
-  const publicPaths = ["/", "/worker/login", "/worker/register","providers/login","providers/register"];
+  const publicPaths = ["/","/users/login","/jobs"];
 
   // Allow public paths without auth
   if (publicPaths.includes(pathname)) {
@@ -15,12 +15,12 @@ export async function middleware(req: NextRequest) {
   }
 
   // Redirect to login if no token
-  if (!token) {
-    return NextResponse.redirect(new URL("/users/login", req.url));
-  }
+  // if (!token) {
+  //   return NextResponse.redirect(new URL("/users/login", req.url));
+  // }
 
   try {
-    const role = (token.role as string)?.toLowerCase();
+    const role = (token?.role as string)?.toLowerCase();
 
     if (pathname.startsWith("/admin") && role !== "admin") {
       return NextResponse.redirect(new URL("/unauthorized", req.url));
@@ -44,7 +44,7 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   } catch (error) {
     console.error("Invalid token:", error);
-    return NextResponse.redirect(new URL("/worker/login", req.url));
+    return NextResponse.redirect(new URL("/users/login", req.url));
   }
 }
 

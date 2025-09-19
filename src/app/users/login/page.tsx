@@ -37,11 +37,6 @@ const handleSubmit = async (e: FormEvent) => {
       callbackUrl: '/',
     });
 
-    console.log('Login response:', response);
-    console.log('Login email:', form.email);
-    console.log('Login password:', form.password);
-
-
     if (response?.error) {
       if (response.error.includes('verify')) {
     alert("Please verify your email before logging in.");
