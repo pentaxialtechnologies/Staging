@@ -100,7 +100,7 @@ providers: [
   session: {
     strategy: 'jwt',
   },
-  secret: "fallback-secret-key",
+  secret: process.env.NEXTAUTH_SECRET,
 callbacks: {
   async jwt({ token, user }) {
     if (user) {
