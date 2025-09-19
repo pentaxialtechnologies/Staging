@@ -5,7 +5,12 @@ export async function middleware(req: NextRequest) {
  if(!process.env.NEXTAUTH_SECRET) {
   throw new Error('Token not found')
  }
-  const token = await getToken({ req, secret:process.env.NEXTAUTH_SECRET});
+   
+  const token = await getToken({
+    req,
+    secret: process.env.NEXTAUTH_SECRET  || 'fallback-secret-key',
+  });
+
 console.log('Middleware token:', token);
 
 

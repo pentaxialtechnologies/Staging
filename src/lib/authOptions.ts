@@ -19,6 +19,7 @@ interface IUser {
 }
 
 export const authOptions: NextAuthOptions = {
+   
 providers: [
     CredentialsProvider({
       name: 'Credentials',
