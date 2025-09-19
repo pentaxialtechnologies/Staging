@@ -1,4 +1,4 @@
-import { authOptions } from "@/lib/authOptions";
+import { authOptions } from "@/lib/authoptions";
 import dbConnect from "@/lib/Mongodb";
 import { Proposals } from "@/models/proposal/Proposal";
 import { getServerSession } from "next-auth";

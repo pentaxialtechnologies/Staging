@@ -1,6 +1,6 @@
 import dbConnect from './Mongodb';
 import { getServerSession } from 'next-auth';
-import { authOptions } from './authOptions';
+import { authOptions } from './authoptions';
 import { Jobs } from '../models/ContractJob';
 
 export async function GetEmployerJobCount(): Promise<number> {
