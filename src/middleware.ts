@@ -8,12 +8,10 @@ export async function middleware(req: NextRequest) {
    
   const token = await getToken({
     req,
-    secret: process.env.NEXTAUTH_SECRET  || 'fallback-secret-key',
+  secret: "jF8aUQ5l0K1w9V3j2Pq4x6bR0cH9sYzT"
   });
 
 console.log('Middleware token:', token);
-
-
 
   const { pathname } = req.nextUrl;
 
