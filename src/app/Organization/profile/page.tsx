@@ -1,9 +1,9 @@
 
 'use client'
 import React, { useState } from 'react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/Inputs';
+import { Button } from '@/components/ui/Buttons';
+import { Card, CardContent } from '@/components/ui/Cards';
 import { motion } from 'framer-motion';
 import {
   Dialog,
@@ -11,7 +11,7 @@ import {
   DialogHeader,
   DialogTitle,
     DialogFooter
-} from '@/components/ui/dialog';
+} from '@/components/ui/Dialogs';
 
 const steps = ['Company Info', 'Company Specs', 'Portfolio & Website', 'Admin Info'];
 
