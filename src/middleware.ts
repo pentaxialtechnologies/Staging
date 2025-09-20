@@ -7,7 +7,7 @@ export async function middleware(req: NextRequest) {
   
   const { pathname } = req.nextUrl;
 
-  const publicPaths = ["/", "/worker/login", "/worker/register","providers/login","providers/register"];
+  const publicPaths = ["/", "/worker/login","providers/login","providers/register"];
 
   // Allow public paths without auth
   if (publicPaths.includes(pathname)) {
