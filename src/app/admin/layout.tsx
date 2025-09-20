@@ -1,6 +1,6 @@
 'use client'
 
-import { AdminHeader } from "@/components/AdminHeader";
+// import { AdminHeader } from "@/components/AdminHeader";
 import { Sidebar } from "@/components/SideBar";
 import React, { useState } from "react";
 
@@ -10,7 +10,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div className="flex flex-col min-h-screen">
       {/* Header */}
-      <AdminHeader/>
+      {/* <AdminHeader/> */}
 
       <div className="flex flex-1 overflow-hidden">
         {/* Sidebar */}

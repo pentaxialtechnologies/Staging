@@ -14,7 +14,7 @@ import {
     DialogFooter
 } from '@/components/ui/dialog';
 
-const steps = ['Company Info', 'Company Specs', 'Portfolio & Website', 'Admin Info'];
+const steps = ['Company Info', 'Company Specification', 'Portfolio & Website', 'Admin Info'];
 
 const OrganizationProfileModal = () => {
   const [open, setOpen] = useState(true);
