@@ -1,10 +1,10 @@
 
 'use client'
 import React, { useState } from 'react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { Input } from '@/components/User-UI/Input';
+import { Button } from '@/components/User-UI/Button';
 // import { Card, CardContent } from '@/components/ui/Card';
-import { Card,CardContent } from '@/components/ui/card';
+import { Card,CardContent } from '@/components/User-UI/Card';
 import { motion } from 'framer-motion';
 import {
   Dialog,
@@ -12,7 +12,7 @@ import {
   DialogHeader,
   DialogTitle,
     DialogFooter
-} from '@/components/ui/dialog';
+} from '@/components/User-UI/Dialog';
 
 const steps = ['Company Info', 'Company Specification', 'Portfolio & Website', 'Admin Info'];
 
