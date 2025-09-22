@@ -14,7 +14,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.7.2",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@hookform/resolvers": "^5.1.1",
-    "@mantine/core": "^8.0.2",
+    "@mantine/core": "^8.2.8",
     "@mantine/hooks": "^8.0.2",
     "@mantine/rte": "^5.10.5",
     "@tiptap/extension-color": "^2.13.0",
