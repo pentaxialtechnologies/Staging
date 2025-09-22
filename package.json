@@ -35,7 +35,7 @@
     "date-fns": "^4.1.0",
     "dotenv": "^17.2.0",
     "draft-js": "^0.11.7",
-    "framer-motion": "^12.15.0",
+    "framer-motion": "^12.23.12",
     "immutable": "^5.1.2",
     "install": "^0.13.0",
     "jsonwebtoken": "^9.0.2",
